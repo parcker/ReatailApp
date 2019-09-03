@@ -5,13 +5,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 
+import { RolesController } from './roles/roles.controller';
+import { RolesModule } from './roles/roles.module';
+
 @Module({
     imports: [
         TypeOrmModule.forRoot(),
         UsersModule,
-        AuthModule
+        AuthModule,
+        RolesModule
     ],
-    controllers: [AppController]
+    controllers: [AppController],
+    providers: []
 })
 
 export class ApplicationModule {

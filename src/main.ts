@@ -1,7 +1,8 @@
 import * as env from 'dotenv';
+env.config();
 import 'reflect-metadata';
 import * as logger from 'morgan';
-env.config();
+
 
 import * as bodyParser from 'body-parser';
 
@@ -26,7 +27,7 @@ async function bootstrap() {
         title: 'Nest boilerplate',
         endpoint: '/docs'
     });
-
+   
     await app.listen(parseInt(process.env.PORT) || 3000);
 }
 

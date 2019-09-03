@@ -1,9 +1,10 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, QueryFailedError} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, QueryFailedError, BaseEntity} from 'typeorm';
 import {IsEmail, IsNotEmpty, Validator} from 'class-validator';
 import * as bcrypt from 'bcrypt';
 
 @Entity('users')
-export class User {
+export class User extends BaseEntity
+{
     private static DEFAULT_SALT_ROUNDS = 10;
 
     @PrimaryGeneratedColumn()
@@ -27,18 +28,29 @@ export class User {
     @Column()
     public age: number;
 
+    @Column()
+    public isDisabled: boolean;
+    
+    @Column()
+    @IsNotEmpty()
+    public phonenumber: string;
+    
     public toJSON() {
         return {
             email: this.email,
             firstName: this.firstName,
             lastName: this.lastName,
-            age: this.age
+            age: this.age,
+            phonenumber:this.phonenumber,
+
         }
     }
+  
 
     @BeforeInsert()
     private async encryptPassword() {
         this.password = await bcrypt.hash(this.password, User.DEFAULT_SALT_ROUNDS);
+        this.isDisabled=false;
     }
 
     @BeforeInsert()

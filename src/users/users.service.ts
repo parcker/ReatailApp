@@ -8,10 +8,8 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
 
-    constructor(
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
-    ) { }
+    constructor(@InjectRepository(User)private readonly userRepository: Repository<User>, )
+     { }
 
     public async create(userData: ICreateUser): Promise<User> {
         if (!userData.email) throw new HttpException('Email is required', 422);

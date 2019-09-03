@@ -12,4 +12,7 @@ export class CreateUserDto {
     public readonly lastName: string;
     @ApiModelPropertyOptional({ example: '25' })
     public readonly age: number;
+
+    @ApiModelPropertyOptional({ example: '+234809944547' })
+    public readonly phonenumber: string;
 }
