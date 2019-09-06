@@ -23,7 +23,7 @@ export class RolesService {
             result.result=rolesDb;
             return result
        }
-       catch(err){console.log(err);return err;}
+       catch(err){return err;}
        
     }
     async createRole(roleDTO: CreateRoleDto): Promise<RoleDto> {
@@ -42,7 +42,7 @@ export class RolesService {
             
             return await this.roleRepository.save(roleDb);
        }
-       catch(err){console.log(err);return err;}
+       catch(err){return err;}
     }
     
    

@@ -1,7 +1,7 @@
-import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn} from 'typeorm';
 import {IsNotEmpty} from 'class-validator';
 import { BaseEntityClass } from './base.entity';
-import {RoleDto} from '../app-Dto/usermgr/role/role.dto'
+import { User } from '../users/entities/user.entity';
 @Entity()
 export class Role extends BaseEntityClass {
 
@@ -11,4 +11,22 @@ export class Role extends BaseEntityClass {
     @Column()
     @IsNotEmpty()
     public name: string;
+}
+
+@Entity()
+export class RoleUser extends BaseEntityClass {
+
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @OneToOne(() => User)
+    @JoinColumn()
+    user: User;
+
+    @OneToOne(() => Role)
+    @JoinColumn()
+    role: Role;
+
+
+
 }

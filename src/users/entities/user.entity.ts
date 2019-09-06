@@ -1,6 +1,7 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, QueryFailedError, BaseEntity} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, QueryFailedError, BaseEntity, OneToOne, JoinColumn} from 'typeorm';
 import {IsEmail, IsNotEmpty, Validator} from 'class-validator';
 import * as bcrypt from 'bcrypt';
+import { Business } from '../../entities/business.entity';
 
 @Entity('users')
 export class User extends BaseEntity
@@ -12,11 +13,28 @@ export class User extends BaseEntity
 
     @Column()
     @IsNotEmpty()
-    public email: string;
+    public username: string;
 
     @Column()
     @IsNotEmpty()
-    public password: string;
+    public email: string;
+
+    @Column()
+    public emailConfirmed: boolean;
+
+    @Column()
+    @IsNotEmpty()
+    public passwordHash: string;
+
+    @Column()
+    @IsNotEmpty()
+    public securityStamp: string;
+
+    @Column()
+    public twoFactorEnable: boolean;
+    
+    @Column()
+    public accessFailedCount: number;
 
     @Column()
     @IsNotEmpty()
@@ -24,9 +42,10 @@ export class User extends BaseEntity
 
     @Column()
     public lastName: string;
-
+    
     @Column()
-    public age: number;
+    @IsNotEmpty()
+    public password: string;
 
     @Column()
     public isDisabled: boolean;
@@ -34,13 +53,16 @@ export class User extends BaseEntity
     @Column()
     @IsNotEmpty()
     public phonenumber: string;
+
+    @OneToOne(() => Business)
+    @JoinColumn()
+    business: Business;
     
     public toJSON() {
         return {
             email: this.email,
             firstName: this.firstName,
             lastName: this.lastName,
-            age: this.age,
             phonenumber:this.phonenumber,
 
         }
@@ -49,7 +71,7 @@ export class User extends BaseEntity
 
     @BeforeInsert()
     private async encryptPassword() {
-        this.password = await bcrypt.hash(this.password, User.DEFAULT_SALT_ROUNDS);
+        this.passwordHash = await bcrypt.hash(this.passwordHash, User.DEFAULT_SALT_ROUNDS);
         this.isDisabled=false;
     }
 

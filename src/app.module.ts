@@ -5,15 +5,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 
-import { RolesController } from './roles/roles.controller';
 import { RolesModule } from './roles/roles.module';
+import { CompanyModule } from './company/company.module';
+import { AccountModule } from './account/account.module';
+
+
 
 @Module({
     imports: [
         TypeOrmModule.forRoot(),
         UsersModule,
         AuthModule,
-        RolesModule
+        RolesModule,
+        CompanyModule,
+        AccountModule
     ],
     controllers: [AppController],
     providers: []
