@@ -4,9 +4,9 @@ import { CreateUserDto } from "../../users/user.dto";
 import { ApiModelProperty } from "@nestjs/swagger";
 export class SigupDto{
 
-    @ApiModelProperty({ type: [CreateCompanyDto] })
+    @ApiModelProperty({ type: CreateCompanyDto })
     company:CreateCompanyDto;
-    @ApiModelProperty({ type: [CreateUserDto] })
+    @ApiModelProperty({ type: CreateUserDto })
     contactPerson:CreateUserDto;
 
 }

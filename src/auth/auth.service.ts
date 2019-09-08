@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-import { Injectable, HttpException, Inject } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { Repository } from 'typeorm/repository/Repository';
@@ -12,7 +12,8 @@ export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
+     
     ) { }
 
     public async validateUser(userId: string) {

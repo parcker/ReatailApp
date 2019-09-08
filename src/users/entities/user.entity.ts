@@ -24,11 +24,7 @@ export class User extends BaseEntity
 
     @Column()
     @IsNotEmpty()
-    public passwordHash: string;
-
-    @Column()
-    @IsNotEmpty()
-    public securityStamp: string;
+    public password: string;
 
     @Column()
     public twoFactorEnable: boolean;
@@ -43,10 +39,7 @@ export class User extends BaseEntity
     @Column()
     public lastName: string;
     
-    @Column()
-    @IsNotEmpty()
-    public password: string;
-
+   
     @Column()
     public isDisabled: boolean;
     
@@ -71,7 +64,7 @@ export class User extends BaseEntity
 
     @BeforeInsert()
     private async encryptPassword() {
-        this.passwordHash = await bcrypt.hash(this.passwordHash, User.DEFAULT_SALT_ROUNDS);
+        this.password = await bcrypt.hash(this.password, User.DEFAULT_SALT_ROUNDS);
         this.isDisabled=false;
     }
 

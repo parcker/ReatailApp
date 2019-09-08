@@ -15,5 +15,10 @@ export interface ICreateUser {
     firstName: string;
     lastName?: string;
     password:string;
-    number:string;
+    phonenumber:string;
+    username:string;
+    emailConfirmed:boolean;
+    twoFactorEnable:boolean;
+    accessFailedCount:number;
+  
 }

@@ -19,6 +19,7 @@ import { AccountModule } from './account/account.module';
         RolesModule,
         CompanyModule,
         AccountModule
+        
     ],
     controllers: [AppController],
     providers: []

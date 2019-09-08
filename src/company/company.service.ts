@@ -11,23 +11,23 @@ export class CompanyService {
 
     constructor(@InjectRepository(Business)private readonly buisnessRepository: Repository<Business>,) 
     {}
-    async createCompany(companyDTO: CreateCompanyDto): Promise<ResponseObj<string>> {
+    async createCompany(companyDTO: CreateCompanyDto): Promise<ResponseObj<Business>> {
         try
-        {   
+        {   console.log("Company.service 1", companyDTO)
              let model=new Business();
-             model.name=companyDTO.comapanyName;
+             model['name']=companyDTO.comapanyName;
              model.address=companyDTO.address;
              model.dateCreated=Date.toString()
 
-             const qb = await getRepository(Business).createQueryBuilder('business').where('business.name = :name', { name });
-             const role = await qb.getOne();
-             if(role){
-                 const errors = {username: 'role name must be unique.'};
-                 throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
-             }
- 
+             
              let buinessDb = this.buisnessRepository.create(model);
-             let response= await this.buisnessRepository.save(buinessDb);
+             const response= await this.buisnessRepository.save(buinessDb);
+             
+            let result= new ResponseObj<Business>();
+            result.message=`sign up completed` ;
+            result.status=true;
+            result.result=response;
+            return result;
         }
         catch(err){return err;}
      }

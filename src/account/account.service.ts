@@ -8,8 +8,7 @@ import { CreateCompanyDto } from '../app-Dto/usermgr/company/company.dto';
 @Injectable()
 export class AccountService {
     
-    constructor(private readonly userService: UsersService,
-        private readonly comapnyService: CompanyService) {}
+    constructor(private readonly userService: UsersService,private readonly comapnyService: CompanyService) {}
 
     public async create(signup: SigupDto): Promise<ResponseObj<string>> {
       
@@ -19,6 +18,7 @@ export class AccountService {
             companydto.comapanyName=signup.company.comapanyName;
             companydto.address=signup.company.address;
             var response=await this.comapnyService.createCompany(companydto);
+            console.log('account.service 1', response);
             if(response.status)
             {
 
@@ -26,9 +26,15 @@ export class AccountService {
                     firstName:signup.contactPerson.firstName,
                     lastName:signup.contactPerson.lastName,
                     password:signup.contactPerson.password,
-                    number:signup.contactPerson.phonenumber
+                    phonenumber:signup.contactPerson.phonenumber,
+                    username:signup.contactPerson.email,
+                    emailConfirmed: false,
+                    twoFactorEnable:false,
+                    accessFailedCount:0,
+                    
                 };
                 let response=await this.userService.create(userinfo);
+                console.log('account.service 1', response);
                 if(response.status){
                     
                     let result= new ResponseObj<string>();

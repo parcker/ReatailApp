@@ -6,9 +6,12 @@ import { AccountService } from './account.service';
 export class AccountController {
 
     constructor(  private readonly accountService: AccountService) {}
-    @Post()
-    public async Sigup(@Body() body: SigupDto){
 
-        return await this.accountService.create(body);
+    @Post('/signup')
+    public async Sigup(@Body() body: SigupDto){
+        console.log("Sigup", body)
+        const response = await this.accountService.create(body);
+        console.log(response);
+        
     }
 }
