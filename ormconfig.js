@@ -9,11 +9,11 @@ const migrationsDir = isProd ? 'dist/migration/*.js' : 'src/migration/*.ts'
 
 module.exports = {
   type: "mysql",
-  host:"127.0.0.1",
-  port:"3306"||process.env.SERVERPORT,
-  username:"root",
-  password:"d0tN3t123",
-  database:"retailstore",
+  host:process.env.TYPEORM_HOST,
+  port:process.env.TYPEORM_PORT,
+  username:process.env.TYPEORM_USERNAME ,
+  password:process.env.TYPEORM_PASSWORD,
+  database:process.env.TYPEORM_DATABASE,
   synchronize:true,
   logging:true,
   migrations: [migrationsDir],
