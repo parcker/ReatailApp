@@ -38,9 +38,7 @@ export class RolesService {
             }
 
             let roleDb = this.roleRepository.create(roleDTO);
-            roleDb.dateCreated=Date.toString()
-            
-            return await this.roleRepository.save(roleDb);
+             return await this.roleRepository.save(roleDb);
        }
        catch(err){return err;}
     }

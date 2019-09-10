@@ -17,9 +17,6 @@ export class CompanyService {
              let model=new Business();
              model['name']=companyDTO.comapanyName;
              model.address=companyDTO.address;
-             model.dateCreated=Date.toString()
-
-             
              let buinessDb = this.buisnessRepository.create(model);
              const response= await this.buisnessRepository.save(buinessDb);
              
