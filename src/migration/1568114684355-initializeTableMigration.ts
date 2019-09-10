@@ -1,12 +1,12 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class initializeTableMigration1568111293657 implements MigrationInterface {
+export class initializeTableMigration1568114684355 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
-        await queryRunner.query("CREATE TABLE `business` (`date_created` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `date_updateded` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `id` varchar(36) NOT NULL, `name` varchar(255) NOT NULL, `address` varchar(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB");
+        await queryRunner.query("CREATE TABLE `business` (`id` varchar(36) NOT NULL, `name` varchar(255) NOT NULL, `address` varchar(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB");
         await queryRunner.query("CREATE TABLE `users` (`id` int NOT NULL AUTO_INCREMENT, `username` varchar(255) NOT NULL, `email` varchar(255) NOT NULL, `emailConfirmed` tinyint NOT NULL, `password` varchar(255) NOT NULL, `twoFactorEnable` tinyint NOT NULL, `accessFailedCount` int NOT NULL, `firstName` varchar(255) NOT NULL, `lastName` varchar(255) NOT NULL, `isDisabled` tinyint NOT NULL, `phonenumber` varchar(255) NOT NULL, `businessId` varchar(36) NULL, UNIQUE INDEX `REL_78725ac7117e7526e028014606` (`businessId`), PRIMARY KEY (`id`)) ENGINE=InnoDB");
-        await queryRunner.query("CREATE TABLE `role` (`date_created` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `date_updateded` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `id` varchar(36) NOT NULL, `name` varchar(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB");
-        await queryRunner.query("CREATE TABLE `role_user` (`date_created` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `date_updateded` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `id` varchar(36) NOT NULL, `userId` int NULL, `roleId` varchar(36) NULL, UNIQUE INDEX `REL_2a23ceb75c7511d0523c4aaf49` (`userId`), UNIQUE INDEX `REL_89e55dae19555d0d5fe8602b28` (`roleId`), PRIMARY KEY (`id`)) ENGINE=InnoDB");
+        await queryRunner.query("CREATE TABLE `role` (`id` varchar(36) NOT NULL, `name` varchar(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB");
+        await queryRunner.query("CREATE TABLE `role_user` (`id` varchar(36) NOT NULL, `userId` int NULL, `roleId` varchar(36) NULL, UNIQUE INDEX `REL_2a23ceb75c7511d0523c4aaf49` (`userId`), UNIQUE INDEX `REL_89e55dae19555d0d5fe8602b28` (`roleId`), PRIMARY KEY (`id`)) ENGINE=InnoDB");
         await queryRunner.query("ALTER TABLE `users` ADD CONSTRAINT `FK_78725ac7117e7526e028014606b` FOREIGN KEY (`businessId`) REFERENCES `business`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION");
         await queryRunner.query("ALTER TABLE `role_user` ADD CONSTRAINT `FK_2a23ceb75c7511d0523c4aaf492` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION");
         await queryRunner.query("ALTER TABLE `role_user` ADD CONSTRAINT `FK_89e55dae19555d0d5fe8602b281` FOREIGN KEY (`roleId`) REFERENCES `role`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION");
