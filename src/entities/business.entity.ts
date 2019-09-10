@@ -16,4 +16,5 @@ export class Business extends BaseEntityClass {
     @IsNotEmpty()
     public address: string;
 
+
 }

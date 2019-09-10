@@ -1,12 +1,12 @@
-import {CreateDateColumn, UpdateDateColumn, Entity} from 'typeorm';
+import {CreateDateColumn, UpdateDateColumn, Entity, Timestamp} from 'typeorm';
 
 export abstract class BaseEntityClass{
 
-    @CreateDateColumn({name : 'date_created',default:""})
-    public dateCreated?: string
+    @CreateDateColumn({name : 'date_created'})
+    public dateCreated?: Timestamp
 
-    @UpdateDateColumn({name : 'date_updateded',default:""})
-    public dateUpdated?: string
+    @UpdateDateColumn({name : 'date_updateded'})
+    public dateUpdated?: Timestamp
 
     public isDisabled:boolean
 }
