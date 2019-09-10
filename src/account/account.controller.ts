@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 import { SigupDto } from '../app-Dto/usermgr/signup.dto';
 import { AccountService } from './account.service';
 
@@ -9,9 +9,10 @@ export class AccountController {
 
     @Post('/signup')
     public async Sigup(@Body() body: SigupDto){
-        console.log("Sigup", body)
+  
         const response = await this.accountService.create(body);
-        console.log(response);
+        return { code: 200, message: 'Process completed',data:response };
+      
         
     }
 }
