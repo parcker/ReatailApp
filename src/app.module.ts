@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,7 +9,7 @@ import { RolesModule } from './roles/roles.module';
 import { CompanyModule } from './company/company.module';
 import { AccountModule } from './account/account.module';
 
-
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
     imports: [
@@ -22,7 +22,10 @@ import { AccountModule } from './account/account.module';
         
     ],
     controllers: [AppController],
-    providers: []
+    providers: [{
+        provide: APP_PIPE,
+        useClass: ValidationPipe,
+      },]
 })
 
 export class ApplicationModule {

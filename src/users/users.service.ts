@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { ICreateUser } from './user.interface';
 import * as bcrypt from 'bcrypt';
-import { ResponseObj } from '../shared/genericresponse';
+import { ResponseObj } from '../shared/generic.response';
 
 @Injectable()
 export class UsersService {

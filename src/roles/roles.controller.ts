@@ -1,7 +1,7 @@
 import { Controller, Post,Body, Get, Inject } from '@nestjs/common';
 import { CreateRoleDto, RoleDto } from '../app-Dto/usermgr/role/role.dto';
 import { RolesService } from './roles.service';
-import { ResponseObj } from '../shared/genericresponse';
+import { ResponseObj } from '../shared/generic.response';
 
 @Controller('roles')
 export class RolesController {

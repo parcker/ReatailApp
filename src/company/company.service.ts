@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { Business } from '../entities/business.entity';
 import { CreateCompanyDto } from '../app-Dto/usermgr/company/company.dto';
-import { ResponseObj } from '../shared/genericresponse';
+import { ResponseObj } from '../shared/generic.response';
 
 @Injectable()
 export class CompanyService {

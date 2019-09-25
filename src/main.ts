@@ -11,6 +11,8 @@ import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { initDocumentation } from './documentation';
 import { EntitiesExceptionFilter } from './http-exception.filter';
+import { ValidationPipe } from '@nestjs/common';
+
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(ApplicationModule);
@@ -18,7 +20,7 @@ async function bootstrap() {
     app.use(logger(process.env.NODE_ENV));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
-
+    
     app.useGlobalFilters(new EntitiesExceptionFilter());
 
     initDocumentation(app, {
@@ -27,7 +29,7 @@ async function bootstrap() {
         title: 'Nest boilerplate',
         endpoint: '/docs'
     });
-   
+    app.useGlobalPipes(new ValidationPipe());
     await app.listen(parseInt(process.env.PORT) || 3000);
 }
 

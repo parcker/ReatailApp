@@ -1,13 +1,13 @@
-import {IsNotEmpty} from "class-validator";
-import { ApiModelPropertyOptional } from "@nestjs/swagger";
+import {IsNotEmpty, IsString} from "class-validator";
+import { ApiModelPropertyOptional, ApiModelProperty } from "@nestjs/swagger";
+import { isString } from "util";
 export class CreateCompanyDto{
-
-    @ApiModelPropertyOptional({ example: 'info tech' })
+ 
     @IsNotEmpty()
+    @ApiModelProperty({ required: true, example: 'Mobile company' })
     comapanyName:string;
-
-    @ApiModelPropertyOptional()
     @IsNotEmpty()
+    @ApiModelProperty({ required: true, example: 'maxwell street' })
     address:string;
 
 }

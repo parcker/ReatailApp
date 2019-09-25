@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { Role } from '../entities/role.entity';
 import { RoleDto, CreateRoleDto } from '../app-Dto/usermgr/role/role.dto';
-import { ResponseObj } from '../shared/genericresponse';
+import { ResponseObj } from '../shared/generic.response';
 
 
 @Injectable()

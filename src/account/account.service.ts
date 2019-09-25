@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { ResponseObj } from '../shared/genericresponse';
+import { ResponseObj } from '../shared/generic.response';
 import { SigupDto } from '../app-Dto/usermgr/signup.dto';
 import { CompanyService } from '../company/company.service';
 import { CreateCompanyDto } from '../app-Dto/usermgr/company/company.dto';
