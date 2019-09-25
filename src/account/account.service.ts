@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { ResponseObj } from '../shared/generic.response';
 import { SigupDto } from '../app-Dto/usermgr/signup.dto';
@@ -14,11 +14,23 @@ export class AccountService {
       
         try
         {
+            let user = await this.userService.validateUserEmail(signup.contactPerson.email);
+            if (user) 
+            {
+                
+                let result= new ResponseObj<string>();
+                result.message=`Email address already exist !! account cannot be created` ;
+                result.status=false;
+                result.result="";
+                return result;
+            }
+
             let companydto=new CreateCompanyDto();
             companydto.comapanyName=signup.company.comapanyName;
             companydto.address=signup.company.address;
             var response=await this.comapnyService.createCompany(companydto);
-            console.log('account.service 1', response);
+
+            
             if(response.status)
             {
 
@@ -34,11 +46,11 @@ export class AccountService {
                     
                 };
                 let response=await this.userService.create(userinfo);
-                console.log('account.service 1', response);
+               
                 if(response.status){
                     
                     let result= new ResponseObj<string>();
-                    result.message=`sign up completed` ;
+                    result.message=`sign up completed check your email for activation link` ;
                     result.status=true;
                     result.result="";
                     return result

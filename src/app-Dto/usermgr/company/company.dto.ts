@@ -1,6 +1,6 @@
 import {IsNotEmpty, IsString} from "class-validator";
 import { ApiModelPropertyOptional, ApiModelProperty } from "@nestjs/swagger";
-import { isString } from "util";
+
 export class CreateCompanyDto{
  
     @IsNotEmpty()

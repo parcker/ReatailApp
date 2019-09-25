@@ -10,16 +10,14 @@ export class AccountController {
 
     constructor(  private readonly accountService: AccountService) {}
 
-    @ApiOperation({ title: 'Create signup' })
-    @ApiResponse({ status: 403, description: 'Forbidden.' })
- 
+   
     @Post('/signup')
     @UsePipes(new ValidationPipe())
     public async Sigup(@Body() body: SigupDto){
   
-        let response = await this.accountService.create(body);
-        
-        
+        const response = await this.accountService.create(body);
+        if(response.status==false){throw new HttpException(response.message, HttpStatus.BAD_REQUEST);}
+        return response;
         
     }
 }

@@ -3,8 +3,3 @@ export class ResponseObj<T>{
   status:boolean;
   result:T;
 }
-export class ErrorResponseObj<T>{
-    message:string;
-    errcode:string;
-   
-}
