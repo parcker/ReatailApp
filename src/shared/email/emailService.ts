@@ -13,7 +13,7 @@ export class EmailService{
             from: process.env.EMAIL_FROM, // list of receivers
             subject: mailsubject+'✔', // Subject line
             text: 'welcome', // plaintext body
-            html: '<b>welcome</b>', // HTML body content
+            html: '<b>welcome to mint-retial platform</b>', // HTML body content
           })
           .then(() => {console.log('mail sending worked')})
           .catch(() => {});

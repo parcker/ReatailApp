@@ -51,7 +51,7 @@ export class AccountService {
                
                 if(response.status){
                     
-                    this.emailservice.sendmail(userinfo.email,'');
+                    this.emailservice.sendmail(userinfo.email,'Mint-Retail Platform');
                     let result= new ResponseObj<string>();
                     result.message=`sign up completed check your email for activation link` ;
                     result.status=true;

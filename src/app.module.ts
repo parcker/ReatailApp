@@ -21,8 +21,7 @@ import { EmailModule } from './shared/email/email.module';
         RolesModule,
         CompanyModule,
         AccountModule,
-       // smtp.mailtrap.io:cc7e85b29214a4:f8e7a07dc0e586
-        //smtps://user%40gmail.com:pass@smtp.gmail.com
+      
         MailerModule.forRootAsync({
             useFactory: () => ({
               transport: { host: 'smtp.mailtrap.io', port:  Number(process.env.EMAIL_PORT),
