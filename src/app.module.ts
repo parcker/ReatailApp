@@ -10,7 +10,8 @@ import { CompanyModule } from './company/company.module';
 import { AccountModule } from './account/account.module';
 
 import { APP_PIPE } from '@nestjs/core';
-
+import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
+import { EmailModule } from './shared/email/email.module';
 
 @Module({
     imports: [
@@ -19,7 +20,26 @@ import { APP_PIPE } from '@nestjs/core';
         AuthModule,
         RolesModule,
         CompanyModule,
-        AccountModule
+        AccountModule,
+       // smtp.mailtrap.io:cc7e85b29214a4:f8e7a07dc0e586
+        //smtps://user%40gmail.com:pass@smtp.gmail.com
+        MailerModule.forRootAsync({
+            useFactory: () => ({
+              transport: { host: 'smtp.mailtrap.io', port:  Number(process.env.EMAIL_PORT),
+               auth: { user: process.env.EMAIL_USERNAME, pass: process.env.EMAIL_PASSWORD }},
+              defaults: {
+                from:'"nest-modules" <modules@nestjs.com>',
+              },
+              template: {
+                dir: __dirname + '/templates',
+                adapter: new HandlebarsAdapter(), // or new PugAdapter()
+                options: {
+                  strict: true,
+                },
+              },
+            }),
+          }),
+        EmailModule,
         
     ],
     controllers: [AppController],

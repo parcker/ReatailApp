@@ -4,12 +4,13 @@ import { ResponseObj } from '../shared/generic.response';
 import { SigupDto } from '../app-Dto/usermgr/signup.dto';
 import { CompanyService } from '../company/company.service';
 import { CreateCompanyDto } from '../app-Dto/usermgr/company/company.dto';
-import {EmailService} from '../shared/emailService';
+import {EmailService} from '../shared/email/emailService';
 
 @Injectable()
 export class AccountService {
     
-    constructor(private readonly userService: UsersService,private readonly comapnyService: CompanyService) {}
+    constructor(private readonly userService: UsersService,
+        private readonly comapnyService: CompanyService, private readonly emailservice:EmailService) {}
 
     public async create(signup: SigupDto): Promise<ResponseObj<string>> {
       
@@ -50,10 +51,7 @@ export class AccountService {
                
                 if(response.status){
                     
-                    let emailservice=new EmailService();
-                    emailservice.sendmail(
-                        'account-76337a@inbox.mailtrap.io',userinfo.email,'Account Activation',
-                        '<h1>Have the most fun you can in a car!</h1><p>Get your <b>Tesla</b> today!</p>')
+                    this.emailservice.sendmail(userinfo.email,'');
                     let result= new ResponseObj<string>();
                     result.message=`sign up completed check your email for activation link` ;
                     result.status=true;
