@@ -4,6 +4,7 @@ import { ResponseObj } from '../shared/generic.response';
 import { SigupDto } from '../app-Dto/usermgr/signup.dto';
 import { CompanyService } from '../company/company.service';
 import { CreateCompanyDto } from '../app-Dto/usermgr/company/company.dto';
+import {EmailService} from '../shared/emailService';
 
 @Injectable()
 export class AccountService {
@@ -49,6 +50,10 @@ export class AccountService {
                
                 if(response.status){
                     
+                    let emailservice=new EmailService();
+                    emailservice.sendmail(
+                        'account-76337a@inbox.mailtrap.io',userinfo.email,'Account Activation',
+                        '<h1>Have the most fun you can in a car!</h1><p>Get your <b>Tesla</b> today!</p>')
                     let result= new ResponseObj<string>();
                     result.message=`sign up completed check your email for activation link` ;
                     result.status=true;
@@ -59,6 +64,7 @@ export class AccountService {
             }
            
 
-        }catch(error){return error;}
+        }
+        catch(error){return error;}
     }
 }

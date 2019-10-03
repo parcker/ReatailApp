@@ -4,7 +4,7 @@ import { AccountService } from './account.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 
-@Controller('account')
+@Controller('api/account')
 
 export class AccountController {
 

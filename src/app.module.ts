@@ -11,6 +11,7 @@ import { AccountModule } from './account/account.module';
 
 import { APP_PIPE } from '@nestjs/core';
 
+
 @Module({
     imports: [
         TypeOrmModule.forRoot(),
@@ -22,10 +23,7 @@ import { APP_PIPE } from '@nestjs/core';
         
     ],
     controllers: [AppController],
-    providers: [{
-        provide: APP_PIPE,
-        useClass: ValidationPipe,
-      },]
+    providers: [{provide: APP_PIPE, useClass: ValidationPipe, }]
 })
 
 export class ApplicationModule {
