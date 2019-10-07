@@ -3,7 +3,7 @@ import {LoginDto} from './auth.dto';
 import {AuthService} from './auth.service';
 import {ApiOperation} from '@nestjs/swagger';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
     constructor(
         private readonly authService: AuthService
