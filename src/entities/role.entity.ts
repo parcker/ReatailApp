@@ -11,6 +11,8 @@ export class Role extends BaseEntityClass {
     @Column()
     @IsNotEmpty()
     public name: string;
+    @Column()
+    public description: string;
 }
 
 @Entity()
