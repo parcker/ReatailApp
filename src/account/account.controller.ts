@@ -20,4 +20,8 @@ export class AccountController {
         return response;
         
     }
+    @Post('/activate')
+    async ActivateAcctount(){
+
+    }
 }
