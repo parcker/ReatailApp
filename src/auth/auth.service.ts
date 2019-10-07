@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { Injectable, HttpException } from '@nestjs/common';
-import { User } from '../users/entities/user.entity';
+import { User } from '../entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';

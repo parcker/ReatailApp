@@ -4,7 +4,7 @@ import { IsAuthenticated } from './auth.middleware';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './passport/jwt.strategy';
-import { User } from '../users/entities/user.entity';
+import { User } from '../entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 

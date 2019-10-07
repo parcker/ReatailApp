@@ -20,5 +20,6 @@ export interface ICreateUser {
     emailConfirmed:boolean;
     twoFactorEnable:boolean;
     accessFailedCount:number;
+    businessId:string;
   
 }

@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { Business } from '../entities/business.entity';
+import { Business } from "../entities/business.entity";
 import { CreateCompanyDto } from '../app-Dto/usermgr/company/company.dto';
 import { ResponseObj } from '../shared/generic.response';
 
@@ -13,10 +13,12 @@ export class CompanyService {
     {}
     async createCompany(companyDTO: CreateCompanyDto): Promise<ResponseObj<Business>> {
         try
-        {   console.log("Company.service 1", companyDTO)
+        {  
+
              let model=new Business();
-             model['name']=companyDTO.comapanyName;
+             model.name=companyDTO.comapanyName;
              model.address=companyDTO.address;
+             model.IsActive=false;
              let buinessDb = this.buisnessRepository.create(model);
              const response= await this.buisnessRepository.save(buinessDb);
              

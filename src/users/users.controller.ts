@@ -9,7 +9,8 @@ export class UsersController {
     ) {}
 
     @Post()
-    public async create(@Body() body: ICreateUser) {
-        return await this.userService.create(body);
+    public async createUser(@Body() body: ICreateUser) {
+
+       // return await this.userService.create(body);
     }
 }

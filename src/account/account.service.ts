@@ -9,8 +9,7 @@ import {EmailService} from '../shared/email/emailService';
 @Injectable()
 export class AccountService {
     
-    constructor(private readonly userService: UsersService,
-        private readonly comapnyService: CompanyService, private readonly emailservice:EmailService) {}
+    constructor(private readonly userService: UsersService, private readonly comapnyService: CompanyService, private readonly emailservice:EmailService) {}
 
     public async create(signup: SigupDto): Promise<ResponseObj<string>> {
       
@@ -30,12 +29,12 @@ export class AccountService {
             let companydto=new CreateCompanyDto();
             companydto.comapanyName=signup.company.comapanyName;
             companydto.address=signup.company.address;
-            var response=await this.comapnyService.createCompany(companydto);
-
-            
+            const response=await this.comapnyService.createCompany(companydto);
+            const businessmodel=response.result;
+          
             if(response.status)
             {
-
+                
                 let userinfo = {email: signup.contactPerson.email, 
                     firstName:signup.contactPerson.firstName,
                     lastName:signup.contactPerson.lastName,
@@ -45,13 +44,16 @@ export class AccountService {
                     emailConfirmed: false,
                     twoFactorEnable:false,
                     accessFailedCount:0,
+                    businessId:businessmodel.id,
+                    
                     
                 };
-                let response=await this.userService.create(userinfo);
+                console.log(userinfo);
+                let response=await this.userService.create(userinfo,businessmodel);
                
                 if(response.status){
-                    
-                    this.emailservice.sendmail(userinfo.email,'Mint-Retail Platform',userinfo.firstName);
+                    let emaildata={token:response.result.id, name: response.result.firstName,};
+                    this.emailservice.sendmail(userinfo.email,'Ecorvids-Account','index.handlebars',emaildata);
                     let result= new ResponseObj<string>();
                     result.message=`sign up completed check your email for activation link` ;
                     result.status=true;

@@ -1,15 +1,17 @@
 import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, QueryFailedError, BaseEntity, OneToOne, JoinColumn} from 'typeorm';
 import {IsEmail, IsNotEmpty, Validator} from 'class-validator';
+
 import * as bcrypt from 'bcrypt';
-import { Business } from '../../entities/business.entity';
+import { Business } from './business.entity';
+
 
 @Entity('users')
 export class User extends BaseEntity
 {
     private static DEFAULT_SALT_ROUNDS = 10;
 
-    @PrimaryGeneratedColumn()
-    public id: number;
+    @PrimaryGeneratedColumn("uuid")
+    public id: string;
 
     @Column()
     @IsNotEmpty()
@@ -53,6 +55,7 @@ export class User extends BaseEntity
     
     public toJSON() {
         return {
+            id:this.id,
             email: this.email,
             firstName: this.firstName,
             lastName: this.lastName,

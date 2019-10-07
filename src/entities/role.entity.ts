@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn} from 'typeorm';
 import {IsNotEmpty} from 'class-validator';
 import { BaseEntityClass } from './base.entity';
-import { User } from '../users/entities/user.entity';
+import { User } from './user.entity';
 @Entity()
 export class Role extends BaseEntityClass {
 

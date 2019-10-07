@@ -39,7 +39,7 @@ import { EmailModule } from './shared/email/email.module';
             }),
           }),
         EmailModule,
-        
+       
     ],
     controllers: [AppController],
     providers: [{provide: APP_PIPE, useClass: ValidationPipe, }]
