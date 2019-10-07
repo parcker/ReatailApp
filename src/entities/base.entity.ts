@@ -2,10 +2,10 @@ import {UpdateDateColumn, CreateDateColumn} from 'typeorm';
 
 export abstract class BaseEntityClass{
 
-    @CreateDateColumn()
+    @CreateDateColumn({type: "timestamp"})
     public dateCreated?: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({type: "timestamp"})
     public dateUpdated?: Date;
 
     public isDisabled:boolean;

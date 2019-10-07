@@ -15,6 +15,7 @@ export class Business extends BaseEntityClass {
     @Column()
     @IsNotEmpty()
     public address: string;
+    
     @Column()
     @IsNotEmpty()
     public IsActive: boolean;
