@@ -8,7 +8,7 @@ const entitiesDir = isProd ? 'dist' : 'src'
 const migrationsDir = isProd ? 'dist/migration/*.js' : 'src/migration/*.ts'
 
 module.exports = {
-  type: "mysql",
+  type: "postgres",
   host:process.env.TYPEORM_HOST,
   port:process.env.TYPEORM_PORT,
   username:process.env.TYPEORM_USERNAME ,
