@@ -13,7 +13,9 @@
       "migration:run": "yarn ts-node ./node_modules/typeorm/cli.js migration:run",
       "migration:revert": "yarn ts-node ./node_modules/typeorm/cli.js migration:revert",
       "migration:run:prod": "yarn tsc && yarn ts-node ./node_modules/typeorm/cli.js migration:run",
-      "lint": "yarn tslint -t codeFrame 'src/**/*.ts'"
+      "lint": "yarn tslint -t codeFrame 'src/**/*.ts'",
+    
+      "copy": "copyfiles -u 2 \"./src/shared/**/*.{hbs,handlebars}\" \"./dist/shared/\""
    },
    "dependencies": {
       "@nest-modules/mailer": "^1.1.3",
