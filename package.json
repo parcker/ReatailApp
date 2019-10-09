@@ -8,14 +8,16 @@
       "start:watch": "nodemon",
       "foreman": "foreman start -f Procfile.dev",
       "prestart:prod": "yarn tsc",
+      "copy": "copyfiles -u 2 \"./src/shared/**/*.{hbs,handlebars}\" \"./dist/shared/\"",
       "start:prod": "node dist/main.js",
+      "dist": "npm run tsc && npm run copy ",
       "migrations:generate": "yarn ts-node ./node_modules/typeorm/cli.js migration:generate",
       "migration:run": "yarn ts-node ./node_modules/typeorm/cli.js migration:run",
       "migration:revert": "yarn ts-node ./node_modules/typeorm/cli.js migration:revert",
       "migration:run:prod": "yarn tsc && yarn ts-node ./node_modules/typeorm/cli.js migration:run",
-      "lint": "yarn tslint -t codeFrame 'src/**/*.ts'",
-    
-      "copy": "copyfiles -u 2 \"./src/shared/**/*.{hbs,handlebars}\" \"./dist/shared/\""
+      "lint": "yarn tslint -t codeFrame 'src/**/*.ts'"
+    ,
+     
    },
    "dependencies": {
       "@nest-modules/mailer": "^1.1.3",
