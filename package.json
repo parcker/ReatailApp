@@ -15,7 +15,8 @@
       "migration:run": "yarn ts-node ./node_modules/typeorm/cli.js migration:run",
       "migration:revert": "yarn ts-node ./node_modules/typeorm/cli.js migration:revert",
       "migration:run:prod": "yarn tsc && yarn ts-node ./node_modules/typeorm/cli.js migration:run",
-      "lint": "yarn tslint -t codeFrame 'src/**/*.ts'"
+      "lint": "yarn tslint -t codeFrame 'src/**/*.ts'",
+      "heroku-postbuild": "cd client && npm install && npm run build"
     
      
    },
