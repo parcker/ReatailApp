@@ -30,7 +30,7 @@ import { EmailModule } from './shared/email/email.module';
                 from:'"nest-modules" <modules@nestjs.com>',
               },
               template: {
-                dir: process.env.SIGNUP_TEMPLATE ||__dirname + '/templates',
+                dir: __dirname + '/templates',
                 adapter: new HandlebarsAdapter(), // or new PugAdapter()
                 options: {
                   strict: true,

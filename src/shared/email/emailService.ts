@@ -10,7 +10,7 @@ export class EmailService{
 
         console.log(__dirname + '/templates');
         console.log(template);
-        
+     
         let mailstatus=false;
         this .mailerService.sendMail({
                     to: mailto, // sender address
