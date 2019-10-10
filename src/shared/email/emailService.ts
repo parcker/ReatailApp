@@ -1,6 +1,9 @@
 import{}from 'nodemailer';
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nest-modules/mailer';
+import { rootPath } from 'electron-root-path';
+import * as path from 'path';
+
 
 @Injectable()
 export class EmailService{
@@ -11,6 +14,8 @@ export class EmailService{
         console.log(__dirname + '/templates');
         console.log(template);
         console.log(process.env.PWD);
+
+        console.log( path.join(rootPath, '/templates/emails/'));
         let mailstatus=false;
         this .mailerService.sendMail({
                     to: mailto, // sender address

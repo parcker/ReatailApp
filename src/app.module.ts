@@ -12,6 +12,9 @@ import { AccountModule } from './account/account.module';
 import { APP_PIPE } from '@nestjs/core';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { EmailModule } from './shared/email/email.module';
+import { rootPath } from 'electron-root-path';
+import * as path from 'path';
+
 
 @Module({
     imports: [
@@ -30,7 +33,7 @@ import { EmailModule } from './shared/email/email.module';
                 from:'"nest-modules" <modules@nestjs.com>',
               },
               template: {
-                dir: __dirname + '/templates',
+                dir: path.join(rootPath, '/templates/emails'),// __dirname + '/templates',
                 adapter: new HandlebarsAdapter(), // or new PugAdapter()
                 options: {
                   strict: true,
