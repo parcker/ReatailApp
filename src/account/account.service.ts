@@ -53,7 +53,7 @@ export class AccountService {
                 let response=await this.userService.create(userinfo,businessmodel);
                
                 if(response.status){
-                    let emaildata={token:response.result.id, name: response.result.firstName,};
+                    let emaildata={token:response.result.id, name: response.result.firstName,url:process.env.EMAIL_ACTIVATIONLINK};
                     this.emailservice.sendmail(userinfo.email,'Ecorvids-Account','index.handlebars',emaildata);
                     
                     let result= new ResponseObj<string>();
