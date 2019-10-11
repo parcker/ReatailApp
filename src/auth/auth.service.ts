@@ -24,7 +24,7 @@ export class AuthService {
         if (!email) throw new HttpException('Email is required', 422);
         if (!password) throw new HttpException('Password is required', 422);
 
-        const foundUser = await this.userRepository.findOne({ email });
+        const foundUser = await this.userRepository.findOne({ email:email,emailConfirmed: true  });
         if (!foundUser) throw new HttpException('User not found', 401);
         if (!(await this.usersService.isValidPassword(foundUser, password))) throw new HttpException('User not found', 401);
         return this.createToken(foundUser);
