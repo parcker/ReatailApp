@@ -5,6 +5,7 @@ import { SigupDto } from '../app-Dto/usermgr/signup.dto';
 import { CompanyService } from '../company/company.service';
 import { CreateCompanyDto } from '../app-Dto/usermgr/company/company.dto';
 import {EmailService} from '../shared/email/emailService';
+import { promises } from 'fs';
 
 @Injectable()
 export class AccountService {
@@ -54,6 +55,7 @@ export class AccountService {
                 if(response.status){
                     let emaildata={token:response.result.id, name: response.result.firstName,};
                     this.emailservice.sendmail(userinfo.email,'Ecorvids-Account','index.handlebars',emaildata);
+                    
                     let result= new ResponseObj<string>();
                     result.message=`sign up completed check your email for activation link` ;
                     result.status=true;
@@ -64,6 +66,15 @@ export class AccountService {
             }
            
 
+        }
+        catch(error){return error;}
+    }
+    async activateAccount(token:string):Promise<ResponseObj<string>>{
+
+        try{
+
+            let response = await this.userService.activateuserAccount(token);
+            return response;
         }
         catch(error){return error;}
     }

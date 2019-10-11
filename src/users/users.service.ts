@@ -89,6 +89,26 @@ export class UsersService {
         if (!foundUser) return false;
         return true;
     }
+    public async activateuserAccount(token: string): Promise<ResponseObj<string>> {
+
+        const foundUser = await this.userRepository.findOne({ where: { id:token } });
+        if (!foundUser) 
+        { 
+            let result= new ResponseObj<string>();
+            result.message=`Invalid/token` ;
+            result.status=false;
+            result.result="";
+            return result
+        }
+        foundUser.emailConfirmed=true;
+        await this.userRepository.save(foundUser);
+
+        let result= new ResponseObj<string>();
+        result.message=`account acctivated successfully` ;
+        result.status=true;
+        result.result="";
+        return result
+    }
     public async isValidPassword(user: User, password: string): Promise<boolean> {
         return await bcrypt.compare(password, user.password);
     }
