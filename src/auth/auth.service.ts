@@ -31,6 +31,7 @@ export class AuthService {
     }
 
     private async createToken(user: User) {
+       console.log('businessinfo:'+user.business.name);
         const data = {
             email: user.email,
             firstName: user.firstName,

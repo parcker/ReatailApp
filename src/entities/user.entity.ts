@@ -49,7 +49,10 @@ export class User extends BaseEntity
     @IsNotEmpty()
     public phonenumber: string;
 
-    @OneToOne(() => Business)
+    @OneToOne(() => Business, (business: Business) => business.user, {
+        cascade: true,
+        eager: true,
+      })
     @JoinColumn()
     business: Business;
     

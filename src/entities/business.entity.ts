@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { BaseEntityClass } from './base.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
@@ -23,6 +24,9 @@ export class Business extends BaseEntityClass {
     @Column()
     @IsNotEmpty()
     public IsActive: boolean;
+    
+    @OneToOne(() => User, (user: User) => user.business)
+    public user: User;
   
 }
 @Entity()
