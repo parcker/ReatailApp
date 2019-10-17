@@ -16,7 +16,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(ApplicationModule);
-
+    app.enableCors();
     app.use(logger(process.env.NODE_ENV));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));

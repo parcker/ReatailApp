@@ -19,6 +19,7 @@ export class CompanyService {
              model.name=companyDTO.comapanyName;
              model.address=companyDTO.address;
              model.IsActive=false;
+             model.logoPath='No Logo'
              let buinessDb = this.buisnessRepository.create(model);
              const response= await this.buisnessRepository.save(buinessDb);
              

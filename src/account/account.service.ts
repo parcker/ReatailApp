@@ -5,7 +5,6 @@ import { SigupDto } from '../app-Dto/usermgr/signup.dto';
 import { CompanyService } from '../company/company.service';
 import { CreateCompanyDto } from '../app-Dto/usermgr/company/company.dto';
 import {EmailService} from '../shared/email/emailService';
-import { promises } from 'fs';
 
 @Injectable()
 export class AccountService {
@@ -78,4 +77,5 @@ export class AccountService {
         }
         catch(error){return error;}
     }
+    
 }

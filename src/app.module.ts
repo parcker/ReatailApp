@@ -13,6 +13,8 @@ import { APP_PIPE } from '@nestjs/core';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { EmailModule } from './shared/email/email.module';
 import { rootPath } from 'electron-root-path';
+import { BusinesslocationService } from './businesslocation/businesslocation.service';
+import { BusinesslocationModule } from './businesslocation/businesslocation.module';
 import * as path from 'path';
 
 
@@ -24,7 +26,7 @@ import * as path from 'path';
         RolesModule,
         CompanyModule,
         AccountModule,
-      
+        
         MailerModule.forRootAsync({
             useFactory: () => ({
               transport: { host: 'smtp.mailtrap.io', port:  Number(process.env.EMAIL_PORT),
@@ -42,6 +44,7 @@ import * as path from 'path';
             }),
           }),
         EmailModule,
+        BusinesslocationModule,
        
     ],
     controllers: [AppController],

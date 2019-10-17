@@ -35,7 +35,8 @@ export class AuthService {
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
-            id: user.id
+            id: user.id,
+            businessId:user.business.id
         };
         const token = jwt.sign(data, process.env.SECRET, { expiresIn: this.tokenExp });
 
