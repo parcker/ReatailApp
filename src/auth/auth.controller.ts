@@ -1,4 +1,4 @@
-import {Controller, Post, Body, Query} from '@nestjs/common';
+import {Controller, Post, Body, Query, Res, HttpStatus} from '@nestjs/common';
 import {LoginDto} from './auth.dto';
 import {AuthService} from './auth.service';
 import {ApiOperation} from '@nestjs/swagger';
@@ -10,7 +10,8 @@ export class AuthController {
     ) {}
 // changedroute
     @Post('/login')
-    public async login(@Body() body: LoginDto) {
-        return await this.authService.login(body.email, body.password);
+    public async login(@Body() body: LoginDto,@Res()res) {
+        let response= await this.authService.login(body.email, body.password);
+        return res.status(HttpStatus.OK).json(response);
     }
 }

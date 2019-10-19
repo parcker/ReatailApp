@@ -4,6 +4,8 @@ import { User } from '../entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ResponseObj } from '../shared/generic.response';
+import { IloginDto } from '../app-Dto/usermgr/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,14 +22,22 @@ export class AuthService {
         return await this.usersService.validateUser(userId);
     }
 
-    public async login(email, password) {
+    public async login(email, password):Promise<ResponseObj<IloginDto>> {
         if (!email) throw new HttpException('Email is required', 422);
         if (!password) throw new HttpException('Password is required', 422);
 
         const foundUser = await this.userRepository.findOne({ email:email,emailConfirmed: true  });
         if (!foundUser) throw new HttpException('User not found', 401);
         if (!(await this.usersService.isValidPassword(foundUser, password))) throw new HttpException('User not found', 401);
-        return this.createToken(foundUser);
+        const token= await this.createToken(foundUser);
+        
+        let data = {token: token.access_token, expire: 100,role:'',username:foundUser.username};
+
+        let result= new ResponseObj<IloginDto>();
+        result.message=`Login was successful` ;
+        result.status=true;
+        result.result=data;
+        return result;
     }
 
     private async createToken(user: User) {
@@ -42,6 +52,7 @@ export class AuthService {
         const token = jwt.sign(data, process.env.SECRET, { expiresIn: this.tokenExp });
 
         return {
+            
             access_token: token
         };
     }
