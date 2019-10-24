@@ -13,6 +13,7 @@ export class AccountController {
    
     @Post('/signup')
     @UsePipes(new ValidationPipe())
+    
     public async Sigup(@Body() body: SigupDto){
   
         const response = await this.accountService.create(body);

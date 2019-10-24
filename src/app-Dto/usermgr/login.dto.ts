@@ -3,5 +3,7 @@ export interface IloginDto{
     expire:number;
     role:string;
     username:string;
+    view:[];
+    api:[]
   
 }

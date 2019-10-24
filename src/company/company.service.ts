@@ -20,8 +20,10 @@ export class CompanyService {
              model.address=companyDTO.address;
              model.IsActive=false;
              model.logoPath='No Logo'
-             let buinessDb = this.buisnessRepository.create(model);
-             const response= await this.buisnessRepository.save(buinessDb);
+             model.isDisabled=false;
+             model.createdby='';
+             model.updatedby='';
+            const response= await this.buisnessRepository.save(model);
              
             let result= new ResponseObj<Business>();
             result.message=`sign up completed` ;

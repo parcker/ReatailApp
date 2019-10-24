@@ -1,6 +1,5 @@
 import { Injectable, NestMiddleware, HttpException, HttpStatus } from '@nestjs/common';
 import { NextFunction, Request } from 'express';
-import * as cors from 'cors';
 import * as jwt from 'jsonwebtoken';
 import { AuthService } from './auth.service';
 import * as passport from 'passport';
@@ -18,7 +17,10 @@ export class IsAuthenticated implements NestMiddleware {
                 const token = (req.headers.authorization as string).split(' ')[1];
                 let decoded: any;
                 try {
+
+                    
                     decoded = jwt.verify(token, process.env.SECRET);
+                    console.log('IsAuthenticate',decoded);
                 } catch (e) {
                     if (e.name === 'TokenExpiredError') throw new HttpException('Expired token', HttpStatus.UNAUTHORIZED);
                     throw new HttpException('Authentication Error', HttpStatus.UNAUTHORIZED);
@@ -33,3 +35,4 @@ export class IsAuthenticated implements NestMiddleware {
     }
 
 }
+

@@ -6,14 +6,16 @@ import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ResponseObj } from '../shared/generic.response';
 import { IloginDto } from '../app-Dto/usermgr/login.dto';
+import { Business } from '../entities/business.entity';
 
 @Injectable()
 export class AuthService {
     private tokenExp = '2 days';
-
+    
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        @InjectRepository(Business)private readonly buisnessRepository: Repository<Business>,
         private readonly usersService: UsersService,
      
     ) { }
@@ -22,18 +24,22 @@ export class AuthService {
         return await this.usersService.validateUser(userId);
     }
 
-    public async login(email, password):Promise<ResponseObj<IloginDto>> {
+    public async login(email, password):Promise<ResponseObj<any>> {
+
         if (!email) throw new HttpException('Email is required', 422);
         if (!password) throw new HttpException('Password is required', 422);
 
-        const foundUser = await this.userRepository.findOne({ email:email,emailConfirmed: true  });
+        const foundUser = await this.userRepository.findOne({email:email,emailConfirmed:true});
         if (!foundUser) throw new HttpException('User not found', 401);
+
+        if(foundUser.business.IsActive!=true) throw new HttpException('Business account not yet activated', 401);
         if (!(await this.usersService.isValidPassword(foundUser, password))) throw new HttpException('User not found', 401);
         const token= await this.createToken(foundUser);
-        
-        let data = {token: token.access_token, expire: 100,role:'',username:foundUser.username};
 
-        let result= new ResponseObj<IloginDto>();
+        const expiresIn = 60 * 60;
+        let data = {token: token.access_token, expire: expiresIn ,role:'',username:foundUser.username};
+        
+        let result= new ResponseObj<any>();
         result.message=`Login was successful` ;
         result.status=true;
         result.result=data;
@@ -41,13 +47,15 @@ export class AuthService {
     }
 
     private async createToken(user: User) {
-       console.log('businessinfo:'+user.business.name);
+     
         const data = {
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
             id: user.id,
-            businessId:user.business.id
+            businessId:user.business.id,
+            roleId:'',
+            modules:['/api/auth','/api/app/customer','/api/category/create']
         };
         const token = jwt.sign(data, process.env.SECRET, { expiresIn: this.tokenExp });
 

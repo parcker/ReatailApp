@@ -1,4 +1,4 @@
-import {Controller, Post, Body, Query, Res, HttpStatus} from '@nestjs/common';
+import {Controller, Post, Body, Query, Res, HttpStatus, HttpCode} from '@nestjs/common';
 import {LoginDto} from './auth.dto';
 import {AuthService} from './auth.service';
 import {ApiOperation} from '@nestjs/swagger';
@@ -8,7 +8,7 @@ export class AuthController {
     constructor(
         private readonly authService: AuthService
     ) {}
-// changedroute
+  //  @HttpCode(HttpStatus.OK)
     @Post('/login')
     public async login(@Body() body: LoginDto,@Res()res) {
         let response= await this.authService.login(body.email, body.password);

@@ -9,28 +9,38 @@ import { IbusinessLocationDto } from '../app-Dto/usermgr/company/company.dto';
 @Injectable()
 export class BusinesslocationService {
 
-    constructor(@InjectRepository(BusinessLocation)private readonly buisnesLocationRepository: Repository<BusinessLocation>,) 
+    constructor(@InjectRepository(BusinessLocation)private readonly buisnesLocationRepository: Repository<BusinessLocation>,
+    @InjectRepository(Business)private readonly buisnessRepository: Repository<Business>) 
     {}
     async create(buisnessname:string,address:string,businessId:string,userId:string): Promise<ResponseObj<BusinessLocation>>{
        
        try
         { 
+            console.log('Data sent',buisnessname,address,businessId);
+            const business=await this.buisnessRepository.findOne({where:{Id:businessId}});
             let model=new BusinessLocation();
             model.name=buisnessname;
             model.address=address;
             model.createdby=userId;
-            model.business.id=businessId;
+            model.IsActive=true;
+            model.updatedby='';
 
-            let response= await this.buisnesLocationRepository.save(model);
-           
+            const businesslocation=await this.buisnesLocationRepository.create({...model,business})
+            
+            
+            let response= await this.buisnesLocationRepository.save(businesslocation);
+            console.log(response);
             let result= new ResponseObj<BusinessLocation>();
             result.message=`Business location created` ;
             result.status=true;
             result.result=response;
+
+            console.log(result);
+            
             return result;
 
 
-        }catch(error){}
+        }catch(error){console.log(error)}
     }
     async getbusinesslocation(): Promise<ResponseObj<IbusinessLocationDto[]>>{
        

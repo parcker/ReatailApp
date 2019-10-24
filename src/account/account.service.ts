@@ -26,10 +26,11 @@ export class AccountService {
                 return result;
             }
 
-            let companydto=new CreateCompanyDto();
-            companydto.comapanyName=signup.company.comapanyName;
-            companydto.address=signup.company.address;
-            const response=await this.comapnyService.createCompany(companydto);
+            let model=new CreateCompanyDto();
+            model.comapanyName=signup.company.comapanyName;
+            model.address=signup.company.address;
+    
+            const response=await this.comapnyService.createCompany(model);
             const businessmodel=response.result;
           
             if(response.status)
@@ -45,7 +46,6 @@ export class AccountService {
                     twoFactorEnable:false,
                     accessFailedCount:0,
                     businessId:businessmodel.id,
-                    
                     
                 };
                 console.log(userinfo);

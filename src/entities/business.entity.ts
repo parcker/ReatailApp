@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToMany, OneToMany, ManyToOne } from 'typeorm';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { BaseEntityClass } from './base.entity';
 import { User } from './user.entity';
@@ -25,6 +25,9 @@ export class Business extends BaseEntityClass {
     @IsNotEmpty()
     public IsActive: boolean;
     
+    @OneToMany(type => BusinessLocation, businessLocation => businessLocation.business)
+    businessLocation: BusinessLocation[];
+
     @OneToOne(() => User, (user: User) => user.business)
     public user: User;
   
@@ -47,7 +50,7 @@ export class BusinessLocation extends BaseEntityClass {
     @IsNotEmpty()
     public IsActive: boolean;
 
-    @OneToOne(() => Business)
+    @ManyToOne(type => Business, business => business.businessLocation)
     @JoinColumn()
     business: Business;
 

@@ -1,8 +1,9 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, QueryFailedError, BaseEntity, OneToOne, JoinColumn} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, QueryFailedError, BaseEntity, OneToOne, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
 import {IsEmail, IsNotEmpty, Validator} from 'class-validator';
 
 import * as bcrypt from 'bcrypt';
 import { Business } from './business.entity';
+import { UserPremission, ApplicationRoute } from './role.entity';
 
 
 @Entity('users')
@@ -55,6 +56,12 @@ export class User extends BaseEntity
       })
     @JoinColumn()
     business: Business;
+
+    @OneToMany(type => UserPremission, userpermission => userpermission.user)
+    userpermission: UserPremission[];
+
+    
+
     
     public toJSON() {
         return {

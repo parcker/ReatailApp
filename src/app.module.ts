@@ -15,6 +15,9 @@ import { EmailModule } from './shared/email/email.module';
 import { rootPath } from 'electron-root-path';
 import { BusinesslocationService } from './businesslocation/businesslocation.service';
 import { BusinesslocationModule } from './businesslocation/businesslocation.module';
+
+import { RoutesService } from './settings/routes/routes.service';
+import { RoutesModule } from './settings/routes/routes.module';
 import * as path from 'path';
 
 
@@ -45,6 +48,7 @@ import * as path from 'path';
           }),
         EmailModule,
         BusinesslocationModule,
+        RoutesModule,
        
     ],
     controllers: [AppController],
