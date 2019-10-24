@@ -34,9 +34,6 @@ export class BusinesslocationService {
             result.message=`Business location created` ;
             result.status=true;
             result.result=response;
-
-            console.log(result);
-            
             return result;
 
 
