@@ -5,6 +5,7 @@ import { ApplicationRoute, UserPremission } from '../../entities/role.entity';
 import { urlType } from '../../enums/settings.enum';
 import { ResponseObj } from '../../shared/generic.response';
 import { User } from '../../entities/user.entity';
+import { numberTypeAnnotation } from 'babel-types';
 
 @Injectable()
 export class RoutesService {
@@ -68,35 +69,30 @@ export class RoutesService {
              return new HttpException('Process error while executing operation:',HttpStatus.INTERNAL_SERVER_ERROR)}
     }
     async deleteRouteById(Id:string,updatedby:string):Promise<any>{}
-    async assignRouteToUser(Id:string,userId:string,createdby:string):Promise<any>{
+    async assignRouteToUser(Ids:string[],userId:string,createdby:string):Promise<any>{
 
         try{
+            let processingCount=0;
+            let duplicateCount=0;
+            let datasresponse=[];
             const user=await this.userRepository.findOne({where:{Id:userId,isDisabled:false,}});
-            const routes=await this.applicationRouteRepository.findOne({where:{id:Id,isDisabled:false}});
-            if(!routes)
+            for(let a of Ids)
             {
-                let result= new ResponseObj<string>();
-                result.message=`route information could be found with Id ${Id}!` ;
-                result.status=true;
-                result.result='';
-                return result;
+                const routes=await this.applicationRouteRepository.findOne({where:{id:a,isDisabled:false}});
+                const checkduplicate=await this.user_permissionRepository.findOne({where:{applicationroute:routes ,user:user}});
+                if(checkduplicate)
+                {   duplicateCount+=1;
+                    continue;
+                }
+                const userpermission=this.user_permissionRepository.create({createdby,isDisabled:false,updatedby:'',user:user,applicationroute:routes});
+                let response= await this.user_permissionRepository.save(userpermission);
+                processingCount+=1;
+                datasresponse.push(response);
             }
-            const checkduplicate=await this.user_permissionRepository.findOne({where:{applicationroute:routes ,user:user}});
-            if(checkduplicate)
-            {
-                let result= new ResponseObj<string>();
-                result.message=`permission already exist for user!` ;
-                result.status=true;
-                result.result='';
-                return result;
-            }
-            const userpermission=this.user_permissionRepository.create({createdby,isDisabled:false,updatedby:'',user:user,applicationroute:routes})
-            let response= await this.user_permissionRepository.save(userpermission);
-           
-            let result= new ResponseObj<UserPremission>();
-            result.message=`${routes.description} with route ${routes.url} has been assigned to ${user.firstName}` ;
+            let result= new ResponseObj<UserPremission[]>();
+            result.message=`${processingCount} application routes has been assigned to ${user.firstName} and ${duplicateCount} was found as duplicate` ;
             result.status=true;
-            result.result=response;
+            result.result=datasresponse;
             return result;
         }
         catch(error){
