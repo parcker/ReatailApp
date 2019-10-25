@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ResponseObj } from '../shared/generic.response';
 import { IloginDto } from '../app-Dto/usermgr/login.dto';
 import { Business } from '../entities/business.entity';
+import { UserPremission } from '../entities/role.entity';
+import { urlType } from '../enums/settings.enum';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +19,7 @@ export class AuthService {
         private readonly userRepository: Repository<User>,
         @InjectRepository(Business)private readonly buisnessRepository: Repository<Business>,
         private readonly usersService: UsersService,
+        @InjectRepository(UserPremission)private readonly user_permissionRepository: Repository<UserPremission>
      
     ) { }
 
@@ -34,10 +37,25 @@ export class AuthService {
 
         if(foundUser.business.IsActive!=true) throw new HttpException('Business account not yet activated', 401);
         if (!(await this.usersService.isValidPassword(foundUser, password))) throw new HttpException('User not found', 401);
+       
+        const permissions=await this.user_permissionRepository.find({where:{user:foundUser,isDisabled:false}});
         const token= await this.createToken(foundUser);
-
+        let view=[];
+        let api=[];
+        for(let url of permissions){
+            if(url.applicationroute.type==1)
+            {view.push(url.applicationroute.url)}
+             else{
+                api.push(url.applicationroute.url)
+             }
+        }
+        
+        
         const expiresIn = 60 * 60;
-        let data = {token: token.access_token, expire: expiresIn ,role:'',username:foundUser.username};
+        let data = {token: token.access_token, expire: expiresIn ,role:'',
+        username:foundUser.username,
+        views:view,
+        apis:api};
         
         let result= new ResponseObj<any>();
         result.message=`Login was successful` ;
@@ -54,8 +72,7 @@ export class AuthService {
             lastName: user.lastName,
             id: user.id,
             businessId:user.business.id,
-            roleId:'',
-            modules:['/api/auth','/api/app/customer','/api/category/create']
+            
         };
         const token = jwt.sign(data, process.env.SECRET, { expiresIn: this.tokenExp });
 

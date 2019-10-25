@@ -7,11 +7,12 @@ import { JwtStrategy } from './passport/jwt.strategy';
 import { User } from '../entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Business } from '../entities/business.entity';
+import { UserPremission } from '../entities/role.entity';
 
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User,Business]),
+        TypeOrmModule.forFeature([User,Business,UserPremission]),
         UsersModule
     ],
     providers: [AuthService, IsAuthenticated, JwtStrategy],

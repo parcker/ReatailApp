@@ -59,7 +59,10 @@ export class UserPremission extends BaseEntityClass {
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
-    @ManyToOne(type => ApplicationRoute, applicationroute => applicationroute.userpermission)
+    @ManyToOne(type => ApplicationRoute, applicationroute => applicationroute.userpermission,{
+        cascade: true,
+        eager: true,
+    })
     applicationroute: ApplicationRoute;
     
     @ManyToOne(type => User, user => user.userpermission)
