@@ -22,6 +22,7 @@ export class JwtStrategy extends Strategy {
     public async verify(req, payload, done) {
         try {
           
+            console.log('Request middleware',req.url);
             const isValid = await this.authService.validateUser(payload._id);
 
             if (!isValid) {

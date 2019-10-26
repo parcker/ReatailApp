@@ -32,7 +32,7 @@ export class RoutesService {
             }
             const data={url,description,type,createdby,isDisabled:false,updatedby:''};
             const model=this.applicationRouteRepository.create(data);
-            ;
+            
             const response=await this.applicationRouteRepository.save(model);
             let result= new ResponseObj<ApplicationRoute>();
                 result.message=`application route created` ;
@@ -42,7 +42,7 @@ export class RoutesService {
         }
         catch(error){
            console.log(error);
-            return new HttpException('Process error while executing operation:',HttpStatus.INTERNAL_SERVER_ERROR)}
+           return new HttpException({message: 'Process error while executing operation:', code:500, status:false,},HttpStatus.INTERNAL_SERVER_ERROR);}
     }
     async updateRoute(url:string,description:string,type:number,updatedby:string):Promise<any>{}
     async getByRouteByType(type?:number):Promise<any>{
@@ -66,7 +66,7 @@ export class RoutesService {
         }
         catch(error){
             console.log(error);
-             return new HttpException('Process error while executing operation:',HttpStatus.INTERNAL_SERVER_ERROR)}
+            return new HttpException({message: 'Process error while executing operation:', code:500, status:false,},HttpStatus.INTERNAL_SERVER_ERROR);}
     }
     async deleteRouteById(Id:string,updatedby:string):Promise<any>{}
     async assignRouteToUser(Ids:string[],userId:string,createdby:string):Promise<any>{
@@ -97,6 +97,6 @@ export class RoutesService {
         }
         catch(error){
             console.log(error);
-             return new HttpException('Process error while executing operation:',HttpStatus.INTERNAL_SERVER_ERROR)}
+             return new HttpException({message: 'Process error while executing operation:', code:500, status:false},HttpStatus.INTERNAL_SERVER_ERROR);}
     }
 }
