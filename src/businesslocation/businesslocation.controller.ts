@@ -16,7 +16,7 @@ export class BusinesslocationController {
   
  
         const response = await this.businessloactionService.create(body.name,body.address,req.user.businessId,req.user.id);
-       // if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
+        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
         return response;
         
     }
