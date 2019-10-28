@@ -12,8 +12,9 @@ export class RolesController {
     @Post('/create')
     @UseGuards(AuthGuard('jwt'))
     @UsePipes(new ValidationPipe())
-    async create(@Body() body:CreateRoleDto){
-        return await this.roleService.createRole(body);
+    async create(@Request() req,@Body() body:CreateRoleDto){
+        console.log('businessId',req.user.businessId);
+        return await this.roleService.createRole(body,req.user.id,req.user.businessId);
     }
     @Get('/find')
     @UseGuards(AuthGuard('jwt'))
@@ -27,8 +28,8 @@ export class RolesController {
     @UsePipes(new ValidationPipe())
     async assignRole(@Request() req, @Body() body: AssignRoleDto){
         
-        const response = await this.roleService.assignUserToRole(body.roleId,body.userId,req.user.id);
-        if(response.status==false){throw new HttpException(response.message, HttpStatus.BAD_REQUEST);}
+        const response = await this.roleService.assignUserToRole(body.roleId,body.userIds,req.user.id);
+        if(response.status==false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
         return response;
     }
 

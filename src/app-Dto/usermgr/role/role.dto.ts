@@ -7,6 +7,7 @@ export class CreateRoleDto{
     @IsNotEmpty()
     name:string;
 
+
 }
 export interface RoleDto 
 {
@@ -16,9 +17,9 @@ export interface RoleDto
 }
 export class AssignRoleDto{
 
-    @ApiModelProperty({ required:true,example:'739641da-14f0-48d9-b751-142425dc6eda' })
+    @ApiModelProperty({ required:true})
     @IsNotEmpty()
-    userId:string;
+    userIds:string[];
     @ApiModelProperty({ required:true,example:'739641da-14f0-48d9-b751-142425dc6eda' })
     @IsNotEmpty()
     roleId:string;

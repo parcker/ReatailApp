@@ -30,7 +30,7 @@ async function bootstrap() {
         endpoint: '/docs'
     });
     app.useGlobalPipes(new ValidationPipe());
-    await app.listen(parseInt(process.env.PORT) || 3000);
+    await app.listen(parseInt(process.env.PORT) || 8000);
 }
 
 bootstrap();

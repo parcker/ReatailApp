@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne,
 import {IsNotEmpty} from 'class-validator';
 import { BaseEntityClass } from './base.entity';
 import { User } from './user.entity';
+import { Business } from './business.entity';
 @Entity()
 export class Role extends BaseEntityClass {
 
@@ -11,8 +12,10 @@ export class Role extends BaseEntityClass {
     @Column()
     @IsNotEmpty()
     public name: string;
-    @Column()
-    public description: string;
+  
+    @ManyToOne(type => Business, business => business.roles)
+    @JoinColumn()
+    business: Business;
 }
 
 @Entity()
