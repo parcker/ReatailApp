@@ -18,6 +18,8 @@ import { BusinesslocationModule } from './businesslocation/businesslocation.modu
 
 import { RoutesService } from './settings/routes/routes.service';
 import { RoutesModule } from './settings/routes/routes.module';
+import { FeaturesService } from './features/features.service';
+import { FeaturesModule } from './settings/features/features.module';
 import * as path from 'path';
 
 
@@ -49,10 +51,11 @@ import * as path from 'path';
         EmailModule,
         BusinesslocationModule,
         RoutesModule,
+        FeaturesModule,
        
     ],
     controllers: [AppController],
-    providers: [{provide: APP_PIPE, useClass: ValidationPipe, }]
+    providers: [{provide: APP_PIPE, useClass: ValidationPipe, }, FeaturesService]
 })
 
 export class ApplicationModule {
