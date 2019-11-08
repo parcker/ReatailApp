@@ -3,6 +3,7 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 import { BaseEntityClass } from './base.entity';
 import { User } from './user.entity';
 import { Role } from './role.entity';
+import { Category, SubCategory } from './category.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
@@ -34,6 +35,7 @@ export class Business extends BaseEntityClass {
 
     @OneToMany(type => Role, roles => roles.business)
     roles: Role[];
+
   
 }
 @Entity()
@@ -65,6 +67,13 @@ export class BusinessLocation extends BaseEntityClass {
     @Column()
     @IsOptional()
     public updatedby: string;
+
+    
+    @OneToMany(type => Category, category => category.businesslocation)
+    category: Category[];
+
+    @OneToMany(type => SubCategory, subcategory => subcategory.businesslocation)
+    subcategory: SubCategory[];
   
 }
 

@@ -20,6 +20,9 @@ import { RoutesService } from './settings/routes/routes.service';
 import { RoutesModule } from './settings/routes/routes.module';
 import { FeaturesService } from './features/features.service';
 import { FeaturesModule } from './settings/features/features.module';
+import { CategorysService } from './categorys/categorys.service';
+import { CategorysController } from './categorys/categorys.controller';
+import { CategorysModule } from './categorys/categorys.module';
 import * as path from 'path';
 
 
@@ -52,10 +55,11 @@ import * as path from 'path';
         BusinesslocationModule,
         RoutesModule,
         FeaturesModule,
+        CategorysModule,
        
     ],
-    controllers: [AppController],
-    providers: [{provide: APP_PIPE, useClass: ValidationPipe, }, FeaturesService]
+    controllers: [AppController, CategorysController],
+    providers: [{provide: APP_PIPE, useClass: ValidationPipe, }, FeaturesService, CategorysService]
 })
 
 export class ApplicationModule {
