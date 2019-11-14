@@ -21,5 +21,7 @@ export interface ICreateUser {
     twoFactorEnable:boolean;
     accessFailedCount:number;
     businessId:string;
+    roleId:string;
   
 }
+

@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -6,14 +6,22 @@ import { ICreateUser } from './user.interface';
 import * as bcrypt from 'bcrypt';
 import { ResponseObj } from '../shared/generic.response';
 import { Business } from '../entities/business.entity';
+import { CreateNonAdminUser } from '../app-Dto/usermgr/signup.dto';
+import { RoleUser, Role } from '../entities/role.entity';
+import { EmailService } from '../shared/email/emailService';
 
 @Injectable()
 export class UsersService {
 
-    constructor(@InjectRepository(User)private readonly userRepository: Repository<User>, )
+
+    constructor(@InjectRepository(User)private readonly userRepository: Repository<User>,
+    @InjectRepository(Business)private readonly businessRepository: Repository<Business> ,
+    @InjectRepository(RoleUser)private readonly roleuserRepository: Repository<RoleUser>,
+    @InjectRepository(Role)private readonly roleRepository: Repository<Role>,
+    private readonly emailservice:EmailService)
      { }
 
-    async create(userData: ICreateUser, businessInfo:Business): Promise<ResponseObj<User>> {
+    async createAdmins(userData: ICreateUser, businessInfo:Business): Promise<ResponseObj<User>> {
    
         try
         {
@@ -45,23 +53,56 @@ export class UsersService {
         }
        
     }
-    async createNonAdminUser(userData: ICreateUser, businessId:string,userId:string): Promise<ResponseObj<string>> {
+    
+    async createStaff(createdby:string,model:CreateNonAdminUser): Promise<ResponseObj<string>> {
    
         try
         {
-
-            const newUser = this.userRepository.create(userData);
-            //newUser.business=businessInfo;
-            let response= await this.userRepository.save(newUser);
-            if(response.hasId)
+            
+            let user = await this.validateUserEmail(model.email);
+            if (user) 
             {
+                
                 let result= new ResponseObj<string>();
-                result.message=`create user completed` ;
+                result.message=`Email address already exist !! account cannot be created` ;
+                result.status=false;
+                result.result="";
+                return result;
+            }
+            const usermodel=new User();
+            usermodel.business=await this.businessRepository.findOne({where:{id:model.businessId , isDisabled:false}});
+            usermodel.firstName=model.firstName.trim(),
+            usermodel.email=model.email.trim();
+            usermodel.emailConfirmed=false;
+            usermodel.lastName=model.lastName;
+            usermodel.phonenumber=model.phonenumber,
+            usermodel.password=model.password;
+            usermodel.username=model.email;
+            usermodel.twoFactorEnable=false;
+            const response= await this.userRepository.save(usermodel);
+
+            const roleuser=new RoleUser();
+            roleuser.user=response;
+            roleuser.role=await this.roleRepository.findOne({where:{id:model.roleId}})
+            roleuser.createdby=createdby;
+            roleuser.isDisabled=false;
+            roleuser.updatedby='';
+            const userrole_response=await this.roleuserRepository.save(roleuser);
+
+            if(! userrole_response && !roleuser )
+            {
+
+                let emaildata={token:response.result.id, name: response.result.firstName,url:process.env.EMAIL_ACTIVATIONLINK};
+                this.emailservice.sendmail(response.email,'Ecorvids-Account','index.handlebars',emaildata);
+                
+                let result= new ResponseObj<string>();
+                result.message=`create user operation completed , ${response.firstName + response.lastName}
+                 has been assigned to Role : ${roleuser.role.name}` ;
                 result.status=true;
                 result.result="";
                 return result
             }
-            let result= new ResponseObj<string>();
+            const result= new ResponseObj<string>();
             result.message=`create user operation failed` ;
             result.status=false;
             result.result="";

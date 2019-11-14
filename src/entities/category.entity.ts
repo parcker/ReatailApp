@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
 import {IsNotEmpty} from 'class-validator';
 import { BaseEntityClass } from './base.entity';
-import { BusinessLocation } from './business.entity';
+import { BusinessLocation, Business } from './business.entity';
 @Entity()
 export class Category extends BaseEntityClass {
 
@@ -10,9 +10,9 @@ export class Category extends BaseEntityClass {
     @Column()
     @IsNotEmpty()
     name:string;
-    @ManyToOne(() => BusinessLocation, businesslocation => businesslocation.category)
+    @ManyToOne(() => Business, business => business.category)
     @JoinColumn()
-    businesslocation: BusinessLocation;
+    business: Business;
 
     @OneToMany(() => SubCategory, subcategory => subcategory.category)
     subcategory: SubCategory[];
@@ -31,8 +31,8 @@ export class SubCategory extends BaseEntityClass {
     @JoinColumn()
     category: Category;
 
-    @ManyToOne(() => BusinessLocation, businesslocation => businesslocation.subcategory)
+    @ManyToOne(() => Business, business => business.category)
     @JoinColumn()
-    businesslocation: BusinessLocation;
+    business: Business;
      
 }

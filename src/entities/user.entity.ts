@@ -2,7 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, Quer
 import {IsEmail, IsNotEmpty, Validator} from 'class-validator';
 
 import * as bcrypt from 'bcrypt';
-import { Business } from './business.entity';
+import { Business, BusinessLocationUser } from './business.entity';
 import { UserPremission, ApplicationRoute } from './role.entity';
 
 
@@ -59,7 +59,10 @@ export class User extends BaseEntity
 
     @OneToMany(type => UserPremission, userpermission => userpermission.user)
     userpermission: UserPremission[];
-
+    
+    @OneToMany(type => BusinessLocationUser, businesslocationuser => businesslocationuser.user)
+    businesslocationuser: BusinessLocationUser[];
+    result: any;
     
 
     

@@ -1,6 +1,7 @@
-import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe,Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ICreateUser } from './user.interface';
+import { CreateNonAdminUser } from '../app-Dto/usermgr/signup.dto';
 
 @Controller('users')
 export class UsersController {
@@ -9,8 +10,8 @@ export class UsersController {
     ) {}
 
     @Post()
-    public async createUser(@Body() body: ICreateUser) {
+    public async createUser(@Request() req,@Body() body: CreateNonAdminUser) {
 
-       // return await this.userService.create(body);
+       return await this.userService.createStaff(req.user.id,body);
     }
 }

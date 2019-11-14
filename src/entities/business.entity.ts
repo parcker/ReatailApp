@@ -36,6 +36,12 @@ export class Business extends BaseEntityClass {
     @OneToMany(type => Role, roles => roles.business)
     roles: Role[];
 
+    @OneToMany(type => Category, category => category.business)
+    category: Category[];
+
+    @OneToMany(type => SubCategory, subcategory => subcategory.business)
+    subcategory: SubCategory[];
+
   
 }
 @Entity()
@@ -68,12 +74,24 @@ export class BusinessLocation extends BaseEntityClass {
     @IsOptional()
     public updatedby: string;
 
+    @OneToMany(type => BusinessLocationUser, businesslocationuser => businesslocationuser.businesslocation)
+    businesslocationuser: BusinessLocationUser[];
+  
+}
+@Entity()
+export class BusinessLocationUser extends BaseEntityClass {
     
-    @OneToMany(type => Category, category => category.businesslocation)
-    category: Category[];
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
 
-    @OneToMany(type => SubCategory, subcategory => subcategory.businesslocation)
-    subcategory: SubCategory[];
+    
+    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.businesslocationuser)
+    @JoinColumn()
+    businesslocation: BusinessLocation;
+
+    @ManyToOne(() => User, user => user.businesslocationuser)
+    @JoinColumn()
+    user: User;
   
 }
 

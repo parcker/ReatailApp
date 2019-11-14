@@ -3,3 +3,10 @@ export enum urlType {
     api=2,
     
 }
+export enum SystemGlobalRole {
+    BuisnessAdmin = 1,
+    SystemAdmin=2,
+    TechnicalAdmin=3,
+    Guest=4
+    
+}
