@@ -94,7 +94,7 @@ export class CategorysService {
             code:500, status:false},
             HttpStatus.INTERNAL_SERVER_ERROR);}
 
-    }
+     }
     async updateCategory(categoryId :string,categoryname:string,updatedby:string,businessId:string): Promise<any>{
 
         try{
@@ -134,7 +134,7 @@ export class CategorysService {
             code:500, status:false},
             HttpStatus.INTERNAL_SERVER_ERROR);}
 
-    }
+     }
 
     async getcategory(businessId:string):Promise<any>{
         try{
@@ -197,6 +197,7 @@ export class CategorysService {
              model.business=getbusinessInfo;
              model.name=subname.trim().toLocaleLowerCase();
              model.createdby=createdby;
+             model.category=getcategoryInfo;
              model.updatedby='',
              model.isDisabled=false
              
