@@ -139,8 +139,8 @@ export class CategorysService {
     async getcategory(businessId:string):Promise<any>{
         try{
 
-            
-            const [dbcategory,count]=await this.categorRepository.findAndCount({where:{business:businessId,isDisabled:false}});
+     
+            const [dbcategory,count]=await this.categorRepository.findAndCount({where:{business:businessId,isDisabled:false},relations: ["subcategory"]});
             if(!dbcategory){
                
                 let result= new ResponseObj<string>();
