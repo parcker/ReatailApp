@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Category, SubCategory } from '../entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -21,7 +21,7 @@ export class CategorysService {
         try
         {  
              let getbusinessInfo=await this.businessRepository.findOne({where:{id:businessId,isDisabled:false}});
-             console.log('businessInFo',getbusinessInfo);
+           
              if(!getbusinessInfo){
                 
                 let result= new ResponseObj<string>();
@@ -59,6 +59,7 @@ export class CategorysService {
         }
         catch(error)
         {
+            Logger.log(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -128,11 +129,14 @@ export class CategorysService {
             result.result=dbresponse;
             return result;
         }
-        catch(error){
-             return new 
+        catch(error)
+        {
+            Logger.log(error);
+            return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
-            HttpStatus.INTERNAL_SERVER_ERROR);}
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
      }
 
@@ -156,11 +160,14 @@ export class CategorysService {
      
             return result;
         }
-        catch(eror){
-             return new 
+        catch(error)
+        {
+            Logger.log(error);
+            return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
-            HttpStatus.INTERNAL_SERVER_ERROR);}
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     
     async createSubCategory(subname:string,categoryId:string,createdby:string,businessId:string): Promise<any> {
@@ -211,6 +218,7 @@ export class CategorysService {
         }
         catch(error)
         {
+            Logger.log(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -241,11 +249,14 @@ export class CategorysService {
             result.result=dbresponse;
             return result;
         }
-        catch(error){
-             return new 
+        catch(error)
+        {
+            Logger.log(error);
+            return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
-            HttpStatus.INTERNAL_SERVER_ERROR);}
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
     async updateSubCategory(Id :string,categoryname:string,updatedby:string,businessId:string,categoryId:string): Promise<any>{
@@ -297,11 +308,14 @@ export class CategorysService {
             result.result=dbresponse;
             return result;
         }
-        catch(error){
-             return new 
+        catch(error)
+        {
+            Logger.log(error);
+            return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
-            HttpStatus.INTERNAL_SERVER_ERROR);}
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 }
