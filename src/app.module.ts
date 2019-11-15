@@ -1,5 +1,4 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { Connection } from 'typeorm';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
@@ -19,6 +18,8 @@ import { RoutesModule } from './settings/routes/routes.module';
 import { FeaturesModule } from './settings/features/features.module';
 import { CategorysController } from './categorys/categorys.controller';
 import { CategorysModule } from './categorys/categorys.module';
+import { PartnersController } from './partners/partners.controller';
+import { PartnersModule } from './partners/partners.module';
 import * as path from 'path';
 
 
@@ -52,9 +53,10 @@ import * as path from 'path';
         RoutesModule,
         FeaturesModule,
         CategorysModule,
+        PartnersModule,
        
     ],
-    controllers: [AppController, CategorysController],
+    controllers: [AppController, CategorysController, PartnersController],
     providers: [{provide: APP_PIPE, useClass: ValidationPipe, }]
 })
 

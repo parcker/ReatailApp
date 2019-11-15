@@ -4,6 +4,7 @@ import { BaseEntityClass } from './base.entity';
 import { User } from './user.entity';
 import { Role } from './role.entity';
 import { Category, SubCategory } from './category.entity';
+import { Customer, Supplier } from './partner.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
@@ -41,6 +42,12 @@ export class Business extends BaseEntityClass {
 
     @OneToMany(type => SubCategory, subcategory => subcategory.business)
     subcategory: SubCategory[];
+
+    @OneToMany(type => Customer, customer => customer.business)
+    customer: Customer[];
+
+    @OneToMany(type => Supplier, supplier => supplier.business)
+    supplier: Supplier[];
 
   
 }

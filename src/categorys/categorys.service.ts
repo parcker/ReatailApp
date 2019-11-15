@@ -142,19 +142,20 @@ export class CategorysService {
 
     async getcategory(businessId:string):Promise<any>{
         try{
-
-     
-            const [dbcategory,count]=await this.categorRepository.findAndCount({where:{business:businessId,isDisabled:false},relations: ["subcategory"]});
-            if(!dbcategory){
+            let getbusinessInfo=await this.businessRepository.findOne({where:{id:businessId,isDisabled:false}});
+            if(!getbusinessInfo){
                
-                let result= new ResponseObj<string>();
-                result.message=`No category match found`;
-                result.status=false;
-                result.result='';
-                return result;
+               let result= new ResponseObj<string>();
+               result.message=`invalid or business  Id , no business  data found`;
+               result.status=false;
+               result.result='';
+               return result;
             }
+     
+            const [dbcategory,count]=await this.categorRepository.findAndCount({where:{business:getbusinessInfo,isDisabled:false},relations: ["subcategory"]});
+           
             let result= new ResponseObj<Category[]>();
-            result.message=`Total of ${count} found ` ;
+            result.message=`Total of ${count} category found ` ;
             result.status=true;
             result.result=dbcategory;
      
