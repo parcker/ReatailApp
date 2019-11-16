@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body,Request, HttpException, HttpStatus, Get, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body,Request, HttpException, HttpStatus, Get, Put, Param, Delete, Patch } from '@nestjs/common';
 import { CategorysService } from './categorys.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatCategoryDto, CreatSubCategoryDto, UpdateCategoryDto, UpdateSubCategoryDto } from '../app-Dto/category.dto';
@@ -17,16 +17,17 @@ export class CategorysController {
         if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
         return response;
     }
-    @Put(':id/updatecategory')
+    @Patch(':id/updatecategory')
     @UseGuards(AuthGuard('jwt'))
     @UsePipes(new ValidationPipe())
     async updatecategory(@Param('id') id,@Request() req,@Body() body: UpdateCategoryDto){
         
+        console.log('Update Cate',id);
         const response = await this.categoryService.updateCategory(id,body.name,req.user.id,req.user.businessId);
         if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
         return response;
     }
-    @Put(':id/updatesubcategory')
+    @Patch(':id/updatesubcategory')
     @UseGuards(AuthGuard('jwt'))
     @UsePipes(new ValidationPipe())
     async updatesubcategory(@Param('id') id,@Request() req,@Body() body: UpdateSubCategoryDto){

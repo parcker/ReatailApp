@@ -1,10 +1,11 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import { CreatCustomerDto, CreatSupplierDto } from '../app-Dto/partner.dto';
+import { CreatCustomerDto, CreatSupplierDto, UpdateCustomerDto } from '../app-Dto/partner.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Business } from '../entities/business.entity';
 import { Repository } from 'typeorm';
 import { ResponseObj } from '../shared/generic.response';
 import { Customer, Supplier } from '../entities/partner.entity';
+import { UpdateCategoryDto } from '../app-Dto/category.dto';
 
 @Injectable()
 export class PartnersService {
@@ -46,6 +47,58 @@ export class PartnersService {
            customer.birthmonth=model.birthmonth;
            customer.business=getbusinessInfo;
            customer.createdby=createdby;
+           customer.updatedby='';
+           customer.isDisabled=false;
+
+           const dbresponse=await this.customerRepository.save(customer);
+           let result= new ResponseObj<Customer>();
+            result.message=`${dbresponse.fullname} has been created and activated` ;
+            result.status=true;
+            result.result=dbresponse;
+            return result;
+        }
+        catch(error){
+            
+            Logger.log(error);
+            return new 
+            HttpException({message: 'Process error while executing operation:',
+            code:500, status:false},
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+     }
+     async updatecustomer(model:UpdateCustomerDto,updateby:string,businessid:string):Promise<any>{
+
+        try{
+
+            let getbusinessInfo=await this.businessRepository.findOne({where:{id:businessid,isDisabled:false}});
+            if(!getbusinessInfo){
+               
+               let result= new ResponseObj<string>();
+               result.message=`invalid or business  Id , no business  data found`;
+               result.status=false;
+               result.result='';
+               return result;
+            }
+            let checkduplicate=await this.customerRepository.findOne({where:{id:model.id.trim()}});
+            if(checkduplicate)
+            {
+              
+               let result= new ResponseObj<string>();
+               result.message=`duplicate customer name found, some one is already 
+               registered with this mobile number ${model.mobilenumber}`;
+               result.status=false;
+               result.result='';
+               return result;
+            }
+           let customer =new Customer();
+           customer.mobilenumber=model.mobilenumber.trim();
+           customer.fullname=model.fullname;
+           customer.age=model.age;
+           customer.email=model.email;
+           customer.birthday=model.birthday;
+           customer.birthmonth=model.birthmonth;
+           customer.business=getbusinessInfo;
+           customer.createdby=updateby;
            customer.updatedby='';
            customer.isDisabled=false;
 
