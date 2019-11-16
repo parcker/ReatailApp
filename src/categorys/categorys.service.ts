@@ -260,7 +260,7 @@ export class CategorysService {
         }
 
     }
-    async updateSubCategory(Id :string,categoryname:string,updatedby:string,businessId:string,categoryId:string): Promise<any>{
+    async updateSubCategory(Id :string,subcategoryname:string,updatedby:string,businessId:string,categoryId:string): Promise<any>{
 
         try{
 
@@ -275,7 +275,7 @@ export class CategorysService {
                 return result;
              }
 
-            let dbSubcategory=await this.subcategoryRepository.findOne({where:{id:Id.trim(),business:{id:businessId},isDisabled:false}});
+            let dbSubcategory=await this.subcategoryRepository.findOne({where:{id:Id.trim(),business:getbusinessInfo,isDisabled:false}});
             if(!dbSubcategory){
                
                 let result= new ResponseObj<string>();
@@ -284,6 +284,7 @@ export class CategorysService {
                 result.result='';
                 return result;
             }
+            let oldername=dbSubcategory.name;
 
             let category=await this.categorRepository.findOne({where:{id:categoryId}});
             if(!category){
@@ -294,17 +295,16 @@ export class CategorysService {
                 result.result='';
                 return result;
             }
-            if(categoryId===dbSubcategory.category.id){
-                dbSubcategory.category=dbSubcategory.category;
-            }
-            else{dbSubcategory.category=category}
-            dbSubcategory.name=categoryname.trim();
+         
+          
+            dbSubcategory.category=category;
+            dbSubcategory.name=subcategoryname.trim();
             dbSubcategory.updatedby=updatedby;
           
             let dbresponse=await this.categorRepository.save(dbSubcategory);
 
             let result= new ResponseObj<Category>();
-            result.message=`${dbresponse.name} has been updated` ;
+            result.message=`${oldername} has been updated to ${dbresponse.name}` ;
             result.status=true;
             result.result=dbresponse;
             return result;
@@ -312,6 +312,7 @@ export class CategorysService {
         catch(error)
         {
             Logger.log(error);
+            console.log(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
