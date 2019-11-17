@@ -43,6 +43,7 @@ export class PartnersService {
            customer.fullname=model.fullname;
            customer.age=model.age;
            customer.email=model.email;
+           customer.gender=model.gender;
            customer.birthday=model.birthday;
            customer.birthmonth=model.birthmonth;
            customer.business=getbusinessInfo;
@@ -96,6 +97,7 @@ export class PartnersService {
            customer.age=model.age;
            customer.email=model.email;
            customer.birthday=model.birthday;
+           customer.gender=model.gender;
            customer.birthmonth=model.birthmonth;
            customer.business=getbusinessInfo;
            customer.createdby=updateby;
@@ -111,7 +113,7 @@ export class PartnersService {
         }
         catch(error){
             
-            Logger.log(error);
+            console.log(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},

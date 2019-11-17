@@ -17,8 +17,8 @@ export class CreatCustomerDto{
     @ApiModelProperty({ required: true})
     email:string;
 
-    @IsBoolean()
-    gender:boolean;
+     @IsInt()
+    gender:number;
 
     @IsInt()
     @Min(1,{ message: "age is too short"})
@@ -59,8 +59,8 @@ export class UpdateCustomerDto{
     @ApiModelProperty({ required: true})
     email:string;
 
-    @IsBoolean()
-    gender:boolean;
+    @IsInt()
+    gender:number;
 
     @IsInt()
     @Min(1,{ message: "age is too short"})

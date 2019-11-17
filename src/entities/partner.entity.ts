@@ -20,7 +20,7 @@ export class Customer extends BaseEntityClass{
     @Column()
     email:string;
     @Column()
-    gender:boolean;
+    gender:number;
     @Column()
     age:number;
     @Column()
