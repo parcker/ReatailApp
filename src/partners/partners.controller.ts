@@ -1,7 +1,6 @@
 import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, HttpException, HttpStatus,Request, Get } from '@nestjs/common';
 import { PartnersService } from './partners.service';
 import { AuthGuard } from '@nestjs/passport';
-import { CreatCategoryDto } from '../app-Dto/category.dto';
 import { CreatCustomerDto, CreatSupplierDto } from '../app-Dto/partner.dto';
 
 @Controller('/api/partners')
@@ -38,12 +37,12 @@ export class PartnersController {
         if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
         return response;
     }
-    @Get('/supplier/mycustomer')
+    @Get('/supplier/mysupplier')
     @UseGuards(AuthGuard('jwt'))
     @UsePipes(new ValidationPipe())
     async getsupplier(@Request() req){
         
-        const response = await this.partnersService.getcustomers(req.user.businessId);
+        const response = await this.partnersService.getsuppliers(req.user.businessId);
         if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
         return response;
     }
