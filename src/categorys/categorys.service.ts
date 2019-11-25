@@ -59,7 +59,7 @@ export class CategorysService {
         }
         catch(error)
         {
-            Logger.log(error);
+            Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -131,7 +131,7 @@ export class CategorysService {
         }
         catch(error)
         {
-            Logger.log(error);
+            Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -163,7 +163,7 @@ export class CategorysService {
         }
         catch(error)
         {
-            Logger.log(error);
+            Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -219,7 +219,7 @@ export class CategorysService {
         }
         catch(error)
         {
-            Logger.log(error);
+            Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -252,7 +252,7 @@ export class CategorysService {
         }
         catch(error)
         {
-            Logger.log(error);
+            Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -311,8 +311,8 @@ export class CategorysService {
         }
         catch(error)
         {
-            Logger.log(error);
-            console.log(error);
+            Logger.error(error);
+         
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},

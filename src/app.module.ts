@@ -1,4 +1,5 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { Module} from '@nestjs/common';
+import{ValidationPipe} from './shared/validation.pipe'
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
@@ -21,6 +22,7 @@ import { CategorysModule } from './categorys/categorys.module';
 import { PartnersController } from './partners/partners.controller';
 import { PartnersModule } from './partners/partners.module';
 import * as path from 'path';
+import { from } from 'rxjs';
 
 
 @Module({

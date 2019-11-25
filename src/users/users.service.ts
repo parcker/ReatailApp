@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, Logger, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -21,7 +21,7 @@ export class UsersService {
     private readonly emailservice:EmailService)
      { }
 
-    async createAdmins(userData: ICreateUser, businessInfo:Business): Promise<ResponseObj<User>> {
+    async createAdmins(userData: ICreateUser, businessInfo:Business): Promise<any> {
    
         try
         {
@@ -45,16 +45,16 @@ export class UsersService {
         }
         catch(error)
         {   
-            let result= new ResponseObj<User>();
-            result.message=error;
-            result.status=false;
-            result.result=error;
-            return result
+            Logger.error(error);
+            return new 
+            HttpException({message: 'Process error while executing operation:',
+            code:500, status:false},
+            HttpStatus.INTERNAL_SERVER_ERROR);
         }
        
     }
     
-    async createStaff(createdby:string,model:CreateNonAdminUser): Promise<ResponseObj<string>> {
+    async createStaff(createdby:string,model:CreateNonAdminUser): Promise<any> {
    
         try
         {
@@ -110,11 +110,13 @@ export class UsersService {
         }
         catch(error)
         {   
-            let result= new ResponseObj<string>();
-            result.message="";
-            result.status=false;
-            result.result=error;
-            return result
+            
+            Logger.error(error);
+         
+            return new 
+            HttpException({message: 'Process error while executing operation:',
+            code:500, status:false},
+            HttpStatus.INTERNAL_SERVER_ERROR);
         }
        
     }

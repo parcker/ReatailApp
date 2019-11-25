@@ -41,7 +41,7 @@ export class RoutesService {
                 return result;
         }
         catch(error){
-           console.log(error);
+            Logger.error(error);
            return new HttpException({message: 'Process error while executing operation:', code:500, status:false,},HttpStatus.INTERNAL_SERVER_ERROR);}
     }
     async updateRoute(url:string,description:string,type:number,updatedby:string):Promise<any>{}
@@ -65,7 +65,7 @@ export class RoutesService {
                 return result;
         }
         catch(error){
-            console.log(error);
+             Logger.error(error);
             return new HttpException({message: 'Process error while executing operation:', code:500, status:false,},HttpStatus.INTERNAL_SERVER_ERROR);}
     }
     async deleteRouteById(Id:string,updatedby:string):Promise<any>{}
@@ -96,7 +96,7 @@ export class RoutesService {
             return result;
         }
         catch(error){
-            console.log(error);
+             Logger.error(error);
              return new HttpException({message: 'Process error while executing operation:', code:500, status:false},HttpStatus.INTERNAL_SERVER_ERROR);}
     }
 }

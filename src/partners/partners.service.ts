@@ -60,7 +60,7 @@ export class PartnersService {
         }
         catch(error){
             
-            Logger.log(error);
+            Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -113,7 +113,7 @@ export class PartnersService {
         }
         catch(error){
             
-            console.log(error);
+            Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -162,7 +162,7 @@ export class PartnersService {
         }
         catch(error){
             
-            Logger.log(error);
+         Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -190,7 +190,7 @@ export class PartnersService {
          }
          catch(error){
             
-            Logger.log(error);
+            Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
             code:500, status:false},
@@ -219,7 +219,7 @@ export class PartnersService {
         }
         catch(error){
            
-           Logger.log(error);
+           Logger.error(error);
            return new 
            HttpException({message: 'Process error while executing operation:',
            code:500, status:false},

@@ -11,11 +11,12 @@ import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { initDocumentation } from './documentation';
 import { EntitiesExceptionFilter } from './http-exception.filter';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from './shared/validation.pipe';
+//@nestjs/common
 
 
 async function bootstrap() {
-    const app = await NestFactory.create<NestExpressApplication>(ApplicationModule);
+    const app = await NestFactory.create<NestExpressApplication>(ApplicationModule,{logger:['error','log','warn']});
     app.enableCors();
     app.use(logger(process.env.NODE_ENV));
     app.use(bodyParser.json());

@@ -15,8 +15,11 @@ export class ValidationPipe implements PipeTransform{
           }
           const object = plainToClass(metatype, value);
           const errors = await validate(object);
-          if (errors.length > 0) {
-            throw new HttpException(`validation failed:${this.formatError(errors)}`,HttpStatus.BAD_REQUEST);
+          if (errors.length > 0) 
+          {
+            let errormodel={status:false,message:`Invalid Parameters`,error:`${this.formatError(errors)}`}
+            throw new HttpException(errormodel,HttpStatus.BAD_REQUEST);
+            //throw new HttpException(`validation failed:${this.formatError(errors)}`,HttpStatus.BAD_REQUEST);
           }
           return value;
     }
@@ -27,11 +30,12 @@ export class ValidationPipe implements PipeTransform{
       }
     private formatError(errors:any[]) {
       
+     
       return errors.map(err=>{
          for(let property in err.constraints){
            return err.constraints[property];
          }
-      }).join('.');
+      }).join(' ;');
     }
     private isEmpty(value:any) {
       if(Object.keys(value).length>0){

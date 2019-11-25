@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Logger} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, getRepository, DeleteResult } from 'typeorm';
@@ -70,7 +70,7 @@ export class RolesService {
             result.result=response;
             return result;
        }
-       catch(error){console.log(error);
+       catch(error){ Logger.error(error);
         return new HttpException({message: 'Process error while executing operation:', code:500, status:false},HttpStatus.INTERNAL_SERVER_ERROR);}
     }
     
@@ -112,7 +112,7 @@ export class RolesService {
             return result;
           
         }
-        catch(error){ console.log(error);
+        catch(error){  Logger.error(error);
             return new HttpException({message: 'Process error while executing operation:', code:500, status:false},HttpStatus.INTERNAL_SERVER_ERROR);}
     }
    
