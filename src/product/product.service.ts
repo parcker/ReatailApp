@@ -110,7 +110,7 @@ export class ProductService {
          .leftJoinAndSelect("product.business", "business")
          .where('business.id = :id', { id: business.id})
          .select(["product.id","product.name", "product.itemcode", "product.packingtype","business.id"]).getMany();
-         console.log('GetProduct Result',productinfo)
+         
          let result= new ResponseObj<Product[]>();
          result.message=`${productinfo.length} records found` ;
          result.status=true;
