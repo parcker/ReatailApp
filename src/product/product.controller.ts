@@ -21,12 +21,21 @@ export class ProductController {
 
       
     }
-    @Get('/find')
+    @Get('/getpacking')
     @UseGuards(AuthGuard('jwt'))
     async getpacking():Promise<any> {
         
         let packingtype=[{id:1,vaule:'Cartons'},{id:2,vaule:'Single'}]
         return packingtype;
+       
+    }
+    @Get('/getmyproducts')
+    @UseGuards(AuthGuard('jwt'))
+    async getmyproducts(@Request() req,):Promise<any> {
+        
+        const response = await this.productService.getProduct(req.user.businessId);
+        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
+        return response;
        
     }
 }
