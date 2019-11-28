@@ -62,8 +62,8 @@ export class RolesService {
             model.updatedby='';
             model.business=business;
 
-            let roleDb = this.roleRepository.create(model);
-            var response= await this.roleRepository.save(roleDb);
+           // let roleDb = this.roleRepository.create(model);
+            var response= await this.roleRepository.save(model);
             let result= new ResponseObj<Role>();
             result.message=`${response.name} has been created and activated` ;
             result.status=true;

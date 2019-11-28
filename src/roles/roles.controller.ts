@@ -13,8 +13,10 @@ export class RolesController {
     @UseGuards(AuthGuard('jwt'))
     @UsePipes(new ValidationPipe())
     async create(@Request() req,@Body() body:CreateRoleDto){
-        console.log('businessId',req.user.businessId);
-        return await this.roleService.createRole(body,req.user.id,req.user.businessId);
+       
+        let response= await this.roleService.createRole(body,req.user.id,req.user.businessId);
+        if(response.status==false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
+        return response;
     }
     @Get('/find')
     @UseGuards(AuthGuard('jwt'))

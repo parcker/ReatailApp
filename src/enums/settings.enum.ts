@@ -10,3 +10,8 @@ export enum SystemGlobalRole {
     Guest=4
     
 }
+export enum PackingType {
+    Cartons = 1,
+    Single=2,
+    
+}

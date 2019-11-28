@@ -23,6 +23,13 @@ import { PartnersController } from './partners/partners.controller';
 import { PartnersModule } from './partners/partners.module';
 import * as path from 'path';
 import { from } from 'rxjs';
+import { ProductService } from './product/product.service';
+import { ProductController } from './product/product.controller';
+import { ProductModule } from './product/product.module';
+import { RolesController } from './roles/roles.controller';
+import { FeaturesController } from './settings/features/features.controller';
+import { UsersController } from './users/users.controller';
+import { CompanyController } from './company/company.controller';
 
 
 @Module({
@@ -56,9 +63,10 @@ import { from } from 'rxjs';
         FeaturesModule,
         CategorysModule,
         PartnersModule,
+        ProductModule,
        
     ],
-    controllers: [AppController, CategorysController, PartnersController],
+    controllers: [AppController, CategorysController, CompanyController,PartnersController, ProductController,RolesController,FeaturesController,UsersController],
     providers: [{provide: APP_PIPE, useClass: ValidationPipe, }]
 })
 

@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany
 import {IsNotEmpty} from 'class-validator';
 import { BaseEntityClass } from './base.entity';
 import { BusinessLocation, Business } from './business.entity';
+import { Product } from './product.entity';
 @Entity()
 export class Category extends BaseEntityClass {
 
@@ -16,6 +17,9 @@ export class Category extends BaseEntityClass {
 
     @OneToMany(() => SubCategory, subcategory => subcategory.category)
     subcategory: SubCategory[];
+
+    @OneToMany(() => Product, product => product.category)
+    product: Product[];
 }
 
 @Entity()
@@ -34,5 +38,9 @@ export class SubCategory extends BaseEntityClass {
     @ManyToOne(() => Business, business => business.category)
     @JoinColumn()
     business: Business;
+
+    
+    @OneToMany(() => Product, product => product.subCategory)
+    product: Product[];
      
 }
