@@ -107,8 +107,8 @@ export class ProductService {
             return result;
          }
          let productinfo=await this.productRepository.createQueryBuilder("product")
-         .leftJoinAndSelect("product.business", "business")
-         .where('business.id = :id', { id: business.id})
+         .leftJoinAndSelect("product.business", "business","business.id = :id",  { id: business.id})
+         .where('product.isDisabled = :isDisabled', { isDisabled:false})
          .select(["product.id","product.name", "product.itemcode", "product.packingtype","business.id"]).getMany();
          
          let result= new ResponseObj<Product[]>();
