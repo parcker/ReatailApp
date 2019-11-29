@@ -120,5 +120,28 @@ export class ProductService {
        catch(error){ Logger.error(error);
          return new HttpException({message: 'Process error while executing operation:', code:500, status:false},HttpStatus.INTERNAL_SERVER_ERROR);}
     }
+    async disableproduct(updatedby:string ,status:boolean,productId:string):Promise<any>{
+      try{
+         let product= await this.productRepository.findOne({where:{id:productId}});
+         if(!product) 
+         {
+            let result= new ResponseObj<string>();
+            result.message=`invalid or product Id sent , no product data  found`;
+            result.status=false;
+            result.result='';
+            return result;
+         }
+         product.isDisabled=status;
+         product.updatedby=updatedby;
+         const dbresponse=await this.productRepository.save(product);
+         let result= new ResponseObj<Product>();
+          result.message=`${dbresponse.name} has been updated` ;
+          result.status=true;
+          result.result=dbresponse;
+          return result;
+      }
+      catch(error){ Logger.error(error);
+         return new HttpException({message: 'Process error while executing operation:', code:500, status:false},HttpStatus.INTERNAL_SERVER_ERROR);}
+    }
 
 }

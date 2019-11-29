@@ -42,3 +42,15 @@ export class CreatProductDto{
     public subcategoryId:string;
 
 }
+export class ProductStatusDto{
+
+    @IsBoolean()
+    @ApiModelProperty({ required: true})
+    public status: boolean;
+
+    @IsUUID()
+    @ApiModelProperty({ required: true})
+    @MaxLength(50)
+    public productId:string;
+
+}

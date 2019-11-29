@@ -2,7 +2,7 @@ import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body,Request, Ge
 import { ProductService } from './product.service';
 import { AuthGuard } from '@nestjs/passport';
 
-import { CreatProductDto } from '../app-Dto/product.dto';
+import { CreatProductDto, ProductStatusDto } from '../app-Dto/product.dto';
 
 @Controller('/api/product')
 export class ProductController {
@@ -14,8 +14,20 @@ export class ProductController {
     @UsePipes(new ValidationPipe())
     async create(@Request() req,@Body() body:CreatProductDto){
        
-        console.log('create product');
+        
         const response = await this.productService.createProduct(body,req.user.id,req.user.businessId);
+        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
+        return response;
+
+      
+    }
+    @Post('/setproductstatus')
+    @UseGuards(AuthGuard('jwt'))
+    @UsePipes(new ValidationPipe())
+    async setproductstatus(@Request() req,@Body() body:ProductStatusDto){
+       
+   
+        const response = await this.productService.disableproduct(req.user.id,body.status,body.productId);
         if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
         return response;
 
