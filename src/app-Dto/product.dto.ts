@@ -42,6 +42,48 @@ export class CreatProductDto{
     public subcategoryId:string;
 
 }
+
+export class UpdateProductDto{
+
+    @IsNotEmpty()
+    @ApiModelProperty({ required: true})
+    @MaxLength(100)
+    public name: string;
+
+    @IsNotEmpty()
+    @ApiModelProperty({ required: true})
+    @MaxLength(50)
+    public itemcode: string;
+
+    @IsNotEmpty()
+    @ApiModelProperty({ required: true})
+    @MaxLength(100)
+    public description: string;
+
+    @IsNotEmpty()
+    @ApiModelProperty({ required: true})
+    @MaxLength(50)
+    public packingtype: string;
+    
+    @ApiModelProperty({ required: true})
+    @IsInt()
+    public packs: number;
+
+    @IsBoolean()
+    public expiredenabled: boolean;
+    
+    @IsUUID()
+    @ApiModelProperty({ required: true})
+    @MaxLength(50)
+    public categoryId:string;
+
+    @IsOptional()
+    @IsUUID()
+    @ApiModelProperty({ required: true})
+    @MaxLength(50)
+    public subcategoryId:string;
+
+}
 export class ProductStatusDto{
 
     @IsBoolean()

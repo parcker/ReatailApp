@@ -1,8 +1,8 @@
-import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body,Request, Get, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body,Request, Get, HttpException, HttpStatus, Patch, Param } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { AuthGuard } from '@nestjs/passport';
 
-import { CreatProductDto, ProductStatusDto } from '../app-Dto/product.dto';
+import { CreatProductDto, ProductStatusDto, UpdateProductDto } from '../app-Dto/product.dto';
 
 @Controller('/api/product')
 export class ProductController {
@@ -32,6 +32,16 @@ export class ProductController {
         return response;
 
       
+    }
+    //
+    @Patch(':id/updateproduct')
+    @UseGuards(AuthGuard('jwt'))
+    @UsePipes(new ValidationPipe())
+    async updatesubcategory(@Param('id') id,@Request() req,@Body() body: UpdateProductDto){
+        
+        const response = await this.productService.updateProduct(req.user.id,id,body,req.user.businessId);
+        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
+        return response;
     }
     @Get('/getpacking')
     @UseGuards(AuthGuard('jwt'))
