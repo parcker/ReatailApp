@@ -46,5 +46,6 @@ export class Product extends BaseEntityClass {
 @Entity()
 export class Stock extends BaseEntityClass {
 
-    
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
 }
