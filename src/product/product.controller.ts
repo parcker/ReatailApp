@@ -51,11 +51,20 @@ export class ProductController {
         return packingtype;
        
     }
+    @Get('/getproductwithfewdetail')
+    @UseGuards(AuthGuard('jwt'))
+    async getproductwithfewdetail(@Request() req,):Promise<any> {
+        
+        const response = await this.productService.getProduct(req.user.businessId);
+        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
+        return response;
+       
+    }
     @Get('/getmyproducts')
     @UseGuards(AuthGuard('jwt'))
     async getmyproducts(@Request() req,):Promise<any> {
         
-        const response = await this.productService.getProduct(req.user.businessId);
+        const response = await this.productService.getProductwithfulldetails(req.user.businessId);
         if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
         return response;
        

@@ -120,6 +120,29 @@ export class ProductService {
        catch(error){ Logger.error(error);
          return new HttpException({message: 'Process error while executing operation:', code:500, status:false},HttpStatus.INTERNAL_SERVER_ERROR);}
     }
+    async getProductwithfulldetails(businessId:string):Promise<any>{
+      try{
+
+        let business= await this.businessRepository.findOne({where:{id:businessId}});
+        if(!business) 
+        {
+           let result= new ResponseObj<string>();
+           result.message=`invalid or business Id , no business data found`;
+           result.status=false;
+           result.result='';
+           return result;
+        }
+        let productinfo=await this.productRepository.find({where:{business:business}});
+        
+        let result= new ResponseObj<Product[]>();
+        result.message=`${productinfo.length} records found` ;
+        result.status=true;
+        result.result=productinfo;
+        return result;
+      }
+      catch(error){ Logger.error(error);
+        return new HttpException({message: 'Process error while executing operation:', code:500, status:false},HttpStatus.INTERNAL_SERVER_ERROR);}
+   }
     async disableproduct(updatedby:string ,status:boolean,productId:string):Promise<any>{
       try{
          let product= await this.productRepository.findOne({where:{id:productId}});

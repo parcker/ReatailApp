@@ -42,3 +42,9 @@ export class Product extends BaseEntityClass {
     business: Business;
 
 }
+
+@Entity()
+export class Stock extends BaseEntityClass {
+
+    
+}

@@ -27,6 +27,7 @@ export class CreatProductDto{
     @IsInt()
     public packs: number;
 
+    @ApiModelProperty({ required: true})
     @IsBoolean()
     public expiredenabled: boolean;
     
