@@ -30,6 +30,8 @@ import { RolesController } from './roles/roles.controller';
 import { FeaturesController } from './settings/features/features.controller';
 import { UsersController } from './users/users.controller';
 import { CompanyController } from './company/company.controller';
+import { OrderService } from './order/order.service';
+import { OrderModule } from './order/order.module';
 
 
 @Module({
@@ -64,6 +66,7 @@ import { CompanyController } from './company/company.controller';
         CategorysModule,
         PartnersModule,
         ProductModule,
+        OrderModule,
        
     ],
     controllers: [AppController, CategorysController, CompanyController,PartnersController, ProductController,RolesController,FeaturesController,UsersController],

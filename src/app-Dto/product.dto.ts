@@ -70,8 +70,13 @@ export class UpdateProductDto{
     @IsInt()
     public packs: number;
 
+    @ApiModelProperty({ required: true})
     @IsBoolean()
     public expiredenabled: boolean;
+
+    @ApiModelProperty({ required: true})
+    @IsBoolean()
+    public isdisabled: boolean;
     
     @IsUUID()
     @ApiModelProperty({ required: true})

@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany
 import {IsNotEmpty} from 'class-validator';
 import { BaseEntityClass } from './base.entity';
 import { Business } from './business.entity';
+import { Order } from './order.entity';
 
 @Entity()
 export class Customer extends BaseEntityClass{
@@ -50,6 +51,8 @@ export class Supplier extends BaseEntityClass{
     @Column()
     @IsNotEmpty()
     address:string;
-
+    
+    @OneToMany(type => Order, order => order.supplier)
+    order: Order[];
     
 }

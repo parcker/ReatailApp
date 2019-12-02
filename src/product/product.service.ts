@@ -81,6 +81,7 @@ export class ProductService {
              model.isDisabled=false;
              model.createdby=createdby;
              model.updatedby='';
+             model.haspricebench=false;
              model.expiredenabled=false
              var response= await this.productRepository.save(model);
              let result= new ResponseObj<Product>();
@@ -132,8 +133,13 @@ export class ProductService {
            result.result='';
            return result;
         }
-        let productinfo=await this.productRepository.find({where:{business:business}});
-        
+
+        const productinfo =await this.productRepository
+         .createQueryBuilder("product")
+         .leftJoinAndSelect("product.category", "category",)
+         .leftJoinAndSelect("product.subCategory", "subcategory",)
+         .getMany();
+     
         let result= new ResponseObj<Product[]>();
         result.message=`${productinfo.length} records found` ;
         result.status=true;
@@ -217,15 +223,16 @@ export class ProductService {
          product.business=business;
          product.category=category;
          product.subCategory=subCategory;
-         product.name=product.name;
-         product.description=product.description;
-         product.itemcode=product.itemcode;
-         product.packingtype=product.packingtype;
-         product.packs=product.packs;
-         product.isDisabled=false;
+         product.name=model.name;
+         product.description=model.description;
+         product.itemcode=model.itemcode;
+         product.packingtype=model.packingtype;
+         product.packs=model.packs;
+         product.isDisabled=model.isdisabled;
          product.createdby=product.createdby;
          product.updatedby=updatedby;
-         model.expiredenabled=false
+         product.expiredenabled=product.expiredenabled;
+         product.haspricebench=product.haspricebench;
 
          const dbresponse=await this.productRepository.save(product);
          let result= new ResponseObj<Product>();
