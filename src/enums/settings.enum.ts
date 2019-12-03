@@ -15,3 +15,9 @@ export enum PackingType {
     Single=2,
     
 }
+
+export enum OrderStatus {
+    Pending = 1,
+    Approved=2,
+    
+}

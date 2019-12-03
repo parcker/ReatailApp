@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Logger} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { Business, BusinessLocation } from "../entities/business.entity";
@@ -12,24 +12,30 @@ export class BusinesslocationService {
     constructor(@InjectRepository(BusinessLocation)private readonly buisnesLocationRepository: Repository<BusinessLocation>,
     @InjectRepository(Business)private readonly buisnessRepository: Repository<Business>) 
     {}
-    async create(buisnessname:string,address:string,businessId:string,userId:string): Promise<ResponseObj<BusinessLocation>>{
+    async create(buisnessname:string,address:string,businessId:string,userId:string): Promise<any>{
        
        try
         { 
-            console.log('Data sent',buisnessname,address,businessId);
+           
             const business=await this.buisnessRepository.findOne({where:{Id:businessId}});
+            if (!business) {
+
+                let result = new ResponseObj<string>();
+                result.message = `invalid or business  Id , no business  data found`;
+                result.status = false;
+                result.result = '';
+                return result;
+            }
             let model=new BusinessLocation();
             model.name=buisnessname;
             model.address=address;
             model.createdby=userId;
             model.IsActive=true;
             model.updatedby='';
-
-            const businesslocation=await this.buisnesLocationRepository.create({...model,business})
-            
-            
-            let response= await this.buisnesLocationRepository.save(businesslocation);
-            console.log(response);
+            model.business =business;
+            model.isDisabled=false;
+            let response= await this.buisnesLocationRepository.save(model);
+          
             let result= new ResponseObj<BusinessLocation>();
             result.message=`Business location created` ;
             result.status=true;
@@ -37,9 +43,18 @@ export class BusinesslocationService {
             return result;
 
 
-        }catch(error){console.log(error)}
+        }catch (error) {
+
+            Logger.error(error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    async getbusinesslocation(): Promise<ResponseObj<IbusinessLocationDto[]>>{
+    async getbusinesslocation(): Promise<any>{
        
         try
          { 
@@ -53,9 +68,18 @@ export class BusinesslocationService {
              return result;
  
  
-         }catch(error){}
+         }catch (error) {
+
+            Logger.error(error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
      }
-     async getbusinesslocationBusinessId(businessId:string): Promise<ResponseObj<BusinessLocation[]>>{
+     async getbusinesslocationBusinessId(businessId:string): Promise<any>{
        
         try
          { 
@@ -72,7 +96,16 @@ export class BusinesslocationService {
              return result;
  
  
-         }catch(error){}
+         }catch (error) {
+
+            Logger.error(error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
      }
     
     

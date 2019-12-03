@@ -25,14 +25,14 @@ export class OrderService {
 
     }
 
-    async postorder(order: CreateOrderDto, orderitems: CreateOrderitemDto[], createdby: string): Promise<any> {
+    async postorder(order: CreateOrderDto, createdby: string,businessId:string): Promise<any> {
         try {
 
-            let getbusinessInfo = await this.businessRepository.findOne({ where: { id: order.buisnessId, isDisabled: false } });
+            let getbusinessInfo = await this.businessRepository.findOne({ where: { id: businessId, isDisabled: false } });
             if (!getbusinessInfo) {
 
                 let result = new ResponseObj<string>();
-                result.message = `invalid or business  Id , no business  data found`;
+                result.message = `invalid or business info , no business  data found`;
                 result.status = false;
                 result.result = '';
                 return result;
@@ -41,16 +41,25 @@ export class OrderService {
             if (!getbusinesslocationInfo) {
 
                 let result = new ResponseObj<string>();
-                result.message = `invalid or business location  Id , no business  data found`;
+                result.message = `invalid or business location info , no business location  data found`;
                 result.status = false;
                 result.result = '';
                 return result;
             }
-            let getsupplierInfo = await this.supplierRepository.findOne({ where: { id: order.businesslocationId, isDisabled: false } });
+            let getsupplierInfo = await this.supplierRepository.findOne({ where: { id: order.supplierid, isDisabled: false } });
             if (!getsupplierInfo) {
 
                 let result = new ResponseObj<string>();
-                result.message = `invalid or supplier location  Id , no business  data found`;
+                result.message = `invalid or supplier info , no supplier  data found`;
+                result.status = false;
+                result.result = '';
+                return result;
+            }
+            let getinvoiceInfo = await this.orderRepository.findOne({ where: { invoiceNumber: order.invoiceNumber,business:getbusinessInfo, isDisabled: false } });
+            if (getinvoiceInfo) {
+
+                let result = new ResponseObj<string>();
+                result.message = `duplicate invoice detected ${order.invoiceNumber}`;
                 result.status = false;
                 result.result = '';
                 return result;
@@ -63,20 +72,22 @@ export class OrderService {
             ordermodel.business=getbusinessInfo;
             ordermodel.businesslocation=getbusinesslocationInfo;
             ordermodel.updatedby='';
-            ordermodel.totalcostprice=order.totalcostprice;
+            ordermodel.totalcostprice=order.Orderitem.reduce((total, item) => total += item.cost, 0);
             ordermodel.isDisabled=false;
             let response = await this.orderRepository.save(ordermodel);
-            
+          
             let countitem=0;
             let countinserterror=0;
-
-            for (let item of orderitems) {
+         
+            for (let item of order.Orderitem) {
                 
-                let getproductInfo = await this.productRepository.findOne({ where: { id: item.productId, isDisabled: false } });
+               
+                let getproductInfo = await this.productRepository.findOne({ where: { id: item.productId,business:getbusinessInfo, isDisabled: false } });
                 if (!getsupplierInfo) {
-                    countitem++;
+                    countinserterror++;
                   continue;
                 }
+               
                 let productitem=new OrderItem();
                 productitem.product=getproductInfo;
                 productitem.isDisabled=false;
@@ -89,9 +100,30 @@ export class OrderService {
                 productitem.previousqty=0;
 
                 let itemresponse = await this.oderitemRepository.save(productitem);
-                countinserterror++;
+                if(itemresponse){ countitem ++;}
+               
             }
-          
+          if(response && countitem==order.Orderitem.length){
+
+            let result = new ResponseObj<string>();
+            result.message = `order with invoice number ${response.invoiceNumber}  created, with ${countitem} items captured and status [pending] waiting for approval`;
+            result.status = true;
+            result.result = '';
+            return result;
+          }
+          if(response && countitem!=order.Orderitem.length){
+
+            let result = new ResponseObj<string>();
+            result.message = `order with invoice number ${response.invoiceNumber}  created, with ${countitem} items captured please delete this order because there is an error`;
+            result.status = false;
+            result.result = '';
+            return result;
+          }
+          let result = new ResponseObj<string>();
+            result.message = `order with invoice number ${response.invoiceNumber} could not be created because an error occure please try again`;
+            result.status = false;
+            result.result = '';
+            return result;
 
         }
         catch (error) {

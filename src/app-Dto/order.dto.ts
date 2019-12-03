@@ -1,6 +1,32 @@
-import { IsNotEmpty, IsInt, IsBoolean, MaxLength, IsUUID, IsOptional, IsNumber, Max, Min } from "class-validator";
+import { IsNotEmpty, MaxLength, IsNumber, Min, ValidateNested, IsOptional } from "class-validator";
 import { ApiModelProperty } from "@nestjs/swagger";
-import { isNumber } from "util";
+import { Type } from "class-transformer";
+
+export class CreateOrderitemDto{
+
+    @IsNotEmpty()
+    @ApiModelProperty({ required: true})
+    @MaxLength(100)
+    productId: string;
+
+    @IsOptional()
+   @MaxLength(100)
+    orderid: string;
+
+    @IsNumber()
+    @ApiModelProperty({ required: true})
+    qty:number;
+
+    @IsNumber()
+    @ApiModelProperty({ required: true})
+    cost:number;
+
+    @IsNumber()
+    @ApiModelProperty({ required: true})
+    unitprice:number;
+
+
+}
 
 export class CreateOrderDto{
 
@@ -24,41 +50,16 @@ export class CreateOrderDto{
     @ApiModelProperty({ required: true})
     totalcostprice:number;
 
-    @IsNotEmpty()
-    @ApiModelProperty({ required: true})
-    @MaxLength(100)
-    public buisnessId: string;
 
     @IsNotEmpty()
     @ApiModelProperty({ required: true})
     @MaxLength(100)
-    public businesslocationId: string;
+    businesslocationId: string;
 
-
-}
-export class CreateOrderitemDto{
-
-    @IsNotEmpty()
-    @ApiModelProperty({ required: true})
-    @MaxLength(100)
-    productId: string;
-
-    @IsNotEmpty()
-    @ApiModelProperty({ required: true})
-    @MaxLength(100)
-    orderid: string;
-
-    @IsNumber()
-    @ApiModelProperty({ required: true})
-    qty:number;
-
-    @IsNumber()
-    @ApiModelProperty({ required: true})
-    cost:number;
-
-    @IsNumber()
-    @ApiModelProperty({ required: true})
-    unitprice:number;
+    @ValidateNested({ each: true })
+    @Type(() => CreateOrderitemDto)
+    @ApiModelProperty({ type: [CreateOrderitemDto]})
+    Orderitem:CreateOrderitemDto[]
 
 
 }
