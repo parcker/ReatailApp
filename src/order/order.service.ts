@@ -7,6 +7,7 @@ import { Product } from '../entities/product.entity';
 import { CreateOrderDto, CreateOrderitemDto } from '../app-Dto/order.dto';
 import { ResponseObj } from '../shared/generic.response';
 import { Supplier } from '../entities/partner.entity';
+import { OrderStatus } from '../enums/settings.enum';
 
 @Injectable()
 export class OrderService {
@@ -68,7 +69,7 @@ export class OrderService {
             ordermodel.invoiceNumber=order.invoiceNumber;
             ordermodel.supplier=getsupplierInfo;
             ordermodel.createdby=createdby;
-            ordermodel.orderstatus=order.orderstatus;
+            ordermodel.orderstatus=OrderStatus.Pending;
             ordermodel.business=getbusinessInfo;
             ordermodel.businesslocation=getbusinesslocationInfo;
             ordermodel.updatedby='';

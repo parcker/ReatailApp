@@ -41,9 +41,6 @@ export class CreateOrderDto{
     @ApiModelProperty({ required: true})
     invoiceNumber:string;
 
-    @IsNumber()
-    @ApiModelProperty({ required: true})
-    orderstatus:number;
 
     @IsNumber()
     @Min(100)
