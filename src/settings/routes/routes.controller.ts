@@ -14,7 +14,7 @@ export class RoutesController {
 
     @Post('/create')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     public async create(@Request() req, @Body() body: AppllicationRoutesDto){
           
          const response = await this.routesService.createRoute(body.url,body.description,body.type,req.user.id);
@@ -24,7 +24,7 @@ export class RoutesController {
     }
     @Get('/getroutes')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     public async getroutes(){
         
          const response = await this.routesService.getByRouteByType();
@@ -33,7 +33,7 @@ export class RoutesController {
     }
     @Post('/assignpermission')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     public async assignpermission(@Request() req, @Body() body: AssignPermissionDto){
           
          const response = await this.routesService.assignRouteToUser(body.routeId,body.userId,req.user.id);

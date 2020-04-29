@@ -11,7 +11,7 @@ export class ProductController {
 
     @Post('/create')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     async create(@Request() req,@Body() body:CreatProductDto){
        
         
@@ -23,7 +23,7 @@ export class ProductController {
     }
     @Post('/setproductstatus')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     async setproductstatus(@Request() req,@Body() body:ProductStatusDto){
        
    
@@ -36,7 +36,7 @@ export class ProductController {
     //
     @Patch(':id/updateproduct')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     async updatesubcategory(@Param('id') id,@Request() req,@Body() body: UpdateProductDto){
         
         const response = await this.productService.updateProduct(req.user.id,id,body,req.user.businessId);

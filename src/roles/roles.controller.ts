@@ -11,7 +11,7 @@ export class RolesController {
 
     @Post('/create')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     async create(@Request() req,@Body() body:CreateRoleDto){
        
         let response= await this.roleService.createRole(body,req.user.id,req.user.businessId);
@@ -27,7 +27,7 @@ export class RolesController {
     }
     @Post('/assignrole')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     async assignRole(@Request() req, @Body() body: AssignRoleDto){
         
         const response = await this.roleService.assignUserToRole(body.roleId,body.userIds,req.user.id);

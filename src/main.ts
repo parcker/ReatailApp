@@ -11,7 +11,7 @@ import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { initDocumentation } from './documentation';
 import { EntitiesExceptionFilter } from './http-exception.filter';
-import { ValidationPipe } from './shared/validation.pipe';
+
 //@nestjs/common
 
 
@@ -30,8 +30,8 @@ async function bootstrap() {
         title: 'Nest boilerplate',
         endpoint: '/docs'
     });
-    app.useGlobalPipes(new ValidationPipe());
-    await app.listen(parseInt(process.env.PORT) || 8000);
+    //app.useGlobalPipes(new ValidationPipe());
+    await app.listen(parseInt(process.env.PORT) || 8001);
 }
 
 bootstrap();

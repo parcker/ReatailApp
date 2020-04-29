@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
-import {IsNotEmpty} from 'class-validator';
+
 import { BaseEntityClass } from './base.entity';
 import { BusinessLocation, Business } from './business.entity';
 import { Product } from './product.entity';
@@ -9,7 +9,7 @@ export class Category extends BaseEntityClass {
     @PrimaryGeneratedColumn("uuid")
     id: string;
     @Column()
-    @IsNotEmpty()
+   
     name:string;
     @ManyToOne(() => Business, business => business.category)
     @JoinColumn()
@@ -28,7 +28,7 @@ export class SubCategory extends BaseEntityClass {
     @PrimaryGeneratedColumn("uuid")
     id: string;
     @Column()
-    @IsNotEmpty()
+   
     name:string;
 
     @ManyToOne(() => Category, category => category.subcategory)

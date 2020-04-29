@@ -2,63 +2,67 @@ import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Category, SubCategory } from '../entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BusinessLocation, Business } from '../entities/business.entity';
-import {paginate, Pagination, IPaginationOptions} from 'nestjs-typeorm-paginate';
+import { Business } from '../entities/business.entity';
 import { ResponseObj } from '../shared/generic.response';
+import { PayloadvalidationService } from '../shared/payloadvalidation/payloadvalidation.service';
 
 @Injectable()
 export class CategorysService {
+  
 
     constructor(@InjectRepository(Category)private readonly categorRepository: Repository<Category>,
     @InjectRepository(SubCategory)private readonly subcategoryRepository: Repository<SubCategory>,
-    @InjectRepository(Business)private readonly businessRepository: Repository<Business>) {}
-
-    // async paginate(options: IPaginationOptions): Promise<Pagination<Category[]>> {
-
-    //     return await paginate<Category[]>(this.categorRepository.find({where:{businesslocation:businesslocationId,isDisabled:false}), options);
-    // }
+    @InjectRepository(Business)private readonly businessRepository: Repository<Business>,
+    private readonly payloadService: PayloadvalidationService) {}
     async createCategory(categoryname :string,createdby:string,businessId:string): Promise<any> {
         try
         {  
-             let getbusinessInfo=await this.businessRepository.findOne({where:{id:businessId,isDisabled:false}});
+            let validationResult = await this.payloadService.validateCatgoryAsync({name:categoryname});
+            if(validationResult.IsValid){
+                let getbusinessInfo=await this.businessRepository.findOne({where:{id:businessId,isDisabled:false}});
+                if(!getbusinessInfo){
+                   
+                   let result= new ResponseObj<any>();
+                   result.message=`invalid or business  Id , no business  data found`;
+                   result.status=false;
+                   result.code=409;
+                   result.result='';
+                   return result;
+                }
+                let checkduplicate=await this.categorRepository.findOne({where:{name:categoryname}});
            
-             if(!getbusinessInfo){
+                if(checkduplicate)
+                {
+                  
+                   let result= new ResponseObj<any>();
+                   result.message=`duplicate category name found ${categoryname}`;
+                   result.status=false;
+                   result.code=409;
+                   result.result='';
+                   return result;
+                }
+                const model=new Category();
+                model.business=getbusinessInfo;
+                model.name=categoryname.trim();
+                model.createdby=createdby;
+                model.updatedby='',
+                model.isDisabled=false
                 
-                let result= new ResponseObj<string>();
-                result.message=`invalid or business  Id , no business  data found`;
-                result.status=false;
-                result.result='';
-                return result;
-             }
-             //,businesslocation:getbusinessInfo,isDisabled:false
-             let checkduplicate=await this.categorRepository.findOne({where:{name:categoryname}});
+                const dbresponse=await this.categorRepository.save(model);
+               let result= new ResponseObj<Category>();
+               result.message=`${dbresponse.name} has been created and activated` ;
+               result.status=true;
+               result.code=200;
+               result.result=dbresponse;
+               return result;
+
+            }
+            return await this.payloadService.badRequestErrorMessage(validationResult);
            
-             if(checkduplicate)
-             {
-               
-                let result= new ResponseObj<string>();
-                result.message=`duplicate category name found ${categoryname}`;
-                result.status=false;
-                result.result='';
-                return result;
-             }
-             const model=new Category();
-             model.business=getbusinessInfo;
-             model.name=categoryname.trim();
-             model.createdby=createdby;
-             model.updatedby='',
-             model.isDisabled=false
-             
-             const dbresponse=await this.categorRepository.save(model);
-             let result= new ResponseObj<Category>();
-            result.message=`${dbresponse.name} has been created and activated` ;
-            result.status=true;
-            result.result=dbresponse;
-            return result;
-            
         }
         catch(error)
         {
+            console.log('Error Message',error,Date.now())
             Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
@@ -89,48 +93,56 @@ export class CategorysService {
             result.result=dbresponse;
             return result;
         }
-        catch(error){
-             return new 
-            HttpException({message: 'Process error while executing operation:',
-            code:500, status:false},
-            HttpStatus.INTERNAL_SERVER_ERROR);}
+        catch(error)
+        {
+            console.log('Error Message',error,Date.now())
+            return new 
+           HttpException({message: 'Process error while executing operation:',
+           code:500, status:false},
+           HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
      }
     async updateCategory(categoryId :string,categoryname:string,updatedby:string,businessId:string): Promise<any>{
 
         try{
 
-
-            let getbusinessInfo=await this.businessRepository.findOne({where:{id:businessId,isDisabled:false}});
-             if(!getbusinessInfo){
-                
-                let result= new ResponseObj<string>();
-                result.message=`invalid or business  Id , no business  data found`;
-                result.status=false;
-                result.result='';
-                return result;
-             }
-
-            const dbcategory=await this.categorRepository.findOne({where:{id:categoryId.trim(),business:{id:businessId},isDisabled:false}});
-            if(!dbcategory){
-               
-                let result= new ResponseObj<string>();
-                result.message=`No category match found`;
-                result.status=false;
-                result.result='';
-                return result;
+            let validationResult = await this.payloadService.validateCatgoryAsync({name:categoryname});
+            if(validationResult.IsValid){
+                let getbusinessInfo=await this.businessRepository.findOne({where:{id:businessId,isDisabled:false}});
+                if(!getbusinessInfo){
+                   
+                   let result= new ResponseObj<string>();
+                   result.message=`invalid or business  Id , no business  data found`;
+                   result.status=false;
+                   result.result='';
+                   return result;
+                }
+   
+               const dbcategory=await this.categorRepository.findOne({where:{id:categoryId.trim(),business:{id:businessId},isDisabled:false}});
+               if(!dbcategory){
+                  
+                   let result= new ResponseObj<string>();
+                   result.message=`No category match found`;
+                   result.status=false;
+                   result.result='';
+                   return result;
+               }
+               dbcategory.name=categoryname.trim();
+               dbcategory.updatedby=updatedby;
+               const dbresponse=await this.categorRepository.save(dbcategory);
+               let result= new ResponseObj<Category>();
+               result.message=`${dbresponse.name} has been updated` ;
+               result.status=true;
+               result.result=dbresponse;
+               return result;
             }
-            dbcategory.name=categoryname.trim();
-            dbcategory.updatedby=updatedby;
-            const dbresponse=await this.categorRepository.save(dbcategory);
-            let result= new ResponseObj<Category>();
-            result.message=`${dbresponse.name} has been updated` ;
-            result.status=true;
-            result.result=dbresponse;
-            return result;
+            return await this.payloadService.badRequestErrorMessage(validationResult);
+          
         }
         catch(error)
         {
+            console.log('Error Message',error,Date.now())
             Logger.error(error);
             return new 
             HttpException({message: 'Process error while executing operation:',
@@ -163,11 +175,11 @@ export class CategorysService {
         }
         catch(error)
         {
-            Logger.error(error);
+            console.log('Error Message',error,Date.now())
             return new 
-            HttpException({message: 'Process error while executing operation:',
-            code:500, status:false},
-            HttpStatus.INTERNAL_SERVER_ERROR);
+           HttpException({message: 'Process error while executing operation:',
+           code:500, status:false},
+           HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
@@ -219,11 +231,11 @@ export class CategorysService {
         }
         catch(error)
         {
-            Logger.error(error);
+            console.log('Error Message',error,Date.now())
             return new 
-            HttpException({message: 'Process error while executing operation:',
-            code:500, status:false},
-            HttpStatus.INTERNAL_SERVER_ERROR);
+           HttpException({message: 'Process error while executing operation:',
+           code:500, status:false},
+           HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -252,11 +264,11 @@ export class CategorysService {
         }
         catch(error)
         {
-            Logger.error(error);
+            console.log('Error Message',error,Date.now())
             return new 
-            HttpException({message: 'Process error while executing operation:',
-            code:500, status:false},
-            HttpStatus.INTERNAL_SERVER_ERROR);
+           HttpException({message: 'Process error while executing operation:',
+           code:500, status:false},
+           HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -264,59 +276,66 @@ export class CategorysService {
 
         try{
 
-
-            let getbusinessInfo=await this.businessRepository.findOne({where:{id:businessId,isDisabled:false}});
-             if(!getbusinessInfo){
-                
-                let result= new ResponseObj<string>();
-                result.message=`invalid or business  Id , no business  data found`;
-                result.status=false;
-                result.result='';
-                return result;
-             }
-
-            let dbSubcategory=await this.subcategoryRepository.findOne({where:{id:Id.trim(),business:getbusinessInfo,isDisabled:false}});
-            if(!dbSubcategory){
-               
-                let result= new ResponseObj<string>();
-                result.message=`No Subcategory match found`;
-                result.status=false;
-                result.result='';
-                return result;
+            let validationResult = await this.payloadService.validateSubCatgoryAsync(
+                {name:subcategoryname,categoryId:categoryId}
+            );
+            if(validationResult.IsValid)
+            {
+                let getbusinessInfo=await this.businessRepository.findOne({where:{id:businessId,isDisabled:false}});
+                if(!getbusinessInfo){
+                   
+                   let result= new ResponseObj<string>();
+                   result.message=`invalid or business  Id , no business  data found`;
+                   result.status=false;
+                   result.result='';
+                   return result;
+                }
+   
+               let dbSubcategory=await this.subcategoryRepository.findOne({where:{id:Id.trim(),business:getbusinessInfo,isDisabled:false}});
+               if(!dbSubcategory){
+                  
+                   let result= new ResponseObj<string>();
+                   result.message=`No Subcategory match found`;
+                   result.status=false;
+                   result.result='';
+                   return result;
+               }
+               let oldername=dbSubcategory.name;
+   
+               let category=await this.categorRepository.findOne({where:{id:categoryId}});
+               if(!category){
+                  
+                   let result= new ResponseObj<string>();
+                   result.message=`No category match found`;
+                   result.status=false;
+                   result.code=409;
+                   result.result='';
+                   return result;
+               }
+            
+             
+               dbSubcategory.category=category;
+               dbSubcategory.name=subcategoryname.trim();
+               dbSubcategory.updatedby=updatedby;
+             
+               let dbresponse=await this.categorRepository.save(dbSubcategory);
+   
+               let result= new ResponseObj<Category>();
+               result.message=`${oldername} has been updated to ${dbresponse.name}` ;
+               result.status=true;
+               result.code=200;
+               result.result=dbresponse;
+               return result;
             }
-            let oldername=dbSubcategory.name;
-
-            let category=await this.categorRepository.findOne({where:{id:categoryId}});
-            if(!category){
-               
-                let result= new ResponseObj<string>();
-                result.message=`No category match found`;
-                result.status=false;
-                result.result='';
-                return result;
-            }
-         
-          
-            dbSubcategory.category=category;
-            dbSubcategory.name=subcategoryname.trim();
-            dbSubcategory.updatedby=updatedby;
-          
-            let dbresponse=await this.categorRepository.save(dbSubcategory);
-
-            let result= new ResponseObj<Category>();
-            result.message=`${oldername} has been updated to ${dbresponse.name}` ;
-            result.status=true;
-            result.result=dbresponse;
-            return result;
+            return await this.payloadService.badRequestErrorMessage(validationResult);
         }
         catch(error)
         {
-            Logger.error(error);
-         
+            console.log('Error Message',error,Date.now())
             return new 
-            HttpException({message: 'Process error while executing operation:',
-            code:500, status:false},
-            HttpStatus.INTERNAL_SERVER_ERROR);
+           HttpException({message: 'Process error while executing operation:',
+           code:500, status:false},
+           HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

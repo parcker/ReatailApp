@@ -1,5 +1,4 @@
 import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, QueryFailedError, BaseEntity, OneToOne, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
-import {IsEmail, IsNotEmpty, Validator} from 'class-validator';
 
 import * as bcrypt from 'bcrypt';
 import { Business, BusinessLocationUser } from './business.entity';
@@ -15,18 +14,18 @@ export class User extends BaseEntity
     public id: string;
 
     @Column()
-    @IsNotEmpty()
+    
     public username: string;
 
     @Column()
-    @IsNotEmpty()
+    
     public email: string;
 
     @Column()
     public emailConfirmed: boolean;
 
     @Column()
-    @IsNotEmpty()
+    
     public password: string;
 
     @Column()
@@ -36,7 +35,7 @@ export class User extends BaseEntity
     public accessFailedCount: number;
 
     @Column()
-    @IsNotEmpty()
+    
     public firstName: string;
 
     @Column()
@@ -47,7 +46,7 @@ export class User extends BaseEntity
     public isDisabled: boolean;
     
     @Column()
-    @IsNotEmpty()
+    
     public phonenumber: string;
 
     @OneToOne(() => Business, (business: Business) => business.user, {
@@ -84,10 +83,10 @@ export class User extends BaseEntity
         this.isDisabled=false;
     }
 
-    @BeforeInsert()
-    @BeforeUpdate()
-    private validateEmail() {
-        const validator = new Validator();
-        if (!validator.isEmail(this.email)) throw new QueryFailedError('', [], 'email is not a valid email');
-    }
+    // @BeforeInsert()
+    // @BeforeUpdate()
+    // private validateEmail() {
+    //     const validator = new Validator();
+    //     if (!validator.isEmail(this.email)) throw new QueryFailedError('', [], 'email is not a valid email');
+    // }
 }

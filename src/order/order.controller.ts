@@ -12,7 +12,7 @@ export class OrderController {
 
     @Post('/creat')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
   
     async creatcategory(@Request() req,@Body() body: CreateOrderDto,){
     

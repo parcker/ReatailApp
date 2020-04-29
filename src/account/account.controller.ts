@@ -12,13 +12,14 @@ export class AccountController {
 
    
     @Post('/signup')
-    @UsePipes(new ValidationPipe())
-    
-    public async Sigup(@Body() body: SigupDto){
+    public async Sigup(@Body() body: SigupDto,@Res() res){
   
         const response = await this.accountService.create(body);
-        if(response.status==false){throw new HttpException(response.message, HttpStatus.BAD_REQUEST);}
-        return response;
+        if(response.status===false){
+
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
         
     }
     @Get('/activate/:token')

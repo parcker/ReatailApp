@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
-import {IsNotEmpty} from 'class-validator';
+
 import { BaseEntityClass } from './base.entity';
 import { User } from './user.entity';
 import { Business } from './business.entity';
@@ -10,7 +10,7 @@ export class Role extends BaseEntityClass {
     id: string;
 
     @Column()
-    @IsNotEmpty()
+    
     public name: string;
   
     @ManyToOne(type => Business, business => business.roles)
@@ -41,13 +41,13 @@ export class ApplicationRoute extends BaseEntityClass {
     @PrimaryGeneratedColumn("uuid")
     id: string;
     @Column()
-    @IsNotEmpty()
+    
     url:string;
     @Column()
-    @IsNotEmpty()
+    
     description:string;
     @Column()
-    @IsNotEmpty()
+    
     type:number;
 
     @OneToMany(type => UserPremission, userpermission => userpermission.applicationroute)

@@ -1,5 +1,5 @@
 import { Module} from '@nestjs/common';
-import{ValidationPipe} from './shared/validation.pipe'
+
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
@@ -9,7 +9,6 @@ import { RolesModule } from './roles/roles.module';
 import { CompanyModule } from './company/company.module';
 import { AccountModule } from './account/account.module';
 
-import { APP_PIPE } from '@nestjs/core';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { EmailModule } from './shared/email/email.module';
 import { rootPath } from 'electron-root-path';
@@ -22,16 +21,14 @@ import { CategorysModule } from './categorys/categorys.module';
 import { PartnersController } from './partners/partners.controller';
 import { PartnersModule } from './partners/partners.module';
 import * as path from 'path';
-import { from } from 'rxjs';
-import { ProductService } from './product/product.service';
 import { ProductController } from './product/product.controller';
 import { ProductModule } from './product/product.module';
 import { RolesController } from './roles/roles.controller';
 import { FeaturesController } from './settings/features/features.controller';
 import { UsersController } from './users/users.controller';
 import { CompanyController } from './company/company.controller';
-import { OrderService } from './order/order.service';
 import { OrderModule } from './order/order.module';
+import { PayloadvalidationModule } from './shared/payloadvalidation/payloadvalidation.module';
 
 
 @Module({
@@ -67,10 +64,11 @@ import { OrderModule } from './order/order.module';
         PartnersModule,
         ProductModule,
         OrderModule,
+        PayloadvalidationModule
        
     ],
     controllers: [AppController, CategorysController, CompanyController,PartnersController, ProductController,RolesController,FeaturesController,UsersController],
-    providers: [{provide: APP_PIPE, useClass: ValidationPipe, }]
+    providers: []//{provide: APP_PIPE, useClass: ValidationPipe }
 })
 
 export class ApplicationModule {

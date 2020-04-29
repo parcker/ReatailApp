@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToMany, OneToMany, ManyToOne } from 'typeorm';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+
 import { BaseEntityClass } from './base.entity';
 import { User } from './user.entity';
 import { Role } from './role.entity';
@@ -14,19 +14,19 @@ export class Business extends BaseEntityClass {
     id: string;
 
     @Column()
-    @IsNotEmpty()
+   
     public name: string;
 
     @Column()
-    @IsNotEmpty()
+   
     public address: string;
 
     @Column()
-    @IsOptional()
+    
     public logoPath: string;
     
     @Column()
-    @IsNotEmpty()
+   
     public IsActive: boolean;
     
     @OneToMany(type => BusinessLocation, businessLocation => businessLocation.business)
@@ -62,15 +62,15 @@ export class BusinessLocation extends BaseEntityClass {
     id: string;
 
     @Column()
-    @IsNotEmpty()
+   
     public name: string;
 
     @Column()
-    @IsNotEmpty()
+   
     public address: string;
     
     @Column()
-    @IsNotEmpty()
+   
     public IsActive: boolean;
 
     @ManyToOne(type => Business, business => business.businessLocation)
@@ -78,11 +78,11 @@ export class BusinessLocation extends BaseEntityClass {
     business: Business;
 
     @Column()
-    @IsNotEmpty()
+   
     public createdby: string;
     
     @Column()
-    @IsOptional()
+    
     public updatedby: string;
 
     @OneToMany(type => BusinessLocationUser, businesslocationuser => businesslocationuser.businesslocation)

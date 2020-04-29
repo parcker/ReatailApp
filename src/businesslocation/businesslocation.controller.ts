@@ -11,7 +11,7 @@ export class BusinesslocationController {
     
     @Post('/stores')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     public async CreatStores(@Request() req,@Body() body: CreateBusinessLocationDto){
   
  

@@ -10,7 +10,7 @@ export class PartnersController {
 
    @Post('/customer/creat')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     async creatcategory(@Request() req,@Body() body: CreatCustomerDto){
         
         
@@ -20,7 +20,7 @@ export class PartnersController {
     }
     @Post('/supplier/creat')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     async creatsuplier(@Request() req,@Body() body: CreatSupplierDto){
         
         
@@ -30,7 +30,7 @@ export class PartnersController {
     }
     @Get('/customer/mycustomer')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     async getcustomer(@Request() req){
         
         const response = await this.partnersService.getcustomers(req.user.businessId);
@@ -39,7 +39,7 @@ export class PartnersController {
     }
     @Get('/supplier/mysupplier')
     @UseGuards(AuthGuard('jwt'))
-    @UsePipes(new ValidationPipe())
+    
     async getsupplier(@Request() req){
         
         const response = await this.partnersService.getsuppliers(req.user.businessId);

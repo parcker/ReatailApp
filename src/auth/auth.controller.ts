@@ -10,8 +10,14 @@ export class AuthController {
     ) {}
   //  @HttpCode(HttpStatus.OK)
     @Post('/login')
-    public async login(@Body() body: LoginDto,@Res()res) {
+    public async login(@Body() body: LoginDto,@Res() res) {
+        
         let response= await this.authService.login(body.email, body.password);
+        if(response.status===false){
+
+            return res.status(response.code).json(response);
+        }
         return res.status(HttpStatus.OK).json(response);
+        
     }
 }

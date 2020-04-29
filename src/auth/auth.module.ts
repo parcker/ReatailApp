@@ -8,12 +8,14 @@ import { User } from '../entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Business } from '../entities/business.entity';
 import { UserPremission } from '../entities/role.entity';
+import { PayloadvalidationModule } from '../shared/payloadvalidation/payloadvalidation.module';
 
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([User,Business,UserPremission]),
-        UsersModule
+        UsersModule,
+        PayloadvalidationModule
     ],
     providers: [AuthService, IsAuthenticated, JwtStrategy],
     controllers: [AuthController],

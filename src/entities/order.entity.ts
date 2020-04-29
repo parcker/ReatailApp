@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
-import {IsNotEmpty} from 'class-validator';
+
 import { BaseEntityClass } from './base.entity';
 import { Supplier } from './partner.entity';
 import { Business, BusinessLocation } from './business.entity';
@@ -10,16 +10,16 @@ export class Order extends BaseEntityClass {
     id: string;
 
     @Column()
-    @IsNotEmpty()
+   
     invoiceNumber:string;
 
     @Column()
-    @IsNotEmpty()
+   
     orderstatus:number;
 
 
     @Column()
-    @IsNotEmpty()
+   
     totalcostprice:number;
 
     @ManyToOne(type => Business, business => business.order)
@@ -49,19 +49,19 @@ export class OrderItem extends BaseEntityClass {
     product: Product;
 
     @Column()
-    @IsNotEmpty()
+   
     qty:number;
 
     @Column()
-    @IsNotEmpty()
+   
     cost:number;
 
     @Column()
-    @IsNotEmpty()
+   
     unitprice:number;
 
     @Column()
-    @IsNotEmpty()
+   
     previousqty:number;
 
     @ManyToOne(type => Order, order => order.orderitem)
@@ -80,19 +80,19 @@ export class OrderPayment extends BaseEntityClass {
     order: Order;
     
     @Column()
-    @IsNotEmpty()
+   
     paymenttype:string;
 
     @Column()
-    @IsNotEmpty()
+   
     paymentdate:string;
 
     @Column()
-    @IsNotEmpty()
+   
     amountpaid:number;
 
     @Column()
-    @IsNotEmpty()
+   
     balnce:number;
 
 }

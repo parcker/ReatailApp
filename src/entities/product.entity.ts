@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
-import {IsNotEmpty, IsBoolean, IsOptional} from 'class-validator';
+
 import { BaseEntityClass } from './base.entity';
 import { Category, SubCategory } from './category.entity';
 import { Business } from './business.entity';
@@ -12,28 +12,28 @@ export class Product extends BaseEntityClass {
     id: string;
     @Column()
 
-    @IsNotEmpty()
+   
     public name: string;
     @Column()
-    @IsNotEmpty()
+   
     public itemcode: string;
     @Column()
-    @IsNotEmpty()
+   
     public description: string;
     @Column()
-    @IsNotEmpty()
+   
     public packingtype: string;
     @Column()
-    @IsNotEmpty()
+   
     public packs: number;
 
     @Column()
-    @IsBoolean()
+    
     public expiredenabled: boolean;
 
     @Column()
-    @IsOptional()
-    @IsBoolean()
+  
+    
     public haspricebench: boolean;
 
 
