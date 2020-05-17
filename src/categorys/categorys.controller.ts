@@ -14,6 +14,7 @@ export class CategorysController {
     async creatcategory(@Request() req,@Res() res,@Body() body: CreatCategoryDto){
         
         const response = await this.categoryService.createCategory(body.name,req.user.id,req.user.businessId);
+        console.log(response);
         if(response.status===false){
             return res.status(response.code).json(response);
         }
@@ -70,11 +71,13 @@ export class CategorysController {
     @Post('/subcategory/create')
     @UseGuards(AuthGuard('jwt'))
     
-    async creatsubcategory(@Request() req,@Body() body: CreatSubCategoryDto){
+    async creatsubcategory(@Request() req,@Res() res ,@Body() body: CreatSubCategoryDto){
         
         const response = await this.categoryService.createSubCategory(body.name,body.categoryId,req.user.id,req.user.businessId);
-        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
     }
 
 }

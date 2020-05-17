@@ -18,7 +18,8 @@ export class CategorysService {
         try
         {  
             let validationResult = await this.payloadService.validateCatgoryAsync({name:categoryname});
-            if(validationResult.IsValid){
+            if(validationResult.IsValid)
+            {
                 let getbusinessInfo=await this.businessRepository.findOne({where:{id:businessId,isDisabled:false}});
                 if(!getbusinessInfo){
                    
