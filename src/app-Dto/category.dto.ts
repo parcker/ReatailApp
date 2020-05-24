@@ -3,7 +3,7 @@ import { ApiModelProperty } from "@nestjs/swagger";
 export class CreatCategoryDto{
    
     @ApiModelProperty({ required: true, example: 'category test' })
-    name:string;
+    readonly name:string;
     
 
 }

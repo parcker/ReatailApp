@@ -1,13 +1,13 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Order, OrderItem, OrderPayment } from '../entities/order.entity';
+import { Order, OrderItem, OrderPayment } from '../../entities/order.entity';
 import { Repository } from 'typeorm';
-import { BusinessLocation, Business } from '../entities/business.entity';
-import { Product } from '../entities/product.entity';
-import { CreateOrderDto, CreateOrderitemDto } from '../app-Dto/order.dto';
-import { ResponseObj } from '../shared/generic.response';
-import { Supplier } from '../entities/partner.entity';
-import { OrderStatus } from '../enums/settings.enum';
+import { BusinessLocation, Business } from '../../entities/business.entity';
+import { Product } from '../../entities/product.entity';
+import { CreateOrderDto, CreateOrderitemDto } from '../../app-Dto/order.dto';
+import { ResponseObj } from '../../shared/generic.response';
+import { Supplier } from '../../entities/partner.entity';
+import { OrderStatus } from '../../enums/settings.enum';
 
 @Injectable()
 export class OrderService {

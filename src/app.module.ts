@@ -16,19 +16,25 @@ import { BusinesslocationModule } from './businesslocation/businesslocation.modu
 
 import { RoutesModule } from './settings/routes/routes.module';
 import { FeaturesModule } from './settings/features/features.module';
-import { CategorysController } from './categorys/categorys.controller';
-import { CategorysModule } from './categorys/categorys.module';
+import { CategorysController } from './inventory/categorys/categorys.controller';
+import { CategorysModule } from './inventory/categorys/categorys.module';
 import { PartnersController } from './partners/partners.controller';
 import { PartnersModule } from './partners/partners.module';
 import * as path from 'path';
-import { ProductController } from './product/product.controller';
-import { ProductModule } from './product/product.module';
+import { ProductController } from './inventory/product/product.controller';
+import { ProductModule } from './inventory/product/product.module';
 import { RolesController } from './roles/roles.controller';
 import { FeaturesController } from './settings/features/features.controller';
 import { UsersController } from './users/users.controller';
 import { CompanyController } from './company/company.controller';
-import { OrderModule } from './order/order.module';
+import { OrderModule } from './inventory/order/order.module';
 import { PayloadvalidationModule } from './shared/payloadvalidation/payloadvalidation.module';
+
+import {UtilityModule } from './shared/utilityservice/utility.module';
+import { APP_PIPE } from '@nestjs/core';
+import { ValidationPipe } from './shared/ValidationPipe';
+import { ApiResponseModule } from './shared/response/apiResponse.module';
+
 
 
 @Module({
@@ -64,7 +70,9 @@ import { PayloadvalidationModule } from './shared/payloadvalidation/payloadvalid
         PartnersModule,
         ProductModule,
         OrderModule,
-        PayloadvalidationModule
+        PayloadvalidationModule,
+        UtilityModule,
+        ApiResponseModule
        
     ],
     controllers: [AppController, CategorysController, CompanyController,PartnersController, ProductController,RolesController,FeaturesController,UsersController],

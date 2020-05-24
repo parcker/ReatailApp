@@ -1,7 +1,7 @@
 import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body,Request, HttpException, HttpStatus, Get, Put, Param, Delete, Patch, Res } from '@nestjs/common';
 import { CategorysService } from './categorys.service';
 import { AuthGuard } from '@nestjs/passport';
-import { CreatCategoryDto, CreatSubCategoryDto, UpdateCategoryDto, UpdateSubCategoryDto } from '../app-Dto/category.dto';
+import { CreatCategoryDto, CreatSubCategoryDto, UpdateCategoryDto, UpdateSubCategoryDto } from '../../app-Dto/category.dto';
 
 @Controller('/api/categorys')
 export class CategorysController {
@@ -10,11 +10,10 @@ export class CategorysController {
 
     @Post('/creat')
     @UseGuards(AuthGuard('jwt'))
-    
-    async creatcategory(@Request() req,@Res() res,@Body() body: CreatCategoryDto){
-        
+
+    async creatcategory(@Body() body: CreatCategoryDto,@Request() req,@Res() res){
+       
         const response = await this.categoryService.createCategory(body.name,req.user.id,req.user.businessId);
-        console.log(response);
         if(response.status===false){
             return res.status(response.code).json(response);
         }

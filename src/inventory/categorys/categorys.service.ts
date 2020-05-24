@@ -1,10 +1,10 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
-import { Category, SubCategory } from '../entities/category.entity';
+import { Category, SubCategory } from '../../entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Business } from '../entities/business.entity';
-import { ResponseObj } from '../shared/generic.response';
-import { PayloadvalidationService } from '../shared/payloadvalidation/payloadvalidation.service';
+import { Business } from '../../entities/business.entity';
+import { ResponseObj } from '../../shared/generic.response';
+import { PayloadvalidationService } from '../../shared/payloadvalidation/payloadvalidation.service';
 
 @Injectable()
 export class CategorysService {

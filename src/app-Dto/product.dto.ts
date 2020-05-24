@@ -1,47 +1,27 @@
 
-import { ApiModelProperty } from "@nestjs/swagger";
+import { ApiModelProperty, ApiModelPropertyOptional } from "@nestjs/swagger";
 
 export class CreatProductDto{
 
     
     @ApiModelProperty({ required: true})
-    
-    public name: string;
-
-    
+    name: string;
+    @ApiModelProperty({ required: true})
+    itemcode: string;
+    @ApiModelProperty({ required: true})
+    description: string;
+    @ApiModelProperty({ required: true})
+    packingtype: string;
+    @ApiModelProperty({ required: true})
+    packs: number;
+    @ApiModelProperty({ required: true})
+    expiredenabled: boolean;
+    @ApiModelProperty({ required: true})
+    categoryId:string;
     @ApiModelProperty({ required: true})
   
-    public itemcode: string;
-
-    
-    @ApiModelProperty({ required: true})
-    
-    public description: string;
-
-    
-    @ApiModelProperty({ required: true})
-  
-    public packingtype: string;
-    
-    @ApiModelProperty({ required: true})
-    
-    public packs: number;
-
-    @ApiModelProperty({ required: true})
-    
-    public expiredenabled: boolean;
-    
-  
-    @ApiModelProperty({ required: true})
-  
-    public categoryId:string;
-
+    subcategoryId:string;
    
-  
-    @ApiModelProperty({ required: true})
-  
-    public subcategoryId:string;
-
 }
 
 export class UpdateProductDto{
@@ -57,24 +37,24 @@ export class UpdateProductDto{
     public itemcode: string;
 
     
-    @ApiModelProperty({ required: true})
     
+    @ApiModelPropertyOptional()
     public description: string;
 
     
-    @ApiModelProperty({ required: true})
+    @ApiModelPropertyOptional()
   
     public packingtype: string;
     
-    @ApiModelProperty({ required: true})
+    @ApiModelPropertyOptional()
     
     public packs: number;
 
-    @ApiModelProperty({ required: true})
+    @ApiModelPropertyOptional()
     
     public expiredenabled: boolean;
 
-    @ApiModelProperty({ required: true})
+    @ApiModelPropertyOptional()
     
     public isdisabled: boolean;
     
@@ -85,7 +65,7 @@ export class UpdateProductDto{
 
    
   
-    @ApiModelProperty({ required: true})
+    @ApiModelPropertyOptional()
   
     public subcategoryId:string;
 

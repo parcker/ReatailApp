@@ -11,17 +11,18 @@ import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { initDocumentation } from './documentation';
 import { EntitiesExceptionFilter } from './http-exception.filter';
+import { ValidationPipe } from '@nestjs/common';
 
 //@nestjs/common
 
 
 async function bootstrap() {
-    const app = await NestFactory.create<NestExpressApplication>(ApplicationModule,{logger:['error','log','warn']});
+    const app = await NestFactory.create<NestExpressApplication>(ApplicationModule, { logger: ['error', 'log', 'warn'] });
     app.enableCors();
     app.use(logger(process.env.NODE_ENV));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
-    
+
     app.useGlobalFilters(new EntitiesExceptionFilter());
 
     initDocumentation(app, {
@@ -31,7 +32,7 @@ async function bootstrap() {
         endpoint: '/docs'
     });
     //app.useGlobalPipes(new ValidationPipe());
-    await app.listen(parseInt(process.env.PORT) || 8001);
+    await app.listen(parseInt(process.env.PORT) || 8003);
 }
 
 bootstrap();
