@@ -13,7 +13,7 @@ export class CategorysController {
 
     async creatcategory(@Body() body: CreatCategoryDto,@Request() req,@Res() res){
        
-        const response = await this.categoryService.createCategory(body.name,req.user.id,req.user.businessId);
+        const response = await this.categoryService.createCategory(body.name,req.user.id,req.user.business);
         if(response.status===false){
             return res.status(response.code).json(response);
         }
@@ -25,7 +25,7 @@ export class CategorysController {
     async updatecategory(@Param('id') id,@Request() req,@Res() res,@Body() body: UpdateCategoryDto){
         
         console.log('Update Cate',id);
-        const response = await this.categoryService.updateCategory(id,body.name,req.user.id,req.user.businessId);
+        const response = await this.categoryService.updateCategory(id,body.name,req.user.id,req.user.business);
         if(response.status===false){
             return res.status(response.code).json(response);
         }
@@ -34,45 +34,53 @@ export class CategorysController {
     @Patch(':id/updatesubcategory')
     @UseGuards(AuthGuard('jwt'))
     
-    async updatesubcategory(@Param('id') id,@Request() req,@Body() body: UpdateSubCategoryDto){
+    async updatesubcategory(@Param('id') id,@Request() req,@Body() body: UpdateSubCategoryDto,@Res() res){
         
-        const response = await this.categoryService.updateSubCategory(id,body.name,req.user.id,req.user.businessId,body.categoryId);
-        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
+        const response = await this.categoryService.updateSubCategory(id,body.name,req.user.id,req.user.business,body.categoryId);
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
     }
     @Get('/mycategory')
     @UseGuards(AuthGuard('jwt'))
     
-    async getcategory(@Request() req){
+    async getcategory(@Request() req, @Res() res){
         
-        const response = await this.categoryService.getcategory(req.user.businessId);
-        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
+        const response = await this.categoryService.getcategory(req.user.business);
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
     }
     @Delete(':id/deletecategory')
     @UseGuards(AuthGuard('jwt'))
     
-    async deletecategory(@Param('id') id,@Request() req){
+    async deletecategory(@Param('id') id,@Request() req,@Res() res){
         
         const response = await this.categoryService.deleteCategory(id,req.user.id,req.user.businessId);
-        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
     }
     @Delete(':id/deletesubcategory')
     @UseGuards(AuthGuard('jwt'))
     
-    async deletesubcategory(@Param('id') id,@Request() req){
+    async deletesubcategory(@Param('id') id,@Request() req, @Res() res){
         
         const response = await this.categoryService.deleteSubCategory(id,req.user.id,req.user.businessId);
-        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
     }
     @Post('/subcategory/create')
     @UseGuards(AuthGuard('jwt'))
     
     async creatsubcategory(@Request() req,@Res() res ,@Body() body: CreatSubCategoryDto){
         
-        const response = await this.categoryService.createSubCategory(body.name,body.categoryId,req.user.id,req.user.businessId);
+        const response = await this.categoryService.createSubCategory(body.name,body.categoryId,req.user.id,req.user.business);
         if(response.status===false){
             return res.status(response.code).json(response);
         }

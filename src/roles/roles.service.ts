@@ -7,6 +7,8 @@ import { RoleDto, CreateRoleDto } from '../app-Dto/usermgr/role/role.dto';
 import { ResponseObj } from '../shared/generic.response';
 import { User } from '../entities/user.entity';
 import { Business } from '../entities/business.entity';
+import { PayloadvalidationService } from '../shared/payloadvalidation/payloadvalidation.service';
+import { ApiResponseService } from '../shared/response/apiResponse.service';
 
 
 @Injectable()
@@ -15,9 +17,11 @@ export class RolesService {
     constructor(@InjectRepository(Role)private readonly roleRepository: Repository<Role>,
     @InjectRepository(User)private readonly userRepository: Repository<User>,
     @InjectRepository(RoleUser)private readonly roleuserRepository: Repository<RoleUser>,
-    @InjectRepository(Business)private readonly businessRepository: Repository<Business>) 
+    @InjectRepository(Business)private readonly businessRepository: Repository<Business>,
+    private readonly payloadService: PayloadvalidationService,
+    private readonly apiResponseService: ApiResponseService) 
     {}
-    async findAll(): Promise<ResponseObj<RoleDto[]>> 
+    async findAll(): Promise<any> 
     {
        try
        {
@@ -28,7 +32,16 @@ export class RolesService {
             result.result=rolesDb;
             return result
        }
-       catch(err){return err;}
+       catch (error) {
+        console.log('Error Message', error, Date.now())
+        Logger.error(error);
+        return new
+            HttpException({
+                message: 'Process error while executing operation:',
+                code: 500, status: false
+            },
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
        
     }
     async createRole(roleDTO: CreateRoleDto,createdby:string,businessId:string): Promise<any> {

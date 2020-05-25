@@ -1,4 +1,4 @@
-import { Controller, Post,Body, Get, Request, UseGuards, UsePipes, ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post,Body, Get, Request, UseGuards, UsePipes, ValidationPipe, HttpException, HttpStatus, Res } from '@nestjs/common';
 import { CreateRoleDto, RoleDto, AssignRoleDto } from '../app-Dto/usermgr/role/role.dto';
 import { RolesService } from './roles.service';
 import { ResponseObj } from '../shared/generic.response';
@@ -12,11 +12,13 @@ export class RolesController {
     @Post('/create')
     @UseGuards(AuthGuard('jwt'))
     
-    async create(@Request() req,@Body() body:CreateRoleDto){
+    async create(@Request() req, @Res() res,@Body() body:CreateRoleDto){
        
         let response= await this.roleService.createRole(body,req.user.id,req.user.businessId);
-        if(response.status==false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
     }
     @Get('/find')
     @UseGuards(AuthGuard('jwt'))
