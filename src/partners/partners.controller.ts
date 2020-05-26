@@ -1,23 +1,36 @@
-import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, HttpException, HttpStatus,Request, Get } from '@nestjs/common';
+import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, HttpException, HttpStatus,Request, Get, Res, Patch, Param } from '@nestjs/common';
 import { PartnersService } from './partners.service';
 import { AuthGuard } from '@nestjs/passport';
-import { CreatCustomerDto, CreatSupplierDto } from '../app-Dto/partner.dto';
+import { CreatCustomerDto, CreatSupplierDto, UpdateCustomerDto } from '../app-Dto/partner.dto';
 
 @Controller('/api/partners')
 export class PartnersController {
 
   constructor(readonly partnersService: PartnersService){}
 
-   @Post('/customer/creat')
+    @Post('/customer/creat')
+    @UseGuards(AuthGuard('jwt'))
+    async creatcustomer(@Request() req,@Res() res,@Body() body: CreatCustomerDto){
+        
+        
+        const response = await this.partnersService.createcustomer(body,req.user.id,req.user.business);
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+    }
+    @Patch(':id/customer/update')
     @UseGuards(AuthGuard('jwt'))
     
-    async creatcategory(@Request() req,@Body() body: CreatCustomerDto){
+    async updatecustomer(@Param('id') id,@Request() req,@Res() res,@Body() body: UpdateCustomerDto){
         
-        
-        const response = await this.partnersService.createcustomer(body,req.user.id,req.user.businessId);
-        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
+        const response = await this.partnersService.updatecustomer(body,id,req.user.id,req.user.business);
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
     }
+    
     @Post('/supplier/creat')
     @UseGuards(AuthGuard('jwt'))
     

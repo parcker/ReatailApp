@@ -7,6 +7,7 @@ import { ResponseObj } from '../generic.response';
 import { promises } from 'dns';
 import { CreatCategoryDto, CreatSubCategoryDto } from '../../app-Dto/category.dto';
 import { CreatProductDto } from '../../app-Dto/product.dto';
+import { CreatCustomerDto, UpdateCustomerDto } from '../../app-Dto/partner.dto';
 
 @Injectable()
 export class PayloadvalidationService {
@@ -87,5 +88,18 @@ export class PayloadvalidationService {
             validator.IsAlphaNumeric(m => m.subcategoryId, "Should not be invalid", "CreatProductDto.subcategoryId.Invalid").ToResult())
             .ToResult();
     };
+    async validateCustomerAsync(model: CreatCustomerDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateCustomerRules);
 
+    };
+    validateCustomerRules = (validator: IValidator<CreatCustomerDto>): ValidationResult => {
+        return validator                              
+        .NotEmpty(m => m.fullname, "Should not be empty", "CreatCustomerDto.fullname.Empty")
+        .NotNull(m => m.fullname, "Should not be null", "fullname.Null")
+        .NotEmpty(m => m.mobilenumber, "Should not be empty", "CreatCustomerDto.mobilenumber.Empty")
+        .NotNull(m => m.mobilenumber, "Should not be null", "mobilenumber.Null")
+        .ToResult();                                                                                                                    
+
+    };
+   
 }
