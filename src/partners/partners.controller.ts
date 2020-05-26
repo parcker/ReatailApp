@@ -44,11 +44,13 @@ export class PartnersController {
     @Get('/customer/mycustomer')
     @UseGuards(AuthGuard('jwt'))
     
-    async getcustomer(@Request() req){
+    async getcustomer(@Request() req, @Res() res){
         
-        const response = await this.partnersService.getcustomers(req.user.businessId);
-        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
+        const response = await this.partnersService.getcustomers(req.user.business);
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
     }
     @Get('/supplier/mysupplier')
     @UseGuards(AuthGuard('jwt'))

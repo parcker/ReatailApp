@@ -160,24 +160,15 @@ export class PartnersService {
                HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   async getcustomers(businessid: string): Promise<any> {
+   async getcustomers(business: Business): Promise<any> {
       try {
 
-         let getbusinessInfo = await this.businessRepository.findOne({ where: { id: businessid, isDisabled: false } });
-         if (!getbusinessInfo) {
-
-            let result = new ResponseObj<string>();
-            result.message = `invalid or business  Id , no business  data found`;
-            result.status = false;
-            result.result = '';
-            return result;
-         }
-         const [customerresponse, count] = await this.customerRepository.findAndCount({ where: { business: getbusinessInfo, isDisabled: false } });
-         let result = new ResponseObj<Customer[]>();
-         result.message = `Total of ${count} customer found `;
-         result.status = true;
-         result.result = customerresponse;
-         return result;
+       
+         const [customerresponse, count] = await this.customerRepository.findAndCount({ where: { business: business, isDisabled: false } });
+         return this.apiResponseService.SuccessResponse(
+            `Total of ${count} customer found `,
+            HttpStatus.OK, customerresponse);
+      
       }
       catch (error) {
 
