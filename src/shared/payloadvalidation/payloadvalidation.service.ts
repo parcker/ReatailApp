@@ -7,7 +7,7 @@ import { ResponseObj } from '../generic.response';
 import { promises } from 'dns';
 import { CreatCategoryDto, CreatSubCategoryDto } from '../../app-Dto/category.dto';
 import { CreatProductDto } from '../../app-Dto/product.dto';
-import { CreatCustomerDto, UpdateCustomerDto } from '../../app-Dto/partner.dto';
+import { CreatCustomerDto, UpdateCustomerDto, CreatSupplierDto } from '../../app-Dto/partner.dto';
 
 @Injectable()
 export class PayloadvalidationService {
@@ -101,5 +101,22 @@ export class PayloadvalidationService {
         .ToResult();                                                                                                                    
 
     };
+    async validateSupplierAsync(model: CreatSupplierDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateSupplierRules);
+
+    };
+    validateSupplierRules = (validator: IValidator<CreatSupplierDto>): ValidationResult => {
+        return validator                              
+        .NotEmpty(m => m.company, "Should not be empty", "CreatSupplierDto.company.Empty")
+        .NotNull(m => m.company, "Should not be null", "company.Null")
+        .NotEmpty(m => m.mobilenumber, "Should not be empty", "CreatSupplierDto.mobilenumber.Empty")
+        .NotNull(m => m.mobilenumber, "Should not be null", "mobilenumber.Null")
+        .NotEmpty(m => m.address, "Should not be empty", "CreatSupplierDto.address.Empty")
+        .NotNull(m => m.address, "Should not be null", "address.Null")
+     
+        .ToResult();                                                                                                                    
+
+    };
+   
    
 }

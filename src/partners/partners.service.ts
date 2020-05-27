@@ -110,44 +110,37 @@ export class PartnersService {
                HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   async createsupplierr(model: CreatSupplierDto, createdby: string, businessid: string): Promise<any> {
+   async createsupplierr(model: CreatSupplierDto, createdby: string, business: Business): Promise<any> {
 
       try {
 
-         let getbusinessInfo = await this.businessRepository.findOne({ where: { id: businessid, isDisabled: false } });
-         if (!getbusinessInfo) {
-
-            let result = new ResponseObj<string>();
-            result.message = `invalid or business  Id , no business  data found`;
-            result.status = false;
-            result.result = '';
-            return result;
+         let validationResult = await this.payloadService.validateSupplierAsync(model);
+         if (validationResult.IsValid) {
+            let checkduplicate = await this.supplierRepository.findOne({ where: { mobilenumber: model.mobilenumber.trim() } });
+            if (checkduplicate) {
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `duplicate supplier mobilenumber found,supplier already registered with this mobile number: ${model.mobilenumber}`,
+                  HttpStatus.BAD_REQUEST, '');
+             
+            }
          }
-         let checkduplicate = await this.supplierRepository.findOne({ where: { email: model.email.trim() } });
-         if (checkduplicate) {
-
-            let result = new ResponseObj<string>();
-            result.message = `duplicate supplier email found,supplier already registered with this email: ${model.email}`;
-            result.status = false;
-            result.result = '';
-            return result;
-         }
+        
+        
          let supplier = new Supplier();
          supplier.mobilenumber = model.mobilenumber.trim();
          supplier.companyname = model.company;
          supplier.email = model.email;
          supplier.address = model.address;
-         supplier.business = getbusinessInfo;
+         supplier.business = business;
          supplier.createdby = createdby;
          supplier.updatedby = '';
          supplier.isDisabled = false;
 
          const dbresponse = await this.supplierRepository.save(supplier);
-         let result = new ResponseObj<Supplier>();
-         result.message = `${dbresponse.companyname} has been created and activated`;
-         result.status = true;
-         result.result = dbresponse;
-         return result;
+         return this.apiResponseService.SuccessResponse(
+            `${dbresponse.companyname} has been created and activated`,
+            HttpStatus.OK, dbresponse);
+      
       }
       catch (error) {
 
@@ -182,24 +175,54 @@ export class PartnersService {
       }
    }
 
-   async getsuppliers(businessid: string): Promise<any> {
+   async getsuppliers(business: Business): Promise<any> {
+      try {
+          const [supplierresponse, count] = await this.supplierRepository.findAndCount({ where: { business: business, isDisabled: false } });
+         return this.apiResponseService.SuccessResponse(
+            `Total of ${count} supplier found `,
+            HttpStatus.OK, supplierresponse);
+      }
+      catch (error) {
+
+         Logger.error(error);
+         return new
+            HttpException({
+               message: 'Process error while executing operation:',
+               code: 500, status: false
+            },
+               HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+   async updatesupplier(model: CreatSupplierDto,id:string ,updateby: string, business: Business): Promise<any> {
+
       try {
 
-         let getbusinessInfo = await this.businessRepository.findOne({ where: { id: businessid, isDisabled: false } });
-         if (!getbusinessInfo) {
-
-            let result = new ResponseObj<string>();
-            result.message = `invalid or business  Id , no business  data found`;
-            result.status = false;
-            result.result = '';
-            return result;
+         let validationResult = await this.payloadService.validateSupplierAsync(model);
+         if (validationResult.IsValid) {
+            let dbresponse = await this.supplierRepository.findOne({ where: { id:id.trim() } });
+            if (!dbresponse) {
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `Invalid supplier information found : Update failed`,
+                  HttpStatus.BAD_REQUEST, '');
+               
+            }
+            
+            dbresponse.mobilenumber = model.mobilenumber.trim();
+            dbresponse.companyname = model.company;
+            dbresponse.address = model.address;
+            dbresponse.email = model.email;
+            dbresponse.business = business;
+            dbresponse.createdby = updateby;
+            dbresponse.updatedby = '';
+            dbresponse.isDisabled = false;
+            const dbupdateresponse = await this.supplierRepository.save(dbresponse);
+            return this.apiResponseService.SuccessResponse(
+               `${dbresponse.companyname} has been updated`,
+               HttpStatus.OK, dbupdateresponse);
          }
-         const [supplierresponse, count] = await this.supplierRepository.findAndCount({ where: { business: getbusinessInfo, isDisabled: false } });
-         let result = new ResponseObj<Supplier[]>();
-         result.message = `Total of ${count} supplier found `;
-         result.status = true;
-         result.result = supplierresponse;
-         return result;
+         return await this.payloadService.badRequestErrorMessage(validationResult);
+        
+        
       }
       catch (error) {
 

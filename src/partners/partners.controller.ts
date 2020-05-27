@@ -30,16 +30,28 @@ export class PartnersController {
         }
         return res.status(HttpStatus.OK).json(response);
     }
+    @Patch(':id/supplier/update')
+    @UseGuards(AuthGuard('jwt'))
     
+    async updatesupplier(@Param('id') id,@Request() req,@Res() res,@Body() body: CreatSupplierDto){
+        
+        const response = await this.partnersService.updatesupplier(body,id,req.user.id,req.user.business);
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+    }
     @Post('/supplier/creat')
     @UseGuards(AuthGuard('jwt'))
     
-    async creatsuplier(@Request() req,@Body() body: CreatSupplierDto){
+    async creatsuplier(@Request() req,@Res() res,@Body() body: CreatSupplierDto){
         
         
-        const response = await this.partnersService.createsupplierr(body,req.user.id,req.user.businessId);
-        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
+        const response = await this.partnersService.createsupplierr(body,req.user.id,req.user.business);
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
     }
     @Get('/customer/mycustomer')
     @UseGuards(AuthGuard('jwt'))
@@ -55,11 +67,13 @@ export class PartnersController {
     @Get('/supplier/mysupplier')
     @UseGuards(AuthGuard('jwt'))
     
-    async getsupplier(@Request() req){
+    async getsupplier(@Request() req,@Res() res){
         
-        const response = await this.partnersService.getsuppliers(req.user.businessId);
-        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
+        const response = await this.partnersService.getsuppliers(req.user.business);
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
     }
 
 
