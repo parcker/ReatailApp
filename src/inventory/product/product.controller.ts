@@ -51,10 +51,13 @@ export class ProductController {
     }
     @Get('/getpacking')
     //@UseGuards(AuthGuard('jwt'))
-    async getpacking(): Promise<any> {
+    async getpacking(@Request() req, @Res() res): Promise<any> {
 
-        let packingtype = [{ id: 1, vaule: 'Cartons' }, { id: 2, vaule: 'Single' }]
-        return packingtype;
+        const response = await this.productService.getpacking();
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
 
     }
     @Get('/getproductwithfewdetail')

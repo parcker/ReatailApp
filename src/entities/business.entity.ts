@@ -6,6 +6,7 @@ import { Role } from './role.entity';
 import { Category, SubCategory } from './category.entity';
 import { Customer, Supplier } from './partner.entity';
 import { Order } from './order.entity';
+import { StockCard } from './stockcard';
 
 @Entity()
 export class Business extends BaseEntityClass {
@@ -53,6 +54,7 @@ export class Business extends BaseEntityClass {
     @OneToMany(type => Order, order => order.business)
     order: Order[];
 
+
   
 }
 @Entity()
@@ -90,6 +92,9 @@ export class BusinessLocation extends BaseEntityClass {
 
     @OneToMany(type => Order, order => order.businesslocation)
     order: Order[];
+
+    @OneToMany(type => StockCard, stockcard => stockcard.businesslocation)
+    stockcard: StockCard[];
   
 }
 @Entity()

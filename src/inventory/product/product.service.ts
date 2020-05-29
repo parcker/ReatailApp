@@ -110,6 +110,20 @@ export class ProductService {
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
+   async getpacking(): Promise<any> {
+      try {
+
+         let packingtype = [{ id: 1, vaule: 'Cartons' }, { id: 2, vaule: 'Single' }]
+            return this.apiResponseService.SuccessResponse(
+               `${packingtype.length} records found`,
+               HttpStatus.OK, packingtype);
+        
+      }
+      catch (error) {
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
    async getProductwithfulldetails(businessId: string): Promise<any> {
       try {
 

@@ -19,8 +19,7 @@ export class Order extends BaseEntityClass {
 
 
     @Column()
-   
-    totalcostprice:number;
+   totalcostprice:number;
 
     @ManyToOne(type => Business, business => business.order)
     @JoinColumn()
