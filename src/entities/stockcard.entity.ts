@@ -7,11 +7,12 @@ import { Business, BusinessLocation } from './business.entity';
 export class StockCard extends BaseEntityClass {
     @PrimaryGeneratedColumn("uuid")
     id: string;
-    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.order)
+    
+    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.stockcard)
     @JoinColumn()
     businesslocation: BusinessLocation;
 
-    @ManyToOne(type => Product, product => product.orderitem)
+    @ManyToOne(type => Product, product => product.stockcard)
     @JoinColumn()
     product: Product;
 

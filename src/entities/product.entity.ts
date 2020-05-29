@@ -4,6 +4,7 @@ import { BaseEntityClass } from './base.entity';
 import { Category, SubCategory } from './category.entity';
 import { Business } from './business.entity';
 import { Order, OrderItem } from './order.entity';
+import { StockCard } from './stockcard.entity';
 
 @Entity()
 export class Product extends BaseEntityClass {
@@ -32,9 +33,7 @@ export class Product extends BaseEntityClass {
     public expiredenabled: boolean;
 
     @Column()
-  
-    
-    public haspricebench: boolean;
+   public haspricebench: boolean;
 
 
     @ManyToOne(type => Category, category => category.product)
@@ -51,12 +50,9 @@ export class Product extends BaseEntityClass {
 
     @OneToMany(type => OrderItem, orderitem => orderitem.product)
     orderitem: OrderItem[];
+    
+    @OneToMany(type => StockCard, stockcard => stockcard.product)
+    stockcard: StockCard[];
 
 }
 
-@Entity()
-export class Stock extends BaseEntityClass {
-
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-}

@@ -6,7 +6,7 @@ import { Role } from './role.entity';
 import { Category, SubCategory } from './category.entity';
 import { Customer, Supplier } from './partner.entity';
 import { Order } from './order.entity';
-import { StockCard } from './stockcard';
+import { StockCard } from './stockcard.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
