@@ -41,7 +41,7 @@ export class PayloadvalidationService {
     validateSignUpRules = (validator: IValidator<SigupDto>): ValidationResult => {
         return validator
             .If(m => m.contactPerson.email != '', validator => validator.Email(m => m.contactPerson.email, "Should not be invalid", "RegistrationDto.email.Invalid").ToResult())
-
+           
             .NotEmpty(m => m.contactPerson.firstName, "Should not be empty", "SigupDto.firstName.Empty")
             .NotEmpty(m => m.contactPerson.lastName, "Should not be empty", "SigupDto.lastName.Empty")
             .NotEmpty(m => m.contactPerson.phonenumber, "Should not be empty", "SigupDto.phonenumber.Empty")
@@ -49,6 +49,13 @@ export class PayloadvalidationService {
             .NotEmpty(m => m.contactPerson.email, "Should not be empty", "SigupDto.email.Empty")
             .NotEmpty(m => m.company.comapanyName, "Should not be empty", "company.comapanyName.Empty")
             .NotEmpty(m => m.company.address, "Should not be empty", "company.address.Empty")
+            .If(m => m.contactPerson.password != '', validator => validator
+            .ForStringProperty(m => m.contactPerson.password, passwordValidator => passwordValidator
+                    .Matches("(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])", "Password strength is not valid", "contactPerson.Password.Strength")
+                    .Required((m, pwd) => pwd.length > 6, "Password length should be greater than 6", "contactPerson.Password.Length")
+                   
+                .ToResult())
+              .ToResult())  
             .ToResult();
     };
     validateSignInRules = (validator: IValidator<LoginDto>): ValidationResult => {
@@ -114,6 +121,19 @@ export class PayloadvalidationService {
         .NotEmpty(m => m.address, "Should not be empty", "CreatSupplierDto.address.Empty")
         .NotNull(m => m.address, "Should not be null", "address.Null")
      
+        .ToResult();                                                                                                                    
+
+    };
+    async validateLoginAsync(model: LoginDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateLoginRules);
+
+    };
+    validateLoginRules = (validator: IValidator<LoginDto>): ValidationResult => {
+        return validator                              
+        .NotEmpty(m => m.email, "Should not be empty", "LoginDto.email.Empty")
+        .NotNull(m => m.email, "Should not be null", "email.Null")
+        .NotEmpty(m => m.password, "Should not be empty", "LoginDto.password.Empty")
+        .NotNull(m => m.password, "Should not be null", "password.Null")
         .ToResult();                                                                                                                    
 
     };
