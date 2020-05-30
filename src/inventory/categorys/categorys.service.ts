@@ -23,7 +23,7 @@ export class CategorysService {
             let validationResult = await this.payloadService.validateCatgoryAsync({ name: categoryname });
             if (validationResult.IsValid) {
 
-                let checkduplicate = await this.categorRepository.findOne({ where: { name: categoryname } });
+                let checkduplicate = await this.categorRepository.findOne({ where: { name: categoryname,business:business } });
                 if (checkduplicate) {
 
                     return this.apiResponseService.FailedBadRequestResponse(

@@ -84,8 +84,8 @@ export class PayloadvalidationService {
             .NotEmpty(m => m.name, "Should not be empty", "CreatProductDto.name.Empty")
             .NotEmpty(m => m.itemcode, "Should not be empty", "CreatProductDto.itemcode.Empty")
             .NotEmpty(m => m.categoryId, "Should not be empty", "CreatProductDto.categoryId.Empty")
-            .If(m => m.subcategoryId != null, validator => 
-            validator.IsAlphaNumeric(m => m.subcategoryId, "Should not be invalid", "CreatProductDto.subcategoryId.Invalid").ToResult())
+            .If(m => m.subcategoryId != '', validator => 
+            validator.IsGuid(m => m.subcategoryId, "Should not be invalid", "CreatProductDto.subcategoryId.Invalid").ToResult())
             .ToResult();
     };
     async validateCustomerAsync(model: CreatCustomerDto): Promise<ValidationResult> {

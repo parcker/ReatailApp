@@ -8,19 +8,18 @@ export class CreatProductDto{
     name: string;
     @ApiModelProperty({ required: true})
     itemcode: string;
-    @ApiModelProperty({ required: true})
+    @ApiModelPropertyOptional()
     description: string;
-    @ApiModelProperty({ required: true})
+    @ApiModelPropertyOptional()
     packingtype: string;
-    @ApiModelProperty({ required: true})
+    @ApiModelPropertyOptional()
     packs: number;
-    @ApiModelProperty({ required: true})
+    @ApiModelPropertyOptional()
     expiredenabled: boolean;
     @ApiModelProperty({ required: true})
     categoryId:string;
-    @ApiModelProperty({ required: true})
-  
-    subcategoryId:string;
+    @ApiModelPropertyOptional()
+     subcategoryId:string;
    
 }
 

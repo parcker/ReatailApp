@@ -14,7 +14,7 @@ export class ProductController {
 
     async create(@Body() creatProductDto: CreatProductDto, @Request() req, @Res() res) {
 
-
+        console.log('Product Controller');
         const response = await this.productService.createProduct(creatProductDto, req.user.id, req.user.business);
         if (response.status === false) {
             return res.status(response.code).json(response);

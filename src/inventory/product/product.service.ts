@@ -23,11 +23,12 @@ export class ProductService {
 
    async createProduct(product: CreatProductDto, createdby: string, business: Business): Promise<any> {
       try {
-
+       
          let validationResult = await this.payloadService.validateProductAsync(product);
 
          if (validationResult.IsValid) {
 
+       
 
             let productinfo = await this.productRepository.findOne({ where: { itemcode: product.itemcode, business: business, isDisabled: false } });
             if (productinfo) {
@@ -58,7 +59,7 @@ export class ProductService {
             else {
                subCategory = null;
             }
-
+    
 
             let model = new Product();
             model.business = business;
@@ -80,7 +81,7 @@ export class ProductService {
                `${product.name} has been created and activated`,
                HttpStatus.OK, response);
          }
-
+         return await this.payloadService.badRequestErrorMessage(validationResult);
       }
       catch (error) {
          Logger.error(error);
