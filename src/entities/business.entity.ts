@@ -7,29 +7,29 @@ import { Category, SubCategory } from './category.entity';
 import { Customer, Supplier } from './partner.entity';
 import { Order } from './order.entity';
 import { StockCard } from './stockcard.entity';
+import { StoreProduct } from './storeproduct.entity';
+import { StockTransfer } from './stocktransfer.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
-    
+
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
     @Column()
-   
+
     public name: string;
 
     @Column()
-   
+
     public address: string;
 
     @Column()
-    
+
     public logoPath: string;
-    
-    @Column()
-   
-    public IsActive: boolean;
-    
+
+
+
     @OneToMany(type => BusinessLocation, businessLocation => businessLocation.business)
     businessLocation: BusinessLocation[];
 
@@ -45,65 +45,63 @@ export class Business extends BaseEntityClass {
     @OneToMany(type => SubCategory, subcategory => subcategory.business)
     subcategory: SubCategory[];
 
-    @OneToMany(type => Customer, customer => customer.business)
-    customer: Customer[];
+    // @OneToMany(type => Customer, customer => customer.business)
+    // customer: Customer[];
 
     @OneToMany(type => Supplier, supplier => supplier.business)
     supplier: Supplier[];
 
-    @OneToMany(type => Order, order => order.business)
-    order: Order[];
+    // @OneToMany(type => Order, order => order.business)
+    // order: Order[];
 
 
-  
+
 }
 @Entity()
 export class BusinessLocation extends BaseEntityClass {
-    
+
     @PrimaryGeneratedColumn("uuid")
     id: string;
-
     @Column()
-   
     public name: string;
-
     @Column()
-   
     public address: string;
-    
-    @Column()
-   
-    public IsActive: boolean;
-
     @ManyToOne(type => Business, business => business.businessLocation)
     @JoinColumn()
     business: Business;
-
     @Column()
-   
     public createdby: string;
-    
     @Column()
-    
     public updatedby: string;
-
     @OneToMany(type => BusinessLocationUser, businesslocationuser => businesslocationuser.businesslocation)
     businesslocationuser: BusinessLocationUser[];
-
     @OneToMany(type => Order, order => order.businesslocation)
     order: Order[];
-
     @OneToMany(type => StockCard, stockcard => stockcard.businesslocation)
     stockcard: StockCard[];
-  
+    @OneToMany(type => Customer, customer => customer.businesslocation)
+    customer: Customer[];
+    @OneToMany(type => Supplier, supplier => supplier.businesslocation)
+    supplier: Supplier[];
+
+    @OneToMany(type => StoreProduct, storeproduct => storeproduct.businesslocation)
+    storeproduct: StoreProduct[];
+
+    
+    @OneToMany(type => StockTransfer, stocktransfer => stocktransfer.businesslocationFrom)
+    stocktransferFrom: StockTransfer[];
+
+    @OneToMany(type => StockTransfer, stocktransfer => stocktransfer.businesslocationTo)
+    stocktransferTo: StockTransfer[];
+
 }
 @Entity()
 export class BusinessLocationUser extends BaseEntityClass {
-    
+
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    
+
     @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.businesslocationuser)
     @JoinColumn()
     businesslocation: BusinessLocation;
@@ -111,6 +109,6 @@ export class BusinessLocationUser extends BaseEntityClass {
     @ManyToOne(() => User, user => user.businesslocationuser)
     @JoinColumn()
     user: User;
-  
+
 }
 
