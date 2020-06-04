@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { BaseEntityClass } from './base.entity';
 import { Supplier } from './partner.entity';
@@ -8,23 +8,12 @@ import { Product } from './product.entity';
 export class Order extends BaseEntityClass {
     @PrimaryGeneratedColumn("uuid")
     id: string;
-
     @Column()
-   
-    invoiceNumber:string;
-
+    invoiceNumber: string;
     @Column()
-   
-    orderstatus:number;
-
-
+    orderstatus: number;
     @Column()
-   totalcostprice:number;
-
-    @ManyToOne(type => Business, business => business.order)
-    @JoinColumn()
-    business: Business;
-
+    totalcostprice: number;
     @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.order)
     @JoinColumn()
     businesslocation: BusinessLocation;
@@ -48,20 +37,20 @@ export class OrderItem extends BaseEntityClass {
     product: Product;
 
     @Column()
-   
-    qty:number;
+
+    qty: number;
 
     @Column()
-   
-    cost:number;
+
+    cost: number;
 
     @Column()
-   
-    unitprice:number;
+
+    unitprice: number;
 
     @Column()
-   
-    previousqty:number;
+
+    previousqty: number;
 
     @ManyToOne(type => Order, order => order.orderitem)
     order: Order;
@@ -70,28 +59,28 @@ export class OrderItem extends BaseEntityClass {
 }
 @Entity()
 export class OrderPayment extends BaseEntityClass {
-   
+
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
     @ManyToOne(type => Order, order => order.orderpayment)
     @JoinColumn()
     order: Order;
-    
-    @Column()
-   
-    paymenttype:string;
 
     @Column()
-   
-    paymentdate:string;
+
+    paymenttype: string;
 
     @Column()
-   
-    amountpaid:number;
+
+    paymentdate: string;
 
     @Column()
-   
-    balnce:number;
+
+    amountpaid: number;
+
+    @Column()
+
+    balnce: number;
 
 }

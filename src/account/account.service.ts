@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { ResponseObj } from '../shared/generic.response';
 import { SigupDto } from '../app-Dto/usermgr/signup.dto';
-import { CompanyService } from '../company/company.service';
+import { CompanyService } from '../adminboard/company/company.service';
 import { CreateCompanyDto } from '../app-Dto/usermgr/company/company.dto';
 import {EmailService} from '../shared/email/emailService';
 import { PayloadvalidationService } from '../shared/payloadvalidation/payloadvalidation.service';

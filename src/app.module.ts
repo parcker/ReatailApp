@@ -6,28 +6,28 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 
 import { RolesModule } from './roles/roles.module';
-import { CompanyModule } from './company/company.module';
+import { CompanyModule } from './adminboard/company/company.module';
 import { AccountModule } from './account/account.module';
 
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { EmailModule } from './shared/email/email.module';
 import { rootPath } from 'electron-root-path';
-import { BusinesslocationModule } from './businesslocation/businesslocation.module';
+import { BusinesslocationModule } from './adminboard/businesslocation/businesslocation.module';
 
 import { RoutesModule } from './settings/routes/routes.module';
 import { FeaturesModule } from './settings/features/features.module';
-import { CategorysController } from './inventory/categorys/categorys.controller';
-import { CategorysModule } from './inventory/categorys/categorys.module';
-import { PartnersController } from './partners/partners.controller';
-import { PartnersModule } from './partners/partners.module';
+import { CategorysController } from './merchant/inventory/categorys/categorys.controller';
+import { CategorysModule } from './merchant/inventory/categorys/categorys.module';
+import { PartnersController } from './merchant/partners/partners.controller';
+import { PartnersModule } from './merchant/partners/partners.module';
 import * as path from 'path';
-import { ProductController } from './inventory/product/product.controller';
-import { ProductModule } from './inventory/product/product.module';
+import { ProductController } from './merchant/inventory/product/product.controller';
+import { ProductModule } from './merchant/inventory/product/product.module';
 import { RolesController } from './roles/roles.controller';
 import { FeaturesController } from './settings/features/features.controller';
 import { UsersController } from './users/users.controller';
-import { CompanyController } from './company/company.controller';
-import { OrderModule } from './inventory/order/order.module';
+import { CompanyController } from './adminboard/company/company.controller';
+import { OrderModule } from './merchant/inventory/order/order.module';
 import { PayloadvalidationModule } from './shared/payloadvalidation/payloadvalidation.module';
 
 import {UtilityModule } from './shared/utilityservice/utility.module';

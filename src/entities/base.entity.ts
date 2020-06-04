@@ -15,4 +15,7 @@ export abstract class BaseEntityClass{
 
     @Column()
     updatedby?:string;
+
+    @Column()
+    public IsActive: boolean;
 }
