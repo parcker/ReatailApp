@@ -68,13 +68,11 @@ export class ProductService {
             model.name = product.name;
             model.description = product.description;
             model.itemcode = product.itemcode;
-            model.packingtype = product.packingtype;
-            model.packs = product.packs;
+         
             model.isDisabled = false;
             model.createdby = createdby;
             model.updatedby = '';
-            model.haspricebench = false;
-            model.expiredenabled = false
+       
             var response = await this.productRepository.save(model);
 
             return this.apiResponseService.SuccessResponse(
@@ -212,13 +210,11 @@ export class ProductService {
          product.name = model.name;
          product.description = model.description;
          product.itemcode = model.itemcode;
-         product.packingtype = model.packingtype;
-         product.packs = model.packs;
+     
          product.isDisabled = model.isdisabled;
          product.createdby = product.createdby;
          product.updatedby = updatedby;
-         product.expiredenabled = product.expiredenabled;
-         product.haspricebench = product.haspricebench;
+ 
 
          const dbresponse = await this.productRepository.save(product);
         

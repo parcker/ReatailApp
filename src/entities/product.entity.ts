@@ -20,13 +20,7 @@ export class Product extends BaseEntityClass {
     public itemcode: string;
     @Column()
     public description: string;
-    @Column()
-    public packingtype: string;
-    @Column()
-    public packs: number;
-    @Column()
-    public canexpire: boolean;
-
+   
     @Column()
     public imagelink: string;
     @Index()
@@ -50,6 +44,31 @@ export class Product extends BaseEntityClass {
 
     @OneToMany(type => StoreProduct, storeproduct => storeproduct.product)
     storeproduct: StoreProduct[];
+    
+    @OneToMany(type => ProductConfiguration, productconfiguration => productconfiguration.product)
+    productconfiguration: ProductConfiguration[];
 
+}
+
+export class ProductConfiguration{
+
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column()
+    public salepackingtype: string;
+    @Column()
+    public salepackingunit: number;
+    @Column()
+    public supplypackingtype: string;
+    @Column()
+    public supplypackingunit: number;
+    @Column()
+    public canexpire: boolean;
+
+    @Index()
+    @ManyToOne(type => Product, product => product.productconfiguration)
+    @JoinColumn()
+    product: Product;
 }
 

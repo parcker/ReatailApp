@@ -70,7 +70,7 @@ export class OrderService {
             ordermodel.supplier=getsupplierInfo;
             ordermodel.createdby=createdby;
             ordermodel.orderstatus=OrderStatus.Pending;
-            ordermodel.business=getbusinessInfo;
+           
             ordermodel.businesslocation=getbusinesslocationInfo;
             ordermodel.updatedby='';
             ordermodel.totalcostprice=order.Orderitem.reduce((total, item) => total += item.cost, 0);

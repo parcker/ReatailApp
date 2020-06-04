@@ -8,7 +8,15 @@ export class StoreProduct  {
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
-   
+
+    @Column()
+    public instockqty: number;
+    @Column()
+    public committedqty: number;
+    @Column()
+    public orderedqty: number;
+    @Column()
+    public availableqty: number;
 
     @Index()
     @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.storeproduct)

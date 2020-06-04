@@ -3,17 +3,14 @@ import { CreatCustomerDto, CreatSupplierDto, UpdateCustomerDto } from '../../app
 import { InjectRepository } from '@nestjs/typeorm';
 import { Business } from '../../entities/business.entity';
 import { Repository } from 'typeorm';
-import { ResponseObj } from '../../shared/generic.response';
 import { Customer, Supplier } from '../../entities/partner.entity';
-import { UpdateCategoryDto } from '../../app-Dto/category.dto';
 import { PayloadvalidationService } from '../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../shared/response/apiResponse.service';
 
 @Injectable()
 export class PartnersService {
 
-   constructor(@InjectRepository(Business) private readonly businessRepository: Repository<Business>,
-      @InjectRepository(Customer) private readonly customerRepository: Repository<Customer>,
+   constructor(@InjectRepository(Customer) private readonly customerRepository: Repository<Customer>,
       @InjectRepository(Supplier) private readonly supplierRepository: Repository<Supplier>,
       private readonly payloadService: PayloadvalidationService,
       private readonly apiResponseService: ApiResponseService) { }
@@ -41,7 +38,7 @@ export class PartnersService {
             customer.gender = model.gender;
             customer.birthday = model.birthday;
             customer.birthmonth = model.birthmonth;
-            customer.business = business;
+ 
             customer.createdby = createdby;
             customer.updatedby = '';
             customer.isDisabled = false;
@@ -86,7 +83,7 @@ export class PartnersService {
             dbresponse.birthday = model.birthday;
             dbresponse.gender = model.gender;
             dbresponse.birthmonth = model.birthmonth;
-            dbresponse.business = business;
+            
             dbresponse.createdby = updateby;
             dbresponse.updatedby = '';
             dbresponse.isDisabled = false;
@@ -131,7 +128,7 @@ export class PartnersService {
          supplier.companyname = model.company;
          supplier.email = model.email;
          supplier.address = model.address;
-         supplier.business = business;
+      
          supplier.createdby = createdby;
          supplier.updatedby = '';
          supplier.isDisabled = false;
@@ -211,7 +208,7 @@ export class PartnersService {
             dbresponse.companyname = model.company;
             dbresponse.address = model.address;
             dbresponse.email = model.email;
-            dbresponse.business = business;
+      
             dbresponse.createdby = updateby;
             dbresponse.updatedby = '';
             dbresponse.isDisabled = false;

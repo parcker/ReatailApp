@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Business } from '../../entities/business.entity';
-import { Supplier, Customer } from '../../entities/partner.entity';
+import { Business } from '../../../entities/business.entity';
+import { Supplier, Customer } from '../../../entities/partner.entity';
 import { PartnersController } from './partners.controller';
 import { PartnersService } from './partners.service';
-import { PayloadvalidationModule } from '../../shared/payloadvalidation/payloadvalidation.module';
-import { ApiResponseModule } from '../../shared/response/apiResponse.module';
+import { PayloadvalidationModule } from '../../../shared/payloadvalidation/payloadvalidation.module';
+import { ApiResponseModule } from '../../../shared/response/apiResponse.module';
 
 @Module({
     imports: [
