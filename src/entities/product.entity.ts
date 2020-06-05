@@ -72,7 +72,6 @@ export class ProductConfiguration{
         id: string;
         quantity: number;
     };
-
     @Column()
     leadtime: number;
     @Index()
