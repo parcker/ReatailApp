@@ -12,9 +12,11 @@ export class Product extends BaseEntityClass {
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
+
     @Index()
     @Column()
     public name: string;
+
     @Index()
     @Column()
     public itemcode: string;
@@ -23,6 +25,16 @@ export class Product extends BaseEntityClass {
    
     @Column()
     public imagelink: string;
+
+    @Column()
+    public canexpire: boolean;
+
+    @Column()
+    public canbesold: boolean;
+
+    @Column()
+    public canbepurchased: boolean;
+
     @Index()
     @ManyToOne(type => Category, category => category.product)
     @JoinColumn()
@@ -54,21 +66,25 @@ export class ProductConfiguration{
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
+   
+    @Column({ type: "simple-json" })
+    unitofmessures: {
+        id: string;
+        quantity: number;
+    };
 
     @Column()
-    public salepackingtype: string;
-    @Column()
-    public salepackingunit: number;
-    @Column()
-    public supplypackingtype: string;
-    @Column()
-    public supplypackingunit: number;
-    @Column()
-    public canexpire: boolean;
-
+    leadtime: number;
     @Index()
     @ManyToOne(type => Product, product => product.productconfiguration)
     @JoinColumn()
     product: Product;
 }
+export class UnitOfStock{
 
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+    @Column()
+    name: string;
+   
+}
