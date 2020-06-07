@@ -15,46 +15,22 @@ export class Business extends BaseEntityClass {
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
-
     @Column()
-
     public name: string;
-
     @Column()
-
     public address: string;
-
     @Column()
-
     public logoPath: string;
-
-
-
     @OneToMany(type => BusinessLocation, businessLocation => businessLocation.business)
     businessLocation: BusinessLocation[];
-
     @OneToOne(() => User, (user: User) => user.business)
     public user: User;
-
     @OneToMany(type => Role, roles => roles.business)
     roles: Role[];
-
     @OneToMany(type => Category, category => category.business)
     category: Category[];
-
     @OneToMany(type => SubCategory, subcategory => subcategory.business)
     subcategory: SubCategory[];
-
-    // @OneToMany(type => Customer, customer => customer.business)
-    // customer: Customer[];
-
-    @OneToMany(type => Supplier, supplier => supplier.business)
-    supplier: Supplier[];
-
-    // @OneToMany(type => Order, order => order.business)
-    // order: Order[];
-
-
 
 }
 @Entity()
@@ -87,7 +63,7 @@ export class BusinessLocation extends BaseEntityClass {
     @OneToMany(type => StoreProduct, storeproduct => storeproduct.businesslocation)
     storeproduct: StoreProduct[];
 
-    
+
     @OneToMany(type => StockTransfer, stocktransfer => stocktransfer.businesslocationFrom)
     stocktransferFrom: StockTransfer[];
 

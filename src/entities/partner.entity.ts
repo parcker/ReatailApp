@@ -11,9 +11,7 @@ export class Customer extends BaseEntityClass {
     @PrimaryGeneratedColumn("uuid")
     id: string;
     @Column()
-
     fullname: string;
-
     @Column()
     mobilenumber: string;
     @Column()
