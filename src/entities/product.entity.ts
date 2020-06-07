@@ -6,6 +6,8 @@ import { Business } from './business.entity';
 import { Order, OrderItem } from './order.entity';
 import { StockCard } from './stockcard.entity';
 import { StoreProduct } from './storeproduct.entity';
+import { ProductConfiguration } from './productconfiguration.entity';
+import { PriceConfiguration } from './priceconfiguration.entity';
 
 @Entity()
 export class Product extends BaseEntityClass {
@@ -33,68 +35,30 @@ export class Product extends BaseEntityClass {
     @ManyToOne(type => SubCategory, subcategory => subcategory.product)
     @JoinColumn()
     subCategory: SubCategory;
+
     @Index()
     @ManyToOne(() => Business, business => business.category)
     @JoinColumn()
     business: Business;
 
     @OneToMany(type => OrderItem, orderitem => orderitem.product)
+    @JoinColumn()
     orderitem: OrderItem[];
 
     @OneToMany(type => StockCard, stockcard => stockcard.product)
     stockcard: StockCard[];
 
     @OneToMany(type => StoreProduct, storeproduct => storeproduct.product)
+    @JoinColumn()
     storeproduct: StoreProduct[];
 
-    @OneToMany(type => ProductConfiguration, productconfiguration => productconfiguration.product)
-    productconfiguration: ProductConfiguration[];
+    @OneToOne(type => ProductConfiguration, productconfiguration => productconfiguration.product)
+    @JoinColumn()
+    productconfiguration: ProductConfiguration;
 
     @OneToMany(type => PriceConfiguration, priceconfiguration => priceconfiguration.product)
+    @JoinColumn()
     priceconfiguration: PriceConfiguration[];
 
 }
-@Entity()
-export class ProductConfiguration {
 
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-
-    @Column()
-    pack: number;
-    @Column()
-    leadtime: number;
-    @Column()
-    public canexpire: boolean;
-    @Column()
-    public canbesold: boolean;
-    @Column()
-    public canbepurchased: boolean;
-    @Column()
-    public anypromo: boolean;
-
-    @Index()
-    @ManyToOne(type => Product, product => product.productconfiguration)
-    @JoinColumn()
-    product: Product;
-}
-@Entity()
-export class PriceConfiguration extends BaseEntityClass {
-
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-    @Column()
-    qty: number;
-    @Column()
-    price: number;
-    @Column()
-    ispromo: boolean;
-    @Column()
-    start: Date;
-    @Column()
-    end: Date;
-    @Index()
-    @ManyToOne(type => Product, product => product.productconfiguration)
-    @JoinColumn()
-    product: Product;
-}
