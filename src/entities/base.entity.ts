@@ -12,6 +12,6 @@ export abstract class BaseEntityClass {
     createdby?: string;
     @Column()
     updatedby?: string;
-    @Column()
-    public IsActive: boolean;
+    // @Column()
+    // public IsActive: boolean;
 }

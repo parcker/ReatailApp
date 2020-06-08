@@ -36,7 +36,8 @@ export class CategorysService {
                 model.name = categoryname.trim();
                 model.createdby = createdby;
                 model.updatedby = '',
-                    model.isDisabled = false
+                model.isDisabled = false
+         
                 const dbresponse = await this.categorRepository.save(model);
                 return this.apiResponseService.SuccessResponse(
                     `${dbresponse.name} has been created and activated`,
