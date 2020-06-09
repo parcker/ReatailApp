@@ -31,7 +31,7 @@ export class BusinesslocationService {
             model.createdby=userId;
             model.updatedby='';
             model.business =business;
-            model.isDisabled=false;
+            model.isDisabled=true;
             let response= await this.buisnesLocationRepository.save(model);
             return this.apiResponseService.SuccessResponse(
                 `${buisnesslocationname} Business location created`,
@@ -50,12 +50,12 @@ export class BusinesslocationService {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    async getbusinesslocation(): Promise<any>{
+    async getbusinesslocation(status:boolean): Promise<any>{
        
         try
          { 
             
-             let response= await this.buisnesLocationRepository.find();
+             let response= await this.buisnesLocationRepository.find({where:{isDisabled:status}});
              return this.apiResponseService.SuccessResponse(
                 `${response.length} Business location data`,
                 HttpStatus.OK, response);

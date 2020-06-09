@@ -1,4 +1,4 @@
-import { Controller, Post, UsePipes, ValidationPipe, Body, HttpException, HttpStatus, UseGuards,Request, Res, Patch, Param } from '@nestjs/common';
+import { Controller, Post, UsePipes, ValidationPipe, Body, HttpException, HttpStatus, UseGuards,Request, Res, Patch, Param, Get } from '@nestjs/common';
 import { BusinesslocationService } from './businesslocation.service';
 import { CreateBusinessLocationDto } from '../../app-Dto/usermgr/company/company.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -28,6 +28,17 @@ export class BusinesslocationController {
     async changeStoreStatus(@Param('id') id:string,@Param('status') status:boolean,@Request() req, @Res() res) {
 
         const response = await this.businessloactionService.businesslocationStatus(id,status,req.user.id);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+
+    }
+    @Get('/:buisnessId/:status')
+    @UseGuards(AuthGuard('jwt'))
+    async getstorebybusinesslocation(@Param('buisnessId') buisnessId:string,@Param('status') status:boolean,@Request() req, @Res() res) {
+
+        const response = await this.businessloactionService.getbusinesslocation(status);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }

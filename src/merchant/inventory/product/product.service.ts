@@ -73,21 +73,29 @@ export class ProductService {
             model.isDisabled = false;
             model.createdby = createdby;
             model.updatedby = '';
+            model.imagelink = '/defaullink.jpeg';
             const response = await this.productRepository.save(model);
-
+           
             const productconfig=new ProductConfiguration();
             productconfig.product=response;
             productconfig.anypromo=product.productconfiguration.anypromo;
             productconfig.canbepurchased=product.productconfiguration.canbepurchased;
             productconfig.canbesold=product.productconfiguration.canbesold;
             productconfig.canexpire=product.productconfiguration.canexpire;
-            productconfig.pack=product.productconfiguration.pack;
+            productconfig.pack=product.productconfiguration.packingQty;
             productconfig.leadtime=product.productconfiguration.leadtime;
+            productconfig.isDisabled = false;
+            productconfig.createdby = createdby;
+            productconfig.updatedby = '';
             const responseproductconfig = await this.productconfigurationRepository.save(productconfig);
-
-            return this.apiResponseService.SuccessResponse(
+            
+            if(response && responseproductconfig){return this.apiResponseService.SuccessResponse(
                `${product.name} has been created and activated`,
                HttpStatus.OK, response);
+            }
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `Process error while creating product `,
+                  HttpStatus.BAD_REQUEST, '');
          }
          return await this.payloadService.badRequestErrorMessage(validationResult);
       }
