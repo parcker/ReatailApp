@@ -4,11 +4,12 @@ import { Type } from "class-transformer";
 export class ProductConfigurationDto {
 
     @ApiModelPropertyOptional()
-    packs: number;
+    public imagelink: string;
+  
     @ApiModelPropertyOptional()
     expiredenabled: boolean;
     @ApiModelPropertyOptional()
-    pack: number;
+    packingQty: number;
     @ApiModelPropertyOptional()
     leadtime: number;
     @ApiModelPropertyOptional()
