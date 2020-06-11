@@ -8,7 +8,7 @@ export class CompanyController {
 
     constructor(  private readonly buisnesService: CompanyService) {}
 
-    @Patch('/updateproduct/:id/:status')
+    @Patch('/changecompanystatus/:id/:status')
     @UseGuards(AuthGuard('jwt'))
     async changeStoreStatus(@Param('id') id:string,@Param('status') status:boolean, @Request() req, @Res() res) {
 

@@ -49,6 +49,9 @@ export class PayloadvalidationService {
             .NotEmpty(m => m.contactPerson.email, "Should not be empty", "SigupDto.email.Empty")
             .NotEmpty(m => m.company.comapanyName, "Should not be empty", "company.comapanyName.Empty")
             .NotEmpty(m => m.company.address, "Should not be empty", "company.address.Empty")
+            .NotEmpty(m => m.businesslocation.name, "Should not be empty", "businesslocation.name.Empty")
+            .NotEmpty(m => m.businesslocation.address, "Should not be empty", "businesslocation.address.Empty")
+            .NotEmpty(m => m.company.address, "Should not be empty", "company.address.Empty")
             .If(m => m.contactPerson.password != '', validator => validator
             .ForStringProperty(m => m.contactPerson.password, passwordValidator => passwordValidator
                     .Matches("(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])", "Password strength is not valid", "contactPerson.Password.Strength")

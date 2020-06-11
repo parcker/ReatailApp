@@ -6,12 +6,13 @@ import { Business } from "../../entities/business.entity";
 import { CreateCompanyDto } from '../../app-Dto/usermgr/company/company.dto';
 import { ResponseObj } from '../../shared/generic.response';
 import { ApiResponseService } from '../../shared/response/apiResponse.service';
+import { BusinesslocationService } from '../businesslocation/businesslocation.service';
 
 @Injectable()
 export class CompanyService {
 
     constructor(@InjectRepository(Business)private readonly buisnessRepository: Repository<Business>,
-    private readonly apiResponseService: ApiResponseService) 
+    private readonly apiResponseService: ApiResponseService, private readonly businesslocationService: BusinesslocationService) 
     {}
     async createCompany(companyDTO: CreateCompanyDto): Promise<ResponseObj<Business>> {
         try
@@ -35,12 +36,23 @@ export class CompanyService {
      async companyStatus(companyId:string,status:boolean,updateby:string):Promise<any>{
         try{
             let response= await this.buisnessRepository.findOne({where: { id: companyId } });
-            if(response){
+            if(response)
+            {
+                let businesslocations=await this.businesslocationService.getbusinesslocationBusinessId(companyId);
+                if(businesslocations){
+                    for (let index = 0; index < businesslocations.length; index++) {
+                        
+                        const element = businesslocations[index];
+                        await this.businesslocationService.businesslocationStatus(element.id,status,updateby);
+                        
+                    }
+                }
                 response.isDisabled=status;
                 response.updatedby=updateby;
-                 await this.buisnessRepository.save(response);
+                await this.buisnessRepository.save(response);
+                
                  return this.apiResponseService.SuccessResponse(
-                    `Business is ${status ? 'Enabled' : 'Disabled'}`,
+                    `Business is ${status ? 'Enabled' : 'Disabled'} and ${businesslocations.length} ${status ? 'Enabled' : 'Disabled'} `,
                     HttpStatus.OK, response);
             }
             return this.apiResponseService.FailedBadRequestResponse(
