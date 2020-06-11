@@ -7,6 +7,7 @@ import { CreateCompanyDto } from '../app-Dto/usermgr/company/company.dto';
 import {EmailService} from '../shared/email/emailService';
 import { PayloadvalidationService } from '../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../shared/response/apiResponse.service';
+import { BusinesslocationService } from '../adminboard/businesslocation/businesslocation.service';
 
 @Injectable()
 export class AccountService {
@@ -15,7 +16,8 @@ export class AccountService {
         private readonly comapnyService: CompanyService,
         private readonly emailservice:EmailService,
         private readonly payloadService: PayloadvalidationService,
-        private readonly apiResponseService: ApiResponseService) {}
+        private readonly apiResponseService: ApiResponseService,
+        private readonly businesslocationService: BusinesslocationService) {}
 
     public async create(signup: SigupDto): Promise<any> {
       
@@ -36,8 +38,7 @@ export class AccountService {
                 let model=new CreateCompanyDto();
                 model.comapanyName=signup.company.comapanyName;
                 model.address=signup.company.address;
-        
-                const response=await this.comapnyService.createCompany(model);
+                 const response=await this.comapnyService.createCompany(model);
                 const businessmodel=response.result;
                 if(response.status)
                 {
@@ -58,8 +59,8 @@ export class AccountService {
                     };
                    
                     let response=await this.userService.createAdmins(userinfo,businessmodel);
-                   
                     if(response.status){
+                        await this.businesslocationService.create(signup.businesslocation.name,signup.businesslocation.address,businessmodel.id,response.id)
                         let emaildata={token:response.result.id, name: response.result.firstName,url:process.env.EMAIL_ACTIVATIONLINK};
                         this.emailservice.sendmail(userinfo.email,'Ecorvids-Account','index.handlebars',emaildata);
                         

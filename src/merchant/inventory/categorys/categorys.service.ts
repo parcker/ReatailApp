@@ -148,6 +148,25 @@ export class CategorysService {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    async getSubcategory(business: Business,categoryId:string): Promise<any> {
+        try {
+
+            const [dbcategory, count] = await this.subcategoryRepository.findAndCount({ where: { business: business, isDisabled: false,categoryId:categoryId }});
+            return this.apiResponseService.SuccessResponse(
+                `Total of ${count} category found `,
+                HttpStatus.OK, dbcategory);
+
+        }
+        catch (error) {
+            console.log('Error Message', error, Date.now())
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     async createSubCategory(subname: string, categoryId: string, createdby: string, business: Business): Promise<any> {
         try {

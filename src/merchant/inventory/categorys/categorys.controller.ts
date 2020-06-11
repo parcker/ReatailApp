@@ -53,6 +53,17 @@ export class CategorysController {
         }
         return res.status(HttpStatus.OK).json(response);
     }
+    @Get('/subcategory/:categoryid')
+    @UseGuards(AuthGuard('jwt'))
+    
+    async getsubcategory(@Param('categoryid') categoryid:string,@Request() req, @Res() res){
+        
+        const response = await this.categoryService.getSubcategory(req.user.business,categoryid);
+        if(response.status===false){
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+    }
     @Delete(':id/deletecategory')
     @UseGuards(AuthGuard('jwt'))
     
