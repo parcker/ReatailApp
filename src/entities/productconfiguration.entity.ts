@@ -20,8 +20,8 @@ export class ProductConfiguration extends BaseEntityClass {
     @Column()
     public anypromo: boolean;
 
-    @Index()
-    @OneToOne(type => Product, product => product.productconfiguration)
-    @JoinColumn()
-    product: Product;
+    // @Index()
+    // @OneToOne(type => Product, product => product.productconfiguration)
+    // @JoinColumn()
+    // product: Product;
 }
