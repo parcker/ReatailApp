@@ -2,7 +2,7 @@ import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, Request, G
 import { ProductService } from './product.service';
 import { AuthGuard } from '@nestjs/passport';
 
-import { CreatProductDto, ProductStatusDto, UpdateProductDto } from '../../../app-Dto/product.dto';
+import { CreatProductDto, ProductStatusDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/product.dto';
 
 @Controller('/api/product')
 export class ProductController {
@@ -14,11 +14,12 @@ export class ProductController {
 
     async create(@Body() creatProductDto: CreatProductDto, @Request() req, @Res() res) {
 
-        console.log('Product Controller');
+      
         const response = await this.productService.createProduct(creatProductDto, req.user.id, req.user.business);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
+        
         return res.status(HttpStatus.OK).json(response);
 
     }
@@ -40,9 +41,21 @@ export class ProductController {
     @Patch(':id/updateproduct')
     @UseGuards(AuthGuard('jwt'))
 
-    async updatesubcategory(@Param('id') id,@Request() req, @Res() res, @Body() body: UpdateProductDto) {
+    async updateproduct(@Param('id') id,@Request() req, @Res() res, @Body() body: UpdateProductDto) {
 
         const response = await this.productService.updateProduct(req.user.id, id, body, req.user.business);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+
+    }
+    @Patch(':id/:status/updateproductconfig')
+    @UseGuards(AuthGuard('jwt'))
+
+    async updateproductconfig(@Param('id') id:string,@Param('status') status:boolean,@Request() req, @Res() res, @Body() body: ProductConfigurationDto) {
+
+        const response = await this.productService.updateProductConfiguration(body,id,req.user.id,status);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }

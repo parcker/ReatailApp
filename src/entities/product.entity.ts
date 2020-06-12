@@ -52,7 +52,7 @@ export class Product extends BaseEntityClass {
     @JoinColumn()
     storeproduct: StoreProduct[];
 
-    @OneToOne(type => ProductConfiguration, productconfiguration => productconfiguration.product)
+    @OneToOne(type => ProductConfiguration)
     @JoinColumn()
     productconfiguration: ProductConfiguration;
 
