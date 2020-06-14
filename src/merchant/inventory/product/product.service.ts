@@ -265,7 +265,8 @@ export class ProductService {
       try{
              console.log('productconfig info Id',id);
              let productconfig = await this.productconfigurationRepository.findOne({ where: { id: id } });
-             console.log('productconfig info',productconfig);
+             //console.log('productconfig info',productconfig);
+             Logger.error('productconfig info'+productconfig);
              if (!productconfig) {
            
                return this.apiResponseService.FailedBadRequestResponse(
