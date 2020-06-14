@@ -50,12 +50,12 @@ export class ProductController {
         return res.status(HttpStatus.OK).json(response);
 
     }
-    @Patch(':id/:status/updateproductconfig')
+    @Patch(':productconfigid/:status/updateproductconfig')
     @UseGuards(AuthGuard('jwt'))
 
-    async updateproductconfig(@Param('id') id:string,@Param('status') status:boolean,@Request() req, @Res() res, @Body() body: ProductConfigurationDto) {
+    async updateproductconfig(@Param('productconfigid') productconfigid:string,@Param('status') status:boolean,@Request() req, @Res() res, @Body() body: ProductConfigurationDto) {
 
-        const response = await this.productService.updateProductConfiguration(body,id,req.user.id,status);
+        const response = await this.productService.updateProductConfiguration(body,productconfigid,req.user.id,status);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
