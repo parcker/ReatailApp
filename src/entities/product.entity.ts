@@ -52,7 +52,7 @@ export class Product extends BaseEntityClass {
     @JoinColumn()
     storeproduct: StoreProduct[];
 
-    @OneToOne(type => ProductConfiguration)
+    @OneToOne(type => ProductConfiguration,{onDelete:'CASCADE'})
     @JoinColumn()
     productconfiguration: ProductConfiguration;
 
