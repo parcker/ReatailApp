@@ -9,7 +9,7 @@ export class ProductConfigurationDto {
     @ApiModelPropertyOptional()
     expiredenabled: boolean;
     @ApiModelPropertyOptional()
-    packingQty: number;
+    pack: number;
     @ApiModelPropertyOptional()
     leadtime: number;
     @ApiModelPropertyOptional()
@@ -49,22 +49,22 @@ export class UpdateProductDto {
     public itemcode: string;
     @ApiModelPropertyOptional()
     public description: string;
-    @ApiModelPropertyOptional()
-    public packingtype: string;
-    @ApiModelPropertyOptional()
-    public packs: number;
-    @ApiModelPropertyOptional()
-    public expiredenabled: boolean;
-    @ApiModelPropertyOptional()
-    public isdisabled: boolean;
     @ApiModelProperty({ required: true })
     public categoryId: string;
     @ApiModelPropertyOptional()
     public subcategoryId: string;
-
+    @ApiModelPropertyOptional()
+    public isdisabled: boolean;
     // @Type(() => ProductConfigurationDto)
     // @ApiModelPropertyOptional({ type: ProductConfigurationDto })
     // productconfiguration: ProductConfigurationDto
+    // @ApiModelPropertyOptional()
+    // public packingtype: string;
+    // @ApiModelPropertyOptional()
+    // public packs: number;
+    // @ApiModelPropertyOptional()
+    // public expiredenabled: boolean;
+  
 
 }
 export class ProductStatusDto {

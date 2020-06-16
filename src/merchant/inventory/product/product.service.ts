@@ -158,7 +158,7 @@ export class ProductService {
             productconfig.canbepurchased=productconfiguration.canbepurchased;
             productconfig.canbesold=productconfiguration.canbesold;
             productconfig.canexpire=productconfiguration.canexpire;
-            productconfig.pack=productconfiguration.packingQty;
+            productconfig.pack=productconfiguration.pack;
             productconfig.leadtime=productconfiguration.leadtime;
             productconfig.isDisabled = false;
             productconfig.createdby = createdby;
@@ -310,7 +310,7 @@ export class ProductService {
             productconfig.canbepurchased=productconfiguration.canbepurchased;
             productconfig.canbesold=productconfiguration.canbesold;
             productconfig.canexpire=productconfiguration.canexpire;
-            productconfig.pack=productconfiguration.packingQty;
+            productconfig.pack=productconfiguration.pack;
             productconfig.leadtime=productconfiguration.leadtime;
             productconfig.isDisabled = status;
             productconfig.updatedby = updatedby;
