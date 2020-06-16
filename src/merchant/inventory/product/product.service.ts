@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Product} from '../../../entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category, SubCategory } from '../../../entities/category.entity';
-import { CreatProductDto, UpdateProductDto } from '../../../app-Dto/product.dto';
+import { CreatProductDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/product.dto';
 import { Business } from '../../../entities/business.entity';
 import { ResponseObj } from '../../../shared/generic.response';
 import { PayloadvalidationService } from '../../../shared/payloadvalidation/payloadvalidation.service';
@@ -72,30 +72,17 @@ export class ProductService {
             model.itemcode = product.itemcode;
             model.isDisabled = false;
             model.createdby = createdby;
+            
             model.updatedby = '';
             model.imagelink = '/defaullink.jpeg';
             const response = await this.productRepository.save(model);
-           
-            const productconfig=new ProductConfiguration();
-            productconfig.product=response;
-            productconfig.anypromo=product.productconfiguration.anypromo;
-            productconfig.canbepurchased=product.productconfiguration.canbepurchased;
-            productconfig.canbesold=product.productconfiguration.canbesold;
-            productconfig.canexpire=product.productconfiguration.canexpire;
-            productconfig.pack=product.productconfiguration.packingQty;
-            productconfig.leadtime=product.productconfiguration.leadtime;
-            productconfig.isDisabled = false;
-            productconfig.createdby = createdby;
-            productconfig.updatedby = '';
-            const responseproductconfig = await this.productconfigurationRepository.save(productconfig);
+            await this.creatProductConfiguration(product.productconfiguration,response,createdby);
             
-            if(response && responseproductconfig){return this.apiResponseService.SuccessResponse(
-               `${product.name} has been created and activated`,
+            return this.apiResponseService.SuccessResponse(
+               `${response.name} has been created and activated`,
                HttpStatus.OK, response);
-            }
-               return this.apiResponseService.FailedBadRequestResponse(
-                  `Process error while creating product `,
-                  HttpStatus.BAD_REQUEST, '');
+            
+            
          }
          return await this.payloadService.badRequestErrorMessage(validationResult);
       }
@@ -122,6 +109,34 @@ export class ProductService {
                `${productinfo.length} records found`,
                HttpStatus.OK, productinfo);
         
+      }
+      catch (error) {
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+   async creatProductConfiguration(productconfiguration: ProductConfigurationDto,product:Product,createdby:string):Promise<any>{
+      try{
+
+             
+            const productconfig=new ProductConfiguration();
+            productconfig.anypromo=productconfiguration.anypromo;
+            productconfig.canbepurchased=productconfiguration.canbepurchased;
+            productconfig.canbesold=productconfiguration.canbesold;
+            productconfig.canexpire=productconfiguration.canexpire;
+            productconfig.pack=productconfiguration.packingQty;
+            productconfig.leadtime=productconfiguration.leadtime;
+            productconfig.isDisabled = false;
+            productconfig.createdby = createdby;
+            productconfig.updatedby = '';
+            const responseproductconfig = await this.productconfigurationRepository.save(productconfig);
+
+            product.productconfiguration=responseproductconfig;
+            //Updating productconfiguration on product table
+            await this.productRepository.save(product);
+            return this.apiResponseService.SuccessResponse(
+               `${product.name} configuration setup completed`,
+               HttpStatus.OK, responseproductconfig);
       }
       catch (error) {
          Logger.error(error);
@@ -160,6 +175,7 @@ export class ProductService {
       
       }
       catch (error) {
+         console.log(error);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
@@ -234,26 +250,40 @@ export class ProductService {
          product.createdby = product.createdby;
          product.updatedby = updatedby;
          const dbresponse = await this.productRepository.save(product);
-         product.productconfiguration.anypromo=product.productconfiguration.anypromo;
-         product.productconfiguration.canbepurchased=product.productconfiguration.canbepurchased;
-         product.productconfiguration.canbesold=product.productconfiguration.canbesold;
-         product.productconfiguration.canexpire=product.productconfiguration.canexpire;
-         product.productconfiguration.pack=product.productconfiguration.pack;
-         product.productconfiguration.leadtime=product.productconfiguration.leadtime;
-         product.productconfiguration.isDisabled = model.isdisabled;
-         product.productconfiguration.createdby = product.createdby;
-         product.productconfiguration.updatedby = updatedby;
-         const responseproductconfig = await this.productconfigurationRepository.save(product.productconfiguration);
-         if(dbresponse && responseproductconfig)
-         { 
-            return this.apiResponseService.SuccessResponse(
+         return this.apiResponseService.SuccessResponse(
             `${dbresponse.name} has been updated`,
             HttpStatus.OK, dbresponse);
-         }
-         Logger.error(`Error while creating product ${dbresponse} :${responseproductconfig} `,);
-         return this.apiResponseService.FailedBadRequestResponse(
-            `Process error while creating product`,
-            HttpStatus.INTERNAL_SERVER_ERROR, '');
+
+        
+      }
+      catch (error) {
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+   async updateProductConfiguration(productconfiguration: ProductConfigurationDto,id:string,updatedby:string,status:boolean):Promise<any>{
+      try{
+             
+             let productconfig = await this.productconfigurationRepository.findOne({ where: { id: id } });
+           
+             if (!productconfig) {
+           
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `invalid  productconfig Id sent , no productconfig data  found`,
+                  HttpStatus.BAD_REQUEST, '');
+            }
+            productconfig.anypromo=productconfiguration.anypromo;
+            productconfig.canbepurchased=productconfiguration.canbepurchased;
+            productconfig.canbesold=productconfiguration.canbesold;
+            productconfig.canexpire=productconfiguration.canexpire;
+            productconfig.pack=productconfiguration.packingQty;
+            productconfig.leadtime=productconfiguration.leadtime;
+            productconfig.isDisabled = status;
+            productconfig.updatedby = updatedby;
+            const responseproductconfig = await this.productconfigurationRepository.save(productconfig);
+          return this.apiResponseService.SuccessResponse(
+               `configuration setup update completed`,
+               HttpStatus.OK, responseproductconfig);
       }
       catch (error) {
          Logger.error(error);

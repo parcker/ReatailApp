@@ -51,7 +51,11 @@ export class Product extends BaseEntityClass {
     @OneToMany(type => StoreProduct, storeproduct => storeproduct.product)
     @JoinColumn()
     storeproduct: StoreProduct[];
+<<<<<<< HEAD
     //, productconfiguration => productconfiguration.product
+=======
+
+>>>>>>> 636e2cb1bda33c246b1cddf881333fb171a1c0b0
     @OneToOne(type => ProductConfiguration)
     @JoinColumn()
     productconfiguration: ProductConfiguration;
