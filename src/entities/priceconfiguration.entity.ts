@@ -16,7 +16,8 @@ export class PriceConfiguration extends BaseEntityClass {
     start: Date;
     @Column()
     end: Date;
-
+    @Column()
+    extracolum: number;
     @Index()
     @ManyToOne(() => Product, product => product.priceconfiguration)
     @JoinColumn()

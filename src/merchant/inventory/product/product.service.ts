@@ -9,28 +9,62 @@ import { ResponseObj } from '../../../shared/generic.response';
 import { PayloadvalidationService } from '../../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
 import { ProductConfiguration } from '../../../entities/productconfiguration.entity';
+import { StoreProduct } from '../../../entities/storeproduct.entity';
 
 @Injectable()
 export class ProductService {
+   
 
    constructor(@InjectRepository(Product) private readonly productRepository: Repository<Product>,
       @InjectRepository(Category) private readonly categoryRepository: Repository<Category>,
       @InjectRepository(SubCategory) private readonly subcategoryRepository: Repository<SubCategory>,
       @InjectRepository(Business) private readonly businessRepository: Repository<Business>,
       @InjectRepository(ProductConfiguration) private readonly productconfigurationRepository: Repository<ProductConfiguration>,
+      @InjectRepository(StoreProduct) private readonly StoreProductRepository: Repository<StoreProduct>,
+      
       private readonly payloadService: PayloadvalidationService,
       private readonly apiResponseService: ApiResponseService) {
 
    }
 
+   async deleteproduct(productId: string, business: Business): Promise<any> {
+      try{
+
+         let productinfo = await this.productRepository.findOne({ where: { id:productId, business: business, isDisabled: false } });
+            if (!productinfo) {
+             
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `invalid or product Id , no product data found`,
+                  HttpStatus.BAD_REQUEST,'');
+            }
+         if(await this.StoreProductRepository.findOne({where:{product:productinfo}})){
+            return this.apiResponseService.FailedBadRequestResponse(
+               `product has been used , delete not permited`,
+               HttpStatus.BAD_REQUEST,'');
+         };
+         const proconfig=productinfo.productconfiguration;
+          await this.productRepository.remove(productinfo);
+         //await this.productconfigurationRepository.remove(productinfo.productconfiguration);
+         return this.apiResponseService.SuccessResponse(
+            `${productinfo.name} has been deleted`,
+            HttpStatus.OK, '');
+
+      }
+      catch (error) {
+         Logger.error(error);
+         return new HttpException({
+            message: 'Process error while executing operation:',
+            code: 500, status: false
+         },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
    async createProduct(product: CreatProductDto, createdby: string, business: Business): Promise<any> {
       try {
        
          let validationResult = await this.payloadService.validateProductAsync(product);
 
          if (validationResult.IsValid) {
-
-       
 
             let productinfo = await this.productRepository.findOne({ where: { itemcode: product.itemcode, business: business, isDisabled: false } });
             if (productinfo) {
@@ -39,7 +73,7 @@ export class ProductService {
                   `duplicate item code found :${productinfo.name} and ${productinfo.itemcode}`,
                   HttpStatus.BAD_REQUEST,'');
             }
-            let category = await this.categoryRepository.findOne({ where: { id: product.categoryId } });
+            let category = await this.categoryRepository.findOne({ where: { id: product.categoryId,business:business } });
             if (category == null) {
               
                return this.apiResponseService.FailedBadRequestResponse(
@@ -206,54 +240,55 @@ export class ProductService {
    async updateProduct(updatedby: string, productId: string, model: UpdateProductDto, business: Business): Promise<any> {
       try {
 
-       
-       
-         let product = await this.productRepository.findOne({ where: { id: productId } });
-       
-         if (!product) {
-           
-            return this.apiResponseService.FailedBadRequestResponse(
-               `invalid or product Id sent , no product data  found`,
-               HttpStatus.BAD_REQUEST, '');
-         }
-         let category = await this.categoryRepository.findOne({ where: { id: model.categoryId } });
-         if (category == null) {
+         let validationResult = await this.payloadService.validateProductUpdateAsync(model);
 
-            return this.apiResponseService.FailedBadRequestResponse(
-               `invalid or catogry Id , no catogry data found`,
-               HttpStatus.BAD_REQUEST, '');
-
-         }
-         let subCategory;
-         if (model.subcategoryId != '') {
-
-            let subcategory = await this.subcategoryRepository.findOne({ where: { id: model.subcategoryId } });
-            if (subcategory == null) {
-              
+         if (validationResult.IsValid) {
+            let product = await this.productRepository.findOne({ where: { id: productId,business:business } });
+            if (!product) {
+            
                return this.apiResponseService.FailedBadRequestResponse(
-                  `invalid or subcategory Id , no subcategory data found`,
+                  `invalid or product Id sent , no product data  found`,
                   HttpStatus.BAD_REQUEST, '');
-   
             }
-            subCategory = subcategory;
-         }
-         else {
-            subCategory = null;
-         }
-         product.business = business;
-         product.category = category;
-         product.subCategory = subCategory;
-         product.name = model.name;
-         product.description = model.description;
-         product.itemcode = model.itemcode;
-         product.isDisabled = model.isdisabled;
-         product.createdby = product.createdby;
-         product.updatedby = updatedby;
-         const dbresponse = await this.productRepository.save(product);
-         return this.apiResponseService.SuccessResponse(
-            `${dbresponse.name} has been updated`,
-            HttpStatus.OK, dbresponse);
+            let category = await this.categoryRepository.findOne({ where: { id: model.categoryId,business:business } });
+            if (!category) {
 
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `invalid or catogry Id , no catogry data found`,
+                  HttpStatus.BAD_REQUEST, '');
+
+            }
+            let subCategory;
+            if (model.subcategoryId != '') {
+
+               let subcategory = await this.subcategoryRepository.findOne({ where: { id: model.subcategoryId } });
+               if (subcategory == null) {
+               
+                  return this.apiResponseService.FailedBadRequestResponse(
+                     `invalid or subcategory Id , no subcategory data found`,
+                     HttpStatus.BAD_REQUEST, '');
+      
+               }
+               subCategory = subcategory;
+            }
+            else {
+               subCategory = null;
+            }
+            product.business = business;
+            product.category = category;
+            product.subCategory = subCategory;
+            product.name = model.name;
+            product.description = model.description;
+            product.itemcode = model.itemcode;
+            product.isDisabled = model.isdisabled;
+            product.createdby = product.createdby;
+            product.updatedby = updatedby;
+            const dbresponse = await this.productRepository.save(product);
+            return this.apiResponseService.SuccessResponse(
+               `${dbresponse.name} has been updated`,
+               HttpStatus.OK, dbresponse);
+         }
+         return await this.payloadService.badRequestErrorMessage(validationResult);
         
       }
       catch (error) {
@@ -265,7 +300,6 @@ export class ProductService {
       try{
              
              let productconfig = await this.productconfigurationRepository.findOne({ where: { id: id } });
-           
              if (!productconfig) {
            
                return this.apiResponseService.FailedBadRequestResponse(

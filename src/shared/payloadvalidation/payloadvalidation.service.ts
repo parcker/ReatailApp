@@ -6,7 +6,7 @@ import { LoginDto } from '../../auth/auth.dto';
 import { ResponseObj } from '../generic.response';
 import { promises } from 'dns';
 import { CreatCategoryDto, CreatSubCategoryDto } from '../../app-Dto/category.dto';
-import { CreatProductDto } from '../../app-Dto/product.dto';
+import { CreatProductDto, UpdateProductDto } from '../../app-Dto/product.dto';
 import { CreatCustomerDto, UpdateCustomerDto, CreatSupplierDto } from '../../app-Dto/partner.dto';
 
 @Injectable()
@@ -95,6 +95,19 @@ export class PayloadvalidationService {
             .NotEmpty(m => m.itemcode, "Should not be empty", "CreatProductDto.itemcode.Empty")
             .NotEmpty(m => m.categoryId, "Should not be empty", "CreatProductDto.categoryId.Empty")
             //.IsNumberEqual(m => m.productconfiguration.packingQty, "Should not be empty", "CreatProductDto.categoryId.Empty")
+            .If(m => m.subcategoryId != '', validator => 
+            validator.IsGuid(m => m.subcategoryId, "Should not be invalid", "CreatProductDto.subcategoryId.Invalid").ToResult())
+            .ToResult();
+    };
+    async validateProductUpdateAsync(model: UpdateProductDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateProductUpdateRules);
+
+    };
+    validateProductUpdateRules = (validator: IValidator<UpdateProductDto>): ValidationResult => {
+        return validator
+            .NotEmpty(m => m.name, "Should not be empty", "CreatProductDto.name.Empty")
+            .NotEmpty(m => m.itemcode, "Should not be empty", "CreatProductDto.itemcode.Empty")
+            .NotEmpty(m => m.categoryId, "Should not be empty", "CreatProductDto.categoryId.Empty")
             .If(m => m.subcategoryId != '', validator => 
             validator.IsGuid(m => m.subcategoryId, "Should not be invalid", "CreatProductDto.subcategoryId.Invalid").ToResult())
             .ToResult();

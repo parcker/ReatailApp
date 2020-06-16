@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, Request, Get, HttpException, HttpStatus, Patch, Param, Res } from '@nestjs/common';
+import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, Request, Get, HttpException, HttpStatus, Patch, Param, Res, Delete } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -67,6 +67,18 @@ export class ProductController {
     async getpacking(@Request() req, @Res() res): Promise<any> {
 
         const response = await this.productService.getpacking();
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+
+    }
+
+    @Delete(':productId/deleteproduct')
+    @UseGuards(AuthGuard('jwt'))
+    async deleteproduct(@Param('productId') productId:string,@Request() req, @Res() res): Promise<any> {
+
+        const response = await this.productService.deleteproduct(productId,req.user.business);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
