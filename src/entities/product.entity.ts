@@ -28,16 +28,16 @@ export class Product extends BaseEntityClass {
     @Column()
     public imagelink: string;
     @Index()
-    @ManyToOne(type => Category, category => category.product)
+    @ManyToOne(type => Category, category => category.product,{onDelete:'CASCADE'})
     @JoinColumn()
     category: Category;
 
-    @ManyToOne(type => SubCategory, subcategory => subcategory.product)
+    @ManyToOne(type => SubCategory, subcategory => subcategory.product,{onDelete:'CASCADE'})
     @JoinColumn()
     subCategory: SubCategory;
 
     @Index()
-    @ManyToOne(() => Business, business => business.category)
+    @ManyToOne(() => Business, business => business.category,{onDelete:'CASCADE'})
     @JoinColumn()
     business: Business;
 

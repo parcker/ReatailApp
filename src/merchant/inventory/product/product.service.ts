@@ -115,11 +115,21 @@ export class ProductService {
             model.updatedby = '';
             model.imagelink = '/defaullink.jpeg';
             const response = await this.productRepository.save(model);
-            await this.creatProductConfiguration(product.productconfiguration,response,createdby);
-            
-            return this.apiResponseService.SuccessResponse(
-               `${response.name} has been created and activated`,
-               HttpStatus.OK, response);
+
+            const configRes= await this.creatProductConfiguration(product.productconfiguration,response,createdby);
+            if(configRes.status && response){
+               return this.apiResponseService.SuccessResponse(
+                  `${response.name} has been created and activated`,
+                  HttpStatus.OK, response);
+            }
+            if(response){
+               return this.apiResponseService.SuccessResponse(
+                  `${response.name} has been created and activated but product configuration failed`,
+                  HttpStatus.OK, response);
+            }
+            return this.apiResponseService.FailedBadRequestResponse(
+               `product creation failed and configuration failed`,
+               HttpStatus.INTERNAL_SERVER_ERROR, '');
             
             
          }
@@ -163,19 +173,22 @@ export class ProductService {
             productconfig.canbepurchased=productconfiguration.canbepurchased;
             productconfig.canbesold=productconfiguration.canbesold;
             productconfig.canexpire=productconfiguration.canexpire;
-            productconfig.pack=productconfiguration.packingQty;
+            productconfig.pack=productconfiguration.pack;
             productconfig.leadtime=productconfiguration.leadtime;
             productconfig.isDisabled = false;
             productconfig.createdby = createdby;
             productconfig.updatedby = '';
             const responseproductconfig = await this.productconfigurationRepository.save(productconfig);
-
-            product.productconfiguration=responseproductconfig;
-            //Updating productconfiguration on product table
-            await this.productRepository.save(product);
-            return this.apiResponseService.SuccessResponse(
-               `${product.name} configuration setup completed`,
-               HttpStatus.OK, responseproductconfig);
+            if(responseproductconfig){
+               product.productconfiguration=responseproductconfig;
+               await this.productRepository.save(product);
+               return this.apiResponseService.SuccessResponse(
+                  `${product.name} configuration setup completed`,
+                  HttpStatus.OK, responseproductconfig);
+            }
+            return this.apiResponseService.FailedBadRequestResponse(
+               `product configuration failed`,
+               HttpStatus.INTERNAL_SERVER_ERROR, '');
       }
       catch (error) {
          Logger.error(error);
@@ -315,7 +328,7 @@ export class ProductService {
             productconfig.canbepurchased=productconfiguration.canbepurchased;
             productconfig.canbesold=productconfiguration.canbesold;
             productconfig.canexpire=productconfiguration.canexpire;
-            productconfig.pack=productconfiguration.packingQty;
+            productconfig.pack=productconfiguration.pack;
             productconfig.leadtime=productconfiguration.leadtime;
             productconfig.isDisabled = status;
             productconfig.updatedby = updatedby;
