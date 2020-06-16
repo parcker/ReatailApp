@@ -21,7 +21,7 @@ export class ProductConfiguration extends BaseEntityClass {
     public anypromo: boolean;
 
     // @Index()
-    // @OneToOne(type => Product, product => product.productconfiguration)
+    // @OneToOne(type => Product, product => product.productconfiguration,{onDelete:'CASCADE'})
     // @JoinColumn()
     // product: Product;
 }

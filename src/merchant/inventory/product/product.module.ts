@@ -8,11 +8,12 @@ import { ProductController } from './product.controller';
 import { PayloadvalidationModule } from '../../../shared/payloadvalidation/payloadvalidation.module';
 import { ApiResponseModule } from '../../../shared/response/apiResponse.module';
 import { ProductConfiguration } from '../../../entities/productconfiguration.entity';
+import { StoreProduct } from '../../../entities/storeproduct.entity';
 
 @Module({
 
     imports: [
-        TypeOrmModule.forFeature([Product,Category,SubCategory,Business,ProductConfiguration]),
+        TypeOrmModule.forFeature([Product,Category,SubCategory,Business,ProductConfiguration,StoreProduct]),
         PayloadvalidationModule,ApiResponseModule
     ],
     providers: [ProductService],

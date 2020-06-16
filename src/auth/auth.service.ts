@@ -1,16 +1,12 @@
 import * as jwt from 'jsonwebtoken';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ResponseObj } from '../shared/generic.response';
-import { IloginDto } from '../app-Dto/usermgr/login.dto';
-import { Business } from '../entities/business.entity';
 import { UserPremission } from '../entities/role.entity';
-import { urlType } from '../enums/settings.enum';
 import { PayloadvalidationService } from '../shared/payloadvalidation/payloadvalidation.service';
-import { Validator } from 'ts.validator.fluent/dist';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +15,6 @@ export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
-        @InjectRepository(Business)private readonly buisnessRepository: Repository<Business>,
         private readonly usersService: UsersService,
         @InjectRepository(UserPremission)private readonly user_permissionRepository: Repository<UserPremission>,
         private readonly payloadService: PayloadvalidationService

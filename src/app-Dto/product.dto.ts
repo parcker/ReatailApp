@@ -62,9 +62,9 @@ export class UpdateProductDto {
     @ApiModelPropertyOptional()
     public subcategoryId: string;
 
-    @Type(() => ProductConfigurationDto)
-    @ApiModelPropertyOptional({ type: ProductConfigurationDto })
-    productconfiguration: ProductConfigurationDto
+    // @Type(() => ProductConfigurationDto)
+    // @ApiModelPropertyOptional({ type: ProductConfigurationDto })
+    // productconfiguration: ProductConfigurationDto
 
 }
 export class ProductStatusDto {
