@@ -31,11 +31,11 @@ export class SubCategory extends BaseEntityClass {
    
     name:string;
 
-    @ManyToOne(() => Category, category => category.subcategory)
+    @ManyToOne(() => Category, category => category.subcategory,{onDelete:'CASCADE'})
     @JoinColumn()
     category: Category;
 
-    @ManyToOne(() => Business, business => business.category)
+    @ManyToOne(() => Business, business => business.category,{onDelete:'CASCADE'})
     @JoinColumn()
     business: Business;
 
