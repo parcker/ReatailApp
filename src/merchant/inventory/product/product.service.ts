@@ -42,8 +42,13 @@ export class ProductService {
                `product has been used , delete not permited`,
                HttpStatus.BAD_REQUEST,'');
          };
-         const proconfig=productinfo.productconfiguration;
-          await this.productRepository.remove(productinfo);
+        //let a= await this.productconfigurationRepository.remove(productinfo.productconfiguration);
+         await this.productRepository.createQueryBuilder()
+         .relation(Product,"productconfiguration").of({ id: productId})
+         .remove(ProductConfiguration); 
+       
+         //const proconfig=productinfo.productconfiguration;
+         // await this.productRepository.remove(productinfo);
          //await this.productconfigurationRepository.remove(productinfo.productconfiguration);
          return this.apiResponseService.SuccessResponse(
             `${productinfo.name} has been deleted`,
@@ -110,11 +115,21 @@ export class ProductService {
             model.updatedby = '';
             model.imagelink = '/defaullink.jpeg';
             const response = await this.productRepository.save(model);
-            await this.creatProductConfiguration(product.productconfiguration,response,createdby);
-            
-            return this.apiResponseService.SuccessResponse(
-               `${response.name} has been created and activated`,
-               HttpStatus.OK, response);
+
+            const configRes= await this.creatProductConfiguration(product.productconfiguration,response,createdby);
+            if(configRes.status && response){
+               return this.apiResponseService.SuccessResponse(
+                  `${response.name} has been created and activated`,
+                  HttpStatus.OK, response);
+            }
+            if(response){
+               return this.apiResponseService.SuccessResponse(
+                  `${response.name} has been created and activated but product configuration failed`,
+                  HttpStatus.OK, response);
+            }
+            return this.apiResponseService.FailedBadRequestResponse(
+               `product creation failed and configuration failed`,
+               HttpStatus.INTERNAL_SERVER_ERROR, '');
             
             
          }
@@ -164,13 +179,16 @@ export class ProductService {
             productconfig.createdby = createdby;
             productconfig.updatedby = '';
             const responseproductconfig = await this.productconfigurationRepository.save(productconfig);
-
-            product.productconfiguration=responseproductconfig;
-            //Updating productconfiguration on product table
-            await this.productRepository.save(product);
-            return this.apiResponseService.SuccessResponse(
-               `${product.name} configuration setup completed`,
-               HttpStatus.OK, responseproductconfig);
+            if(responseproductconfig){
+               product.productconfiguration=responseproductconfig;
+               await this.productRepository.save(product);
+               return this.apiResponseService.SuccessResponse(
+                  `${product.name} configuration setup completed`,
+                  HttpStatus.OK, responseproductconfig);
+            }
+            return this.apiResponseService.FailedBadRequestResponse(
+               `product configuration failed`,
+               HttpStatus.INTERNAL_SERVER_ERROR, '');
       }
       catch (error) {
          Logger.error(error);
