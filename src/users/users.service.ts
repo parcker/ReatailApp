@@ -21,7 +21,7 @@ export class UsersService {
     private readonly emailservice:EmailService)
      { }
 
-    async createAdmins(userData: ICreateUser, businessInfo:Business): Promise<any> {
+    async createBusinessSuperAdmins(userData: ICreateUser, businessInfo:Business): Promise<any> {
    
         try
         {

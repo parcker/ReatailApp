@@ -141,15 +141,20 @@ export class ProductService {
             HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   async getProduct(businessId: string): Promise<any> {
+   async getProduct(page: number = 1,businessId: string): Promise<any> {
       try {
 
-        
-         let productinfo = await this.productRepository.createQueryBuilder("product")
-            .leftJoinAndSelect("product.business", "business", "business.id = :id", { id: businessId })
-            .leftJoinAndSelect("product.productconfiguration", "productconfiguration")
-            .where('product.isDisabled = :isDisabled', { isDisabled: false })
-            .select(["product.id", "product.name", "product.itemcode", "product.packingtype", "business.id"]).getMany();
+         const productinfo = await this.productRepository.find({
+            where: {businessId:businessId},
+            relations: ['category','productconfiguration','subcategory'],
+            take: 50,
+            skip: 50 * (page - 1),
+          });
+         // let productinfo = await this.productRepository.createQueryBuilder("product")
+         //    .leftJoinAndSelect("product.business", "business", "business.id = :id", { id: businessId })
+         //    .leftJoinAndSelect("product.productconfiguration", "productconfiguration")
+         //    .where('product.isDisabled = :isDisabled', { isDisabled: false })
+         //    .select(["product.id", "product.name", "product.itemcode", "product.packingtype", "business.id"]).getMany();
 
             return this.apiResponseService.SuccessResponse(
                `${productinfo.length} records found`,
@@ -206,17 +211,16 @@ export class ProductService {
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   async getProductwithfulldetails(businessId: string): Promise<any> {
+   async getProductwithfulldetails(page: number = 1,businessId: string): Promise<any> {
       try {
 
-        
-         const productinfo = await this.productRepository
-            .createQueryBuilder("product")
-            .leftJoinAndSelect("product.category", "category")
-            .leftJoinAndSelect("product.productconfiguration", "productconfiguration")
-            .leftJoinAndSelect("product.subCategory", "subcategory")
-            .where("product.business = :id", { id: businessId })
-            .getMany();
+         const productinfo = await this.productRepository.find({
+            where: {businessId:businessId},
+            relations: ['category','productconfiguration','subCategory'],
+            take: 50,
+            skip: 50 * (page - 1),
+          });
+       
 
          return this.apiResponseService.SuccessResponse(
                `${productinfo.length} records found`,

@@ -14,7 +14,7 @@ export class CompanyService {
     constructor(@InjectRepository(Business)private readonly buisnessRepository: Repository<Business>,
     private readonly apiResponseService: ApiResponseService, private readonly businesslocationService: BusinesslocationService) 
     {}
-    async createCompany(companyDTO: CreateCompanyDto): Promise<ResponseObj<Business>> {
+    async createBusiness(companyDTO: CreateCompanyDto): Promise<ResponseObj<Business>> {
         try
         {  
 
@@ -33,12 +33,12 @@ export class CompanyService {
         }
         catch(err){return err;}
      }
-     async companyStatus(companyId:string,status:boolean,updateby:string):Promise<any>{
+     async businessStatus(businessId:string,status:boolean,updateby:string):Promise<any>{
         try{
-            let response= await this.buisnessRepository.findOne({where: { id: companyId } });
+            let response= await this.buisnessRepository.findOne({where: { id: businessId } });
             if(response)
             {
-                let businesslocations=await this.businesslocationService.getbusinesslocationBusinessId(companyId);
+                let businesslocations=await this.businesslocationService.getbusinesslocationBusinessId(businessId);
                 if(businesslocations){
                     for (let index = 0; index < businesslocations.length; index++) {
                         
@@ -58,6 +58,27 @@ export class CompanyService {
             return this.apiResponseService.FailedBadRequestResponse(
                 `invalid or business Id , data found`,
                 HttpStatus.BAD_REQUEST,'');
+        }
+        catch (error) {
+            Logger.error(error);
+            return new HttpException({
+               message: 'Process error while executing operation:',
+               code: 500, status: false
+            },
+               HttpStatus.INTERNAL_SERVER_ERROR);
+         }
+    }
+    async getAllBusiness(page: number = 1){
+        try{
+            
+            const response = await this.buisnessRepository.find({
+                relations: ['businessLocation',],
+                take: 25,
+                skip: 25 * (page - 1),
+              });
+             return this.apiResponseService.SuccessResponse(
+                `${response.length} Business data found`,
+                HttpStatus.OK, response);
         }
         catch (error) {
             Logger.error(error);

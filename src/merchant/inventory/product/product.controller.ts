@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, Request, Get, HttpException, HttpStatus, Patch, Param, Res, Delete } from '@nestjs/common';
+import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, Request, Get, HttpException, HttpStatus, Patch, Param, Res, Delete, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -62,17 +62,7 @@ export class ProductController {
         return res.status(HttpStatus.OK).json(response);
 
     }
-    @Get('/getpacking')
-    //@UseGuards(AuthGuard('jwt'))
-    async getpacking(@Request() req, @Res() res): Promise<any> {
-
-        const response = await this.productService.getpacking();
-        if (response.status === false) {
-            return res.status(response.code).json(response);
-        }
-        return res.status(HttpStatus.OK).json(response);
-
-    }
+   
 
     @Delete(':productId/deleteproduct')
     @UseGuards(AuthGuard('jwt'))
@@ -87,9 +77,9 @@ export class ProductController {
     }
     @Get('/getproductwithfewdetail')
     @UseGuards(AuthGuard('jwt'))
-    async getproductwithfewdetail(@Request() req, @Res() res): Promise<any> {
+    async getproductwithfewdetail(@Query('page') page: number,@Request() req, @Res() res): Promise<any> {
 
-        const response = await this.productService.getProduct(req.user.businessId);
+        const response = await this.productService.getProduct(page,req.user.businessId);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
@@ -98,9 +88,9 @@ export class ProductController {
     }
     @Get('/getmyproducts')
     @UseGuards(AuthGuard('jwt'))
-    async getmyproducts(@Request() req, @Res() res): Promise<any> {
+    async getmyproducts(@Query('page') page: number,@Request() req, @Res() res): Promise<any> {
 
-        const response = await this.productService.getProductwithfulldetails(req.user.businessId);
+        const response = await this.productService.getProductwithfulldetails(page,req.user.businessId);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }

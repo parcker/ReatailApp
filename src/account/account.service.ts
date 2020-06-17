@@ -38,7 +38,7 @@ export class AccountService {
                 let model=new CreateCompanyDto();
                 model.comapanyName=signup.company.comapanyName;
                 model.address=signup.company.address;
-                 const response=await this.comapnyService.createCompany(model);
+                 const response=await this.comapnyService.createBusiness(model);
                 const businessmodel=response.result;
                 if(response.status)
                 {
@@ -58,7 +58,7 @@ export class AccountService {
                         
                     };
                    
-                    let response=await this.userService.createAdmins(userinfo,businessmodel);
+                    let response=await this.userService.createBusinessSuperAdmins(userinfo,businessmodel);
                     if(response.status){
 
                         await this.businesslocationService.create(signup.businesslocation.name,
