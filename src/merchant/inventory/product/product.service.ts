@@ -43,7 +43,8 @@ export class ProductService {
                HttpStatus.BAD_REQUEST,'');
          };
          const proconfig=productinfo.productconfiguration;
-          await this.productRepository.remove(productinfo);
+          let resp =await this.productRepository.remove(productinfo);
+          console.log(resp);
          //await this.productconfigurationRepository.remove(productinfo.productconfiguration);
          return this.apiResponseService.SuccessResponse(
             `${productinfo.name} has been deleted`,
