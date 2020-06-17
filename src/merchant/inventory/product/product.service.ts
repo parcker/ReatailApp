@@ -42,9 +42,10 @@ export class ProductService {
                `product has been used , delete not permited`,
                HttpStatus.BAD_REQUEST,'');
          };
-         const proconfig=productinfo.productconfiguration;
-          let resp =await this.productRepository.remove(productinfo);
-          console.log(resp);
+         console.log('To delete product',productinfo);
+         
+         let resp =await this.productRepository.remove(productinfo);
+         console.log(resp);
         //let a= await this.productconfigurationRepository.remove(productinfo.productconfiguration);
          await this.productRepository.createQueryBuilder()
          .relation(Product,"productconfiguration").of({ id: productId})
