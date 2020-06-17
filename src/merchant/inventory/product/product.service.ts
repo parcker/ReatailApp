@@ -29,9 +29,10 @@ export class ProductService {
 
    async deleteproduct(productId: string, business: Business): Promise<any> {
       try{
-
+         console.log('product id',productId);
          let productinfo = await this.productRepository.findOne({ where: { id:productId, business: business, isDisabled: false } });
-            if (!productinfo) {
+         console.log('product id',productinfo);
+         if (!productinfo) {
              
                return this.apiResponseService.FailedBadRequestResponse(
                   `invalid or product Id , no product data found`,
