@@ -29,9 +29,10 @@ export class ProductService {
 
    async deleteproduct(productId: string, business: Business): Promise<any> {
       try{
-
+         console.log('product id',productId);
          let productinfo = await this.productRepository.findOne({ where: { id:productId, business: business, isDisabled: false } });
-            if (!productinfo) {
+         console.log('product id',productinfo);
+         if (!productinfo) {
              
                return this.apiResponseService.FailedBadRequestResponse(
                   `invalid or product Id , no product data found`,
@@ -145,7 +146,7 @@ export class ProductService {
       try {
 
          const productinfo = await this.productRepository.find({
-            where: {businessId:businessId},
+            where: {business:{id:businessId}},
             relations: ['category','productconfiguration','subcategory'],
             take: 50,
             skip: 50 * (page - 1),
@@ -215,10 +216,11 @@ export class ProductService {
       try {
 
          const productinfo = await this.productRepository.find({
-            where: {businessId:businessId},
+            where: {business:{id:businessId}},
             relations: ['category','productconfiguration','subCategory'],
             take: 50,
             skip: 50 * (page - 1),
+            
           });
        
 
