@@ -46,14 +46,7 @@ export class ProductService {
          
          let resp =await this.productRepository.remove(productinfo);
          console.log(resp);
-      //   //let a= await this.productconfigurationRepository.remove(productinfo.productconfiguration);
-      //    await this.productRepository.createQueryBuilder()
-      //    .relation(Product,"productconfiguration").of({ id: productId})
-      //    .remove(ProductConfiguration); 
-       
-         //const proconfig=productinfo.productconfiguration;
-         // await this.productRepository.remove(productinfo);
-         //await this.productconfigurationRepository.remove(productinfo.productconfiguration);
+    
          return this.apiResponseService.SuccessResponse(
             `${productinfo.name} has been deleted`,
             HttpStatus.OK, '');
