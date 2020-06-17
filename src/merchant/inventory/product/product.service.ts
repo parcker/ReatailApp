@@ -42,17 +42,11 @@ export class ProductService {
                `product has been used , delete not permited`,
                HttpStatus.BAD_REQUEST,'');
          };
-         const proconfig=productinfo.productconfiguration;
-          let resp =await this.productRepository.remove(productinfo);
-          console.log(resp);
-        //let a= await this.productconfigurationRepository.remove(productinfo.productconfiguration);
-         await this.productRepository.createQueryBuilder()
-         .relation(Product,"productconfiguration").of({ id: productId})
-         .remove(ProductConfiguration); 
-       
-         //const proconfig=productinfo.productconfiguration;
-         // await this.productRepository.remove(productinfo);
-         //await this.productconfigurationRepository.remove(productinfo.productconfiguration);
+         console.log('To delete product',productinfo);
+         
+         let resp =await this.productRepository.remove(productinfo);
+         console.log(resp);
+    
          return this.apiResponseService.SuccessResponse(
             `${productinfo.name} has been deleted`,
             HttpStatus.OK, '');
