@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UpdateProductDto } from '../../app-Dto/product.dto';
 import { CompanyService } from './company.service';
 
-@Controller('company')
+@Controller('/api/company')
 export class CompanyController {
 
     constructor(  private readonly buisnesService: CompanyService) {}
