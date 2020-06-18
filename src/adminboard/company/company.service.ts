@@ -73,8 +73,8 @@ export class CompanyService {
             
             const response = await this.buisnessRepository.find({
                 relations: ['businessLocation',],
-                take: 25,
-                skip: 25 * (page - 1),
+                take: 50,
+                skip: 50 * (page - 1),
               });
              return this.apiResponseService.SuccessResponse(
                 `${response.length} Business data found`,
