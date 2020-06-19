@@ -84,16 +84,20 @@ export class ProductService {
                   HttpStatus.BAD_REQUEST, '');
             }
             let subCategory;
-            if (product.subcategoryId != '') {
-
-               let subcategory = await this.subcategoryRepository.findOne({ where: { id: product.subcategoryId } });
-               if (subcategory == null) {
-                 
-                  return this.apiResponseService.FailedBadRequestResponse(
-                     `invalid or subcategory Id , no subcategory data found`,
-                     HttpStatus.BAD_REQUEST, '');
+            if (product.subcategoryId!==null) 
+            {
+               if(product.subcategoryId !=='')
+               {
+                  let subcategory = await this.subcategoryRepository.findOne({ where: { id: product.subcategoryId } });
+                  if (!subcategory) {
+                  
+                     return this.apiResponseService.FailedBadRequestResponse(
+                        `invalid or subcategory Id , no subcategory data found`,
+                        HttpStatus.BAD_REQUEST, '');
+         
+                  }
+                  subCategory = subcategory;
                }
-               subCategory = subcategory;
             }
             else {
                subCategory = null;
@@ -260,12 +264,11 @@ export class ProductService {
    }
    async updateProduct(updatedby: string, productId: string, model: UpdateProductDto, business: Business): Promise<any> {
       try {
-
+         console.log('updateProduct **',productId,model,business);
          let validationResult = await this.payloadService.validateProductUpdateAsync(model);
-
          if (validationResult.IsValid) {
             let product = await this.productRepository.findOne({ where: { id: productId,business:business } });
-            if (!product) {
+            if(!product) {
             
                return this.apiResponseService.FailedBadRequestResponse(
                   `invalid or product Id sent , no product data  found`,
@@ -280,17 +283,22 @@ export class ProductService {
 
             }
             let subCategory;
-            if (model.subcategoryId != '' && model.subcategoryId!=null) {
-
-               let subcategory = await this.subcategoryRepository.findOne({ where: { id: model.subcategoryId } });
-               if (subcategory == null) {
-               
-                  return this.apiResponseService.FailedBadRequestResponse(
-                     `invalid or subcategory Id , no subcategory data found`,
-                     HttpStatus.BAD_REQUEST, '');
-      
+            console.log('Completion',model.subcategoryId===null);
+            if (model.subcategoryId!==null) 
+            {
+               if(model.subcategoryId !=='')
+               {
+                  let subcategory = await this.subcategoryRepository.findOne({ where: { id: model.subcategoryId } });
+                  if (!subcategory) {
+                  
+                     return this.apiResponseService.FailedBadRequestResponse(
+                        `invalid or subcategory Id , no subcategory data found`,
+                        HttpStatus.BAD_REQUEST, '');
+         
+                  }
+                  subCategory = subcategory;
                }
-               subCategory = subcategory;
+              
             }
             else {
                subCategory = null;
@@ -313,6 +321,7 @@ export class ProductService {
         
       }
       catch (error) {
+         console.log(error);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
@@ -341,6 +350,8 @@ export class ProductService {
                HttpStatus.OK, responseproductconfig);
       }
       catch (error) {
+
+         console.log(error);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
