@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UpdateProductDto } from '../../app-Dto/product.dto';
 import { CompanyService } from './company.service';
 
+
 @Controller('/api/company')
 export class CompanyController {
 
@@ -10,6 +11,7 @@ export class CompanyController {
 
     @Patch('/changecompanystatus/:id/:status')
     @UseGuards(AuthGuard('jwt'))
+    //@UseGuards(new RoleGuard())
     async changeStoreStatus(@Param('id') id:string,@Param('status') status:boolean, @Request() req, @Res() res) {
 
         const response = await this.buisnesService.businessStatus(id,status,req.user.id);

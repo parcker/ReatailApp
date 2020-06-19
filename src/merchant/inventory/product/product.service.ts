@@ -280,7 +280,7 @@ export class ProductService {
 
             }
             let subCategory;
-            if (model.subcategoryId != '') {
+            if (model.subcategoryId != '' && model.subcategoryId!=null) {
 
                let subcategory = await this.subcategoryRepository.findOne({ where: { id: model.subcategoryId } });
                if (subcategory == null) {

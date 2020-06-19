@@ -1,10 +1,10 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ApplicationRoute, UserPremission } from '../../entities/role.entity';
-import { urlType } from '../../enums/settings.enum';
-import { ResponseObj } from '../../shared/generic.response';
-import { User } from '../../entities/user.entity';
+import { ApplicationRoute, UserPremission } from '../../../entities/role.entity';
+import { urlType } from '../../../enums/settings.enum';
+import { ResponseObj } from '../../../shared/generic.response';
+import { User } from '../../../entities/user.entity';
 import { numberTypeAnnotation } from 'babel-types';
 
 @Injectable()
