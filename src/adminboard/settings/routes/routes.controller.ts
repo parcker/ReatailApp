@@ -1,9 +1,9 @@
 import { Controller, UseGuards, UsePipes, ValidationPipe, Body, Post ,Request, Get, Param, HttpException, HttpStatus} from '@nestjs/common';
 import { RoutesService } from './routes.service';
 import { AuthGuard } from '@nestjs/passport';
-import { CreateBusinessLocationDto } from '../../app-Dto/usermgr/company/company.dto';
-import { AppllicationRoutesDto } from '../../app-Dto/usermgr/application.routes.dto';
-import { AssignPermissionDto } from '../../app-Dto/usermgr/assignpermission.dto';
+import { CreateBusinessLocationDto } from '../../../app-Dto/usermgr/company/company.dto';
+import { AppllicationRoutesDto } from '../../../app-Dto/usermgr/application.routes.dto';
+import { AssignPermissionDto } from '../../../app-Dto/usermgr/assignpermission.dto';
 
 @Controller('/api/routes')
 export class RoutesController {

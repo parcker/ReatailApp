@@ -2,7 +2,7 @@ import { Controller, Patch, UseGuards, Param, Res, Body,Request, HttpStatus, Get
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateProductDto } from '../../app-Dto/product.dto';
 import { CompanyService } from './company.service';
-import {RoleGuard} from '../../shared/guards/roleguard'
+
 
 @Controller('/api/company')
 export class CompanyController {

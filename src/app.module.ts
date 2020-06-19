@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 
-import { RolesModule } from './roles/roles.module';
+import { RolesModule } from './merchant/roles/roles.module';
 import { CompanyModule } from './adminboard/company/company.module';
 import { AccountModule } from './account/account.module';
 
@@ -14,8 +14,8 @@ import { EmailModule } from './shared/email/email.module';
 import { rootPath } from 'electron-root-path';
 import { BusinesslocationModule } from './adminboard/businesslocation/businesslocation.module';
 
-import { RoutesModule } from './settings/routes/routes.module';
-import { FeaturesModule } from './settings/features/features.module';
+import { RoutesModule } from './adminboard/settings/routes/routes.module';
+import { FeaturesModule } from './adminboard/settings/features/features.module';
 import { CategorysController } from './merchant/inventory/categorys/categorys.controller';
 import { CategorysModule } from './merchant/inventory/categorys/categorys.module';
 import { PartnersController } from './merchant/partners/partners.controller';
@@ -23,8 +23,8 @@ import { PartnersModule } from './merchant/partners/partners.module';
 import * as path from 'path';
 import { ProductController } from './merchant/inventory/product/product.controller';
 import { ProductModule } from './merchant/inventory/product/product.module';
-import { RolesController } from './roles/roles.controller';
-import { FeaturesController } from './settings/features/features.controller';
+import { RolesController } from './merchant/roles/roles.controller';
+import { FeaturesController } from './adminboard/settings/features/features.controller';
 import { UsersController } from './users/users.controller';
 import { CompanyController } from './adminboard/company/company.controller';
 import { OrderModule } from './merchant/inventory/order/order.module';
@@ -34,6 +34,8 @@ import {UtilityModule } from './shared/utilityservice/utility.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ValidationPipe } from './shared/ValidationPipe';
 import { ApiResponseModule } from './shared/response/apiResponse.module';
+import { MerchantuseraccountModule } from './merchant/usermgr/merchantuseraccount.module';
+
 
 
 
@@ -72,7 +74,9 @@ import { ApiResponseModule } from './shared/response/apiResponse.module';
         OrderModule,
         PayloadvalidationModule,
         UtilityModule,
-        ApiResponseModule
+        ApiResponseModule,
+        MerchantuseraccountModule
+    
        
     ],
     controllers: [AppController, CategorysController, CompanyController,PartnersController, ProductController,RolesController,FeaturesController,UsersController],
