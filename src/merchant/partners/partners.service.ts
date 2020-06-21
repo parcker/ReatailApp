@@ -135,7 +135,7 @@ export class PartnersService {
          supplier.createdby = createdby;
          supplier.updatedby = '';
          supplier.isDisabled = false;
-
+//added
          const dbresponse = await this.supplierRepository.save(supplier);
          return this.apiResponseService.SuccessResponse(
             `${dbresponse.companyname} has been created and activated`,
