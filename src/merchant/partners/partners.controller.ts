@@ -47,7 +47,7 @@ export class PartnersController {
     async creatsuplier(@Request() req,@Res() res,@Body() body: CreatSupplierDto){
         
         
-        const response = await this.partnersService.createsupplierr(body,req.user.id,req.user.business);
+        const response = await this.partnersService.createsupplier(body,req.user.id,req.user.business);
         if(response.status===false){
             return res.status(response.code).json(response);
         }

@@ -137,6 +137,12 @@ export class PayloadvalidationService {
         .NotNull(m => m.mobilenumber, "Should not be null", "mobilenumber.Null")
         .NotEmpty(m => m.address, "Should not be empty", "CreatSupplierDto.address.Empty")
         .NotNull(m => m.address, "Should not be null", "address.Null")
+        .NotEmpty(m => m.contactpersonemail, "Should not be empty", "CreatSupplierDto.contactpersonemail.Empty")
+        .NotNull(m => m.contactpersonemail, "Should not be null", "contactpersonemail.Null")
+        .NotEmpty(m => m.contactpersonname, "Should not be empty", "CreatSupplierDto.contactpersonname.Empty")
+        .NotNull(m => m.contactpersonname, "Should not be null", "contactpersonname.Null")
+        .NotEmpty(m => m.contactpersonphonenumber, "Should not be empty", "CreatSupplierDto.contactpersonphonenumber.Empty")
+        .NotNull(m => m.contactpersonphonenumber, "Should not be null", "contactpersonphonenumber.Null")
      
         .ToResult();                                                                                                                    
 

@@ -107,13 +107,13 @@ export class PartnersService {
                HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   async createsupplierr(model: CreatSupplierDto, createdby: string, business: Business): Promise<any> {
+   async createsupplier(model: CreatSupplierDto, createdby: string, business: Business): Promise<any> {
 
       try {
 
          let validationResult = await this.payloadService.validateSupplierAsync(model);
          if (validationResult.IsValid) {
-            let checkduplicate = await this.supplierRepository.findOne({ where: { mobilenumber: model.mobilenumber.trim() } });
+            let checkduplicate = await this.supplierRepository.findOne({ where: { mobilenumber: model.mobilenumber.trim()} });
             if (checkduplicate) {
                return this.apiResponseService.FailedBadRequestResponse(
                   `duplicate supplier mobilenumber found,supplier already registered with this mobile number: ${model.mobilenumber}`,
@@ -128,7 +128,10 @@ export class PartnersService {
          supplier.companyname = model.company;
          supplier.email = model.email;
          supplier.address = model.address;
-      
+         supplier.website = model.website;
+         supplier.contactpersonemail=model.contactpersonemail;
+         supplier.contactpersonname=model.contactpersonname;
+         supplier.contactpersonphonenumber=model.contactpersonphonenumber;
          supplier.createdby = createdby;
          supplier.updatedby = '';
          supplier.isDisabled = false;
