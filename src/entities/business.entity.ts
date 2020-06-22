@@ -31,6 +31,9 @@ export class Business extends BaseEntityClass {
     category: Category[];
     @OneToMany(type => SubCategory, subcategory => subcategory.business)
     subcategory: SubCategory[];
+    
+    @OneToMany(type => Supplier, suppliers => suppliers.business)
+    suppliers: Supplier[];
 
 }
 @Entity()
@@ -57,7 +60,7 @@ export class BusinessLocation extends BaseEntityClass {
     stockcard: StockCard[];
     @OneToMany(type => Customer, customer => customer.businesslocation)
     customer: Customer[];
-    @OneToMany(type => Supplier, supplier => supplier.businesslocation)
+    @OneToMany(type => Supplier, supplier => supplier.business)
     supplier: Supplier[];
 
     @OneToMany(type => StoreProduct, storeproduct => storeproduct.businesslocation)

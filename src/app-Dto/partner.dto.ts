@@ -47,5 +47,25 @@ export class CreatSupplierDto {
     email: string;
     @ApiModelProperty({ required: true, example: 'Anthony Parcker ltd' })
     address: string;
-
+    @ApiModelPropertyOptional()
+    website: string;
+    @ApiModelProperty({ required: true, example: 'Anthony' })
+    contactpersonname: string;
+    @ApiModelProperty({ required: true})
+    contactpersonphonenumber: string;
+    @ApiModelProperty({ required: true})
+    contactpersonemail: string;
+    @ApiModelPropertyOptional()
+    street: string;
+    @ApiModelPropertyOptional()
+    stateId: string;
+    @ApiModelPropertyOptional()
+    facebooklink: string;
+    @ApiModelPropertyOptional()
+    instagramlink: string;
+    @ApiModelPropertyOptional()
+    twitterlink: string;
+    @ApiModelPropertyOptional()
+    accountId: string;
+    
 }

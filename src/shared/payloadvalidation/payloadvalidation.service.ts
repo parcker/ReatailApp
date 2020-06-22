@@ -41,7 +41,7 @@ export class PayloadvalidationService {
     validateSignUpRules = (validator: IValidator<SigupDto>): ValidationResult => {
         return validator
             .If(m => m.contactPerson.email != '', validator => validator.Email(m => m.contactPerson.email, "Should not be invalid", "RegistrationDto.email.Invalid").ToResult())
-           
+
             .NotEmpty(m => m.contactPerson.firstName, "Should not be empty", "SigupDto.firstName.Empty")
             .NotEmpty(m => m.contactPerson.lastName, "Should not be empty", "SigupDto.lastName.Empty")
             .NotEmpty(m => m.contactPerson.phonenumber, "Should not be empty", "SigupDto.phonenumber.Empty")
@@ -53,12 +53,12 @@ export class PayloadvalidationService {
             .NotEmpty(m => m.businesslocation.address, "Should not be empty", "businesslocation.address.Empty")
             .NotEmpty(m => m.company.address, "Should not be empty", "company.address.Empty")
             .If(m => m.contactPerson.password != '', validator => validator
-            .ForStringProperty(m => m.contactPerson.password, passwordValidator => passwordValidator
+                .ForStringProperty(m => m.contactPerson.password, passwordValidator => passwordValidator
                     .Matches("(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])", "Password strength is not valid", "contactPerson.Password.Strength")
                     .Required((m, pwd) => pwd.length > 6, "Password length should be greater than 6", "contactPerson.Password.Length")
-                   
+
+                    .ToResult())
                 .ToResult())
-              .ToResult())  
             .ToResult();
     };
     validateSignInRules = (validator: IValidator<LoginDto>): ValidationResult => {
@@ -95,8 +95,8 @@ export class PayloadvalidationService {
             .NotEmpty(m => m.itemcode, "Should not be empty", "CreatProductDto.itemcode.Empty")
             .NotEmpty(m => m.categoryId, "Should not be empty", "CreatProductDto.categoryId.Empty")
             //.IsNumberEqual(m => m.productconfiguration.packingQty, "Should not be empty", "CreatProductDto.categoryId.Empty")
-            .If(m => m.subcategoryId != '', validator => 
-            validator.IsGuid(m => m.subcategoryId, "Should not be invalid", "CreatProductDto.subcategoryId.Invalid").ToResult())
+            .If(m => m.subcategoryId != '', validator =>
+                validator.IsGuid(m => m.subcategoryId, "Should not be invalid", "CreatProductDto.subcategoryId.Invalid").ToResult())
             .ToResult();
     };
     async validateProductUpdateAsync(model: UpdateProductDto): Promise<ValidationResult> {
@@ -108,7 +108,7 @@ export class PayloadvalidationService {
             .NotEmpty(m => m.name, "Should not be empty", "CreatProductDto.name.Empty")
             .NotEmpty(m => m.itemcode, "Should not be empty", "CreatProductDto.itemcode.Empty")
             .NotEmpty(m => m.categoryId, "Should not be empty", "CreatProductDto.categoryId.Empty")
-            .If(m =>m.subcategoryId !== null , validator => 
+            .If(m => m.subcategoryId !== null, validator =>
                 validator.IsGuid(m => m.subcategoryId, "Should not be invalid", "CreatProductDto.subcategoryId.Invalid").ToResult())
             .ToResult();
     };
@@ -117,12 +117,12 @@ export class PayloadvalidationService {
 
     };
     validateCustomerRules = (validator: IValidator<CreatCustomerDto>): ValidationResult => {
-        return validator                              
-        .NotEmpty(m => m.fullname, "Should not be empty", "CreatCustomerDto.fullname.Empty")
-        .NotNull(m => m.fullname, "Should not be null", "fullname.Null")
-        .NotEmpty(m => m.mobilenumber, "Should not be empty", "CreatCustomerDto.mobilenumber.Empty")
-        .NotNull(m => m.mobilenumber, "Should not be null", "mobilenumber.Null")
-        .ToResult();                                                                                                                    
+        return validator
+            .NotEmpty(m => m.fullname, "Should not be empty", "CreatCustomerDto.fullname.Empty")
+            .NotNull(m => m.fullname, "Should not be null", "fullname.Null")
+            .NotEmpty(m => m.mobilenumber, "Should not be empty", "CreatCustomerDto.mobilenumber.Empty")
+            .NotNull(m => m.mobilenumber, "Should not be null", "mobilenumber.Null")
+            .ToResult();
 
     };
     async validateSupplierAsync(model: CreatSupplierDto): Promise<ValidationResult> {
@@ -130,15 +130,20 @@ export class PayloadvalidationService {
 
     };
     validateSupplierRules = (validator: IValidator<CreatSupplierDto>): ValidationResult => {
-        return validator                              
-        .NotEmpty(m => m.company, "Should not be empty", "CreatSupplierDto.company.Empty")
-        .NotNull(m => m.company, "Should not be null", "company.Null")
-        .NotEmpty(m => m.mobilenumber, "Should not be empty", "CreatSupplierDto.mobilenumber.Empty")
-        .NotNull(m => m.mobilenumber, "Should not be null", "mobilenumber.Null")
-        .NotEmpty(m => m.address, "Should not be empty", "CreatSupplierDto.address.Empty")
-        .NotNull(m => m.address, "Should not be null", "address.Null")
-     
-        .ToResult();                                                                                                                    
+        return validator
+            .NotEmpty(m => m.company, "Should not be empty", "CreatSupplierDto.company.Empty")
+            .NotEmpty(m => m.mobilenumber, "Should not be empty", "CreatSupplierDto.mobilenumber.Empty")
+            .NotEmpty(m => m.address, "Should not be empty", "CreatSupplierDto.address.Empty")
+            .NotEmpty(m => m.contactpersonemail, "Should not be empty", "CreatSupplierDto.contactpersonemail.Empty")
+            .NotEmpty(m => m.contactpersonname, "Should not be empty", "CreatSupplierDto.contactpersonname.Empty")
+            .NotEmpty(m => m.contactpersonphonenumber, "Should not be empty", "CreatSupplierDto.contactpersonphonenumber.Empty")
+            .If(m => m.email != '', validator =>
+                validator.Email(m => m.email, "Should not be invalid", "CreatSupplierDto.email.Invalid").ToResult())
+            .If(m => m.contactpersonemail != '', validator =>
+                validator.Email(m => m.contactpersonemail, "Should not be invalid", "CreatSupplierDto.contactpersonemail.Invalid").ToResult())
+            .If(m => m.website != '', validator =>
+                validator.IsUrl(m => m.website, "Should not be invalid", "CreatSupplierDto.website.Invalid").ToResult())
+            .ToResult();
 
     };
     async validateLoginAsync(model: LoginDto): Promise<ValidationResult> {
@@ -146,14 +151,14 @@ export class PayloadvalidationService {
 
     };
     validateLoginRules = (validator: IValidator<LoginDto>): ValidationResult => {
-        return validator                              
-        .NotEmpty(m => m.email, "Should not be empty", "LoginDto.email.Empty")
-        .NotNull(m => m.email, "Should not be null", "email.Null")
-        .NotEmpty(m => m.password, "Should not be empty", "LoginDto.password.Empty")
-        .NotNull(m => m.password, "Should not be null", "password.Null")
-        .ToResult();                                                                                                                    
+        return validator
+            .NotEmpty(m => m.email, "Should not be empty", "LoginDto.email.Empty")
+            .NotNull(m => m.email, "Should not be null", "email.Null")
+            .NotEmpty(m => m.password, "Should not be empty", "LoginDto.password.Empty")
+            .NotNull(m => m.password, "Should not be null", "password.Null")
+            .ToResult();
 
     };
-   
-   
+
+
 }

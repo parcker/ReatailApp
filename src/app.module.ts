@@ -18,7 +18,7 @@ import { RoutesModule } from './adminboard/settings/routes/routes.module';
 import { FeaturesModule } from './adminboard/settings/features/features.module';
 import { CategorysController } from './merchant/inventory/categorys/categorys.controller';
 import { CategorysModule } from './merchant/inventory/categorys/categorys.module';
-import { PartnersController } from './merchant/partners/partners.controller';
+import { CustomerController } from './merchant/partners/partners.controller';
 import { PartnersModule } from './merchant/partners/partners.module';
 import * as path from 'path';
 import { ProductController } from './merchant/inventory/product/product.controller';
@@ -31,10 +31,9 @@ import { OrderModule } from './merchant/inventory/order/order.module';
 import { PayloadvalidationModule } from './shared/payloadvalidation/payloadvalidation.module';
 
 import {UtilityModule } from './shared/utilityservice/utility.module';
-import { APP_PIPE } from '@nestjs/core';
-import { ValidationPipe } from './shared/ValidationPipe';
 import { ApiResponseModule } from './shared/response/apiResponse.module';
 import { MerchantuseraccountModule } from './merchant/usermgr/merchantuseraccount.module';
+import { SupplierController } from './merchant/partners/supplier.controller';
 
 
 
@@ -79,7 +78,7 @@ import { MerchantuseraccountModule } from './merchant/usermgr/merchantuseraccoun
     
        
     ],
-    controllers: [AppController, CategorysController, CompanyController,PartnersController, ProductController,RolesController,FeaturesController,UsersController],
+    controllers: [AppController, CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,UsersController],
     providers: []//{provide: APP_PIPE, useClass: ValidationPipe }
 })
 
