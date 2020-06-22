@@ -5,7 +5,7 @@ import { User } from './user.entity';
 import { Role } from './role.entity';
 import { Category, SubCategory } from './category.entity';
 import { Customer, Supplier } from './partner.entity';
-import { Order } from './order.entity';
+import {PurchaseOrder } from './order.entity';
 import { StockCard } from './stockcard.entity';
 import { StoreProduct } from './storeproduct.entity';
 import { StockTransfer } from './stocktransfer.entity';
@@ -54,8 +54,8 @@ export class BusinessLocation extends BaseEntityClass {
     public updatedby: string;
     @OneToMany(type => BusinessLocationUser, businesslocationuser => businesslocationuser.businesslocation)
     businesslocationuser: BusinessLocationUser[];
-    @OneToMany(type => Order, order => order.businesslocation)
-    order: Order[];
+    @OneToMany(type => PurchaseOrder, purchaseorder => purchaseorder.businesslocation)
+    purchaseorder: PurchaseOrder[];
     @OneToMany(type => StockCard, stockcard => stockcard.businesslocation)
     stockcard: StockCard[];
     @OneToMany(type => Customer, customer => customer.businesslocation)

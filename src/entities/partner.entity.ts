@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMan
 
 import { BaseEntityClass } from './base.entity';
 import { Business, BusinessLocation } from './business.entity';
-import { Order } from './order.entity';
+import {PurchaseOrder } from './order.entity';
 import { Sales } from './sales.entity';
 
 @Entity()
@@ -71,7 +71,7 @@ export class Supplier extends BaseEntityClass {
     @JoinColumn()
     registeredlocation: BusinessLocation;
     
-    @OneToMany(type => Order, order => order.supplier)
-    order: Order[];
+    @OneToMany(type => PurchaseOrder, purchaseorder => purchaseorder.supplier)
+    purchaseorder: PurchaseOrder[];
 
 }

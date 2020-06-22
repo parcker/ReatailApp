@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne
 import { BaseEntityClass } from './base.entity';
 import { Category, SubCategory } from './category.entity';
 import { Business } from './business.entity';
-import { Order, OrderItem } from './order.entity';
+import {OrderItem } from './order.entity';
 import { StockCard } from './stockcard.entity';
 import { StoreProduct } from './storeproduct.entity';
 import { ProductConfiguration } from './productconfiguration.entity';
