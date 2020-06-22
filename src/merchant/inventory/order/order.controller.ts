@@ -10,15 +10,6 @@ export class OrderController {
         
     }
 
-    @Post('/creat')
-    @UseGuards(AuthGuard('jwt'))
-    
   
-    async creatcategory(@Request() req,@Body() body: CreateOrderDto,){
-    
-        const response = await this.orderService.postorder(body,req.user.id,req.user.businessId);
-        if(response.status===false){throw new HttpException(response, HttpStatus.BAD_REQUEST);}
-        return response;
-    }
 
 }

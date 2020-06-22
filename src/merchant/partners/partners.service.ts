@@ -326,7 +326,7 @@ export class PartnersService {
       try{
          const response=await this.supplierRepository.findOne({
             where:{id:supplierId,business:business},
-            relations: ['order',]
+            relations: ['purchaseorder',]
          })
          if(!response){
             return this.apiResponseService.FailedBadRequestResponse(
@@ -335,7 +335,7 @@ export class PartnersService {
 
          }
         
-         if(response.order.length>0){
+         if(response.purchaseorder.length>0){
             return this.apiResponseService.FailedBadRequestResponse(
                `Supplier can not be deleted because it is in use!`,
                HttpStatus.BAD_REQUEST, '');
