@@ -53,11 +53,23 @@ export class Supplier extends BaseEntityClass {
     @Column()
     contactpersonphonenumber: string;
     @Column()
-    contactpersonemail: string;
-
-    @ManyToOne(() => BusinessLocation, businesslocation => businesslocation.supplier)
+    contactpersonemail:string;
+    @Column()
+    street:string;
+    @Column()
+    facebook:string;
+    @Column()
+    instagram:string;
+    @Column()
+    twitter:string;
+   
+    @ManyToOne(() => Business, business => business.suppliers)
     @JoinColumn()
-    businesslocation: BusinessLocation;
+    business: Business;
+    
+    @ManyToOne(() => BusinessLocation, registeredlocation => registeredlocation.supplier)
+    @JoinColumn()
+    registeredlocation: BusinessLocation;
     
     @OneToMany(type => Order, order => order.supplier)
     order: Order[];
