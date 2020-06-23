@@ -5,7 +5,7 @@ import { Supplier } from './partner.entity';
 import { Business, BusinessLocation } from './business.entity';
 import { Product } from './product.entity';
 @Entity()
-export class Order extends BaseEntityClass {
+export class PurchaseOrder extends BaseEntityClass {
     @PrimaryGeneratedColumn("uuid")
     id: string;
     @Column()
@@ -14,17 +14,17 @@ export class Order extends BaseEntityClass {
     orderstatus: number;
     @Column()
     totalcostprice: number;
-    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.order)
+    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.purchaseorder)
     @JoinColumn()
     businesslocation: BusinessLocation;
 
-    @ManyToOne(type => Supplier, supplier => supplier.order)
+    @ManyToOne(type => Supplier, supplier => supplier.purchaseorder)
     supplier: Supplier;
 
-    @OneToMany(type => OrderPayment, orderpayment => orderpayment.order)
+    @OneToMany(type => OrderPayment, orderpayment => orderpayment.purchaseorder)
     orderpayment: OrderPayment[];
 
-    @OneToMany(type => OrderItem, orderitem => orderitem.order)
+    @OneToMany(type => OrderItem, orderitem => orderitem.purchaseorder)
     orderitem: OrderItem[];
 }
 @Entity()
@@ -52,8 +52,8 @@ export class OrderItem extends BaseEntityClass {
 
     previousqty: number;
 
-    @ManyToOne(type => Order, order => order.orderitem)
-    order: Order;
+    @ManyToOne(type => PurchaseOrder, purchaseorder => purchaseorder.orderitem)
+    purchaseorder: PurchaseOrder;
 
 
 }
@@ -63,9 +63,9 @@ export class OrderPayment extends BaseEntityClass {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @ManyToOne(type => Order, order => order.orderpayment)
+    @ManyToOne(type => PurchaseOrder, purchaseorder => purchaseorder.orderpayment)
     @JoinColumn()
-    order: Order;
+    purchaseorder: PurchaseOrder;
 
     @Column()
 

@@ -55,6 +55,17 @@ export class CreatSupplierDto {
     contactpersonphonenumber: string;
     @ApiModelProperty({ required: true})
     contactpersonemail: string;
+    @ApiModelPropertyOptional()
+    street: string;
+    @ApiModelPropertyOptional()
+    stateId: string;
+    @ApiModelPropertyOptional()
+    facebooklink: string;
+    @ApiModelPropertyOptional()
+    instagramlink: string;
+    @ApiModelPropertyOptional()
+    twitterlink: string;
+    @ApiModelPropertyOptional()
+    accountId: string;
     
-
 }

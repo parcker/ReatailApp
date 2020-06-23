@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMan
 
 import { BaseEntityClass } from './base.entity';
 import { Business, BusinessLocation } from './business.entity';
-import { Order } from './order.entity';
+import {PurchaseOrder } from './order.entity';
 import { Sales } from './sales.entity';
 
 @Entity()
@@ -53,13 +53,25 @@ export class Supplier extends BaseEntityClass {
     @Column()
     contactpersonphonenumber: string;
     @Column()
-    contactpersonemail: string;
-
-    @ManyToOne(() => BusinessLocation, businesslocation => businesslocation.supplier)
+    contactpersonemail:string;
+    @Column()
+    street:string;
+    @Column()
+    facebook:string;
+    @Column()
+    instagram:string;
+    @Column()
+    twitter:string;
+   
+    @ManyToOne(() => Business, business => business.suppliers)
     @JoinColumn()
-    businesslocation: BusinessLocation;
+    business: Business;
     
-    @OneToMany(type => Order, order => order.supplier)
-    order: Order[];
+    @ManyToOne(() => BusinessLocation, registeredlocation => registeredlocation.supplier)
+    @JoinColumn()
+    registeredlocation: BusinessLocation;
+    
+    @OneToMany(type => PurchaseOrder, purchaseorder => purchaseorder.supplier)
+    purchaseorder: PurchaseOrder[];
 
 }
