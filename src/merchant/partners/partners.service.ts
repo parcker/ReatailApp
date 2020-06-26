@@ -157,30 +157,8 @@ export class PartnersService {
 
          }
         
-<<<<<<< HEAD
-        
-         let supplier = new Supplier();
-         supplier.mobilenumber = model.mobilenumber.trim();
-         supplier.companyname = model.company;
-         supplier.email = model.email;
-         supplier.address = model.address;
-         supplier.website = model.website;
-         supplier.contactpersonemail=model.contactpersonemail;
-         supplier.contactpersonname=model.contactpersonname;
-         supplier.contactpersonphonenumber=model.contactpersonphonenumber;
-         supplier.createdby = createdby;
-         supplier.updatedby = '';
-         supplier.isDisabled = false;
-
-         const dbresponse = await this.supplierRepository.save(supplier);
-         return this.apiResponseService.SuccessResponse(
-            `${dbresponse.companyname} has been created and activated`,
-            HttpStatus.OK, dbresponse);
-      
-=======
          return await this.payloadService.badRequestErrorMessage(validationResult);
          
->>>>>>> f4a95f0a621120026aff52c9fd32df3070562779
       }
       catch (error) {
          console.log(error);

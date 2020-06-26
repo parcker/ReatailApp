@@ -6,6 +6,7 @@ import { Business, BusinessLocation } from './business.entity';
 import { Product } from './product.entity';
 @Entity()
 export class PurchaseOrder extends BaseEntityClass {
+
     @PrimaryGeneratedColumn("uuid")
     id: string;
     @Column()
@@ -14,6 +15,8 @@ export class PurchaseOrder extends BaseEntityClass {
     orderstatus: number;
     @Column()
     totalcostprice: number;
+
+    
     @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.purchaseorder)
     @JoinColumn()
     businesslocation: BusinessLocation;

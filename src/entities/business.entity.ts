@@ -9,6 +9,7 @@ import {PurchaseOrder } from './order.entity';
 import { StockCard } from './stockcard.entity';
 import { StoreProduct } from './storeproduct.entity';
 import { StockTransfer } from './stocktransfer.entity';
+import { FiscalYear } from './fiscalyear.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
@@ -34,6 +35,9 @@ export class Business extends BaseEntityClass {
     
     @OneToMany(type => Supplier, suppliers => suppliers.business)
     suppliers: Supplier[];
+
+    @OneToMany(type => FiscalYear, fiscalyear => fiscalyear.business)
+    fiscalyear: FiscalYear[];
 
 }
 @Entity()
