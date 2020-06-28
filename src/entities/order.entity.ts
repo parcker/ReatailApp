@@ -4,31 +4,64 @@ import { BaseEntityClass } from './base.entity';
 import { Supplier } from './partner.entity';
 import { Business, BusinessLocation } from './business.entity';
 import { Product } from './product.entity';
+import { FiscalYear } from './fiscalyear.entity';
+import { PurchaseOrderPayment } from './purchaseorderpayment.entity';
+import { User } from './user.entity';
+
 @Entity()
 export class PurchaseOrder extends BaseEntityClass {
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
     @Column()
-    invoiceNumber: string;
+    invoiceNumber?: string;
     @Column()
-    orderstatus: number;
+    inputedinvoiceNumber?: string;
+    
     @Column()
-    totalcostprice: number;
+    totalcostprice?
+    : number;
+    @Column()
+    transactionstatusId: number;
+    @Column()
+    doctypeId: number;
+    @Column()
+    dueDate: Date;
 
+    @Column()
+    postingTypeId: number;
     
     @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.purchaseorder)
     @JoinColumn()
     businesslocation: BusinessLocation;
 
+    @ManyToOne(type => BusinessLocation, shipbusinesslocation => shipbusinesslocation.purchaseorder)
+    @JoinColumn()
+    shipbusinesslocation: BusinessLocation;
+
     @ManyToOne(type => Supplier, supplier => supplier.purchaseorder)
     supplier: Supplier;
 
-    @OneToMany(type => OrderPayment, orderpayment => orderpayment.purchaseorder)
-    orderpayment: OrderPayment[];
+    
+    @ManyToOne(type => FiscalYear, fiscalyear => fiscalyear.purchaseorders)
+    fiscalyear?: FiscalYear;
+
+    @ManyToOne(type => PurchaseOrderPayment, orderpayment => orderpayment.purchaseorder)
+    orderpayment?: PurchaseOrderPayment[];
 
     @OneToMany(type => OrderItem, orderitem => orderitem.purchaseorder)
-    orderitem: OrderItem[];
+    orderitem?: OrderItem[];
+
+    @Column()
+    isconfirmed: boolean;
+
+    @ManyToOne(type => User)
+    confirmedby?: User;
+
+    @ManyToOne(() => Business, business => business.purchaseorders)
+    @JoinColumn()
+    business: Business;
+
 }
 @Entity()
 export class OrderItem extends BaseEntityClass {
@@ -58,32 +91,5 @@ export class OrderItem extends BaseEntityClass {
     @ManyToOne(type => PurchaseOrder, purchaseorder => purchaseorder.orderitem)
     purchaseorder: PurchaseOrder;
 
-
-}
-@Entity()
-export class OrderPayment extends BaseEntityClass {
-
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-
-    @ManyToOne(type => PurchaseOrder, purchaseorder => purchaseorder.orderpayment)
-    @JoinColumn()
-    purchaseorder: PurchaseOrder;
-
-    @Column()
-
-    paymenttype: string;
-
-    @Column()
-
-    paymentdate: string;
-
-    @Column()
-
-    amountpaid: number;
-
-    @Column()
-
-    balnce: number;
 
 }

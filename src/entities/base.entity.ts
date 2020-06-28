@@ -8,6 +8,7 @@ export abstract class BaseEntityClass {
     public dateUpdated?: Date;
     @Column()
     public isDisabled?: boolean;
+    
     @Column()
     createdby?: string;
     @Column()

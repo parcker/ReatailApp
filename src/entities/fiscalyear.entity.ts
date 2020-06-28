@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMan
 import { BaseEntityClass } from './base.entity';
 import { Supplier } from './partner.entity';
 import { Business } from './business.entity';
+import { PurchaseOrder } from './order.entity';
 
 @Entity()
 export class FiscalYear extends BaseEntityClass {
@@ -22,8 +23,13 @@ export class FiscalYear extends BaseEntityClass {
     @Column()
     name: string;
 
-    @ManyToOne(type => Business, business => business.fiscalyear)
+    @OneToMany(type => Business, business => business.fiscalyear)
     @JoinColumn()
-    business: Business;
+    business: Business[];
+
+    
+    @OneToMany(type => PurchaseOrder, purchaseorders => purchaseorders.fiscalyear)
+    @JoinColumn()
+    purchaseorders: PurchaseOrder[];
 
 }

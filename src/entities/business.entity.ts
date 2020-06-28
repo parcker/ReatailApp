@@ -10,6 +10,8 @@ import { StockCard } from './stockcard.entity';
 import { StoreProduct } from './storeproduct.entity';
 import { StockTransfer } from './stocktransfer.entity';
 import { FiscalYear } from './fiscalyear.entity';
+import { PaymentMode } from './paymentmode.entity';
+import { PaymentTerm } from './paymentterm.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
@@ -22,14 +24,19 @@ export class Business extends BaseEntityClass {
     public address: string;
     @Column()
     public logoPath: string;
+    
     @OneToMany(type => BusinessLocation, businessLocation => businessLocation.business)
     businessLocation: BusinessLocation[];
+
     @OneToOne(() => User, (user: User) => user.business)
     public user: User;
+
     @OneToMany(type => Role, roles => roles.business)
     roles: Role[];
+
     @OneToMany(type => Category, category => category.business)
     category: Category[];
+
     @OneToMany(type => SubCategory, subcategory => subcategory.business)
     subcategory: SubCategory[];
     
@@ -38,6 +45,16 @@ export class Business extends BaseEntityClass {
 
     @OneToMany(type => FiscalYear, fiscalyear => fiscalyear.business)
     fiscalyear: FiscalYear[];
+
+    
+    @OneToMany(type => PaymentMode, paymentmodes => paymentmodes.business)
+    paymentmodes: PaymentMode[];
+
+    @OneToMany(type => PaymentTerm, paymentmodes => paymentmodes.business)
+    paymentterms: PaymentTerm[];
+
+    @OneToMany(type => PurchaseOrder, purchaseorders => purchaseorders.business)
+    purchaseorders: PurchaseOrder[];
 
 }
 @Entity()
@@ -52,20 +69,15 @@ export class BusinessLocation extends BaseEntityClass {
     @ManyToOne(type => Business, business => business.businessLocation)
     @JoinColumn()
     business: Business;
-    @Column()
-    public createdby: string;
-    @Column()
-    public updatedby: string;
-    @OneToMany(type => BusinessLocationUser, businesslocationuser => businesslocationuser.businesslocation)
-    businesslocationuser: BusinessLocationUser[];
+   
     @OneToMany(type => PurchaseOrder, purchaseorder => purchaseorder.businesslocation)
     purchaseorder: PurchaseOrder[];
     @OneToMany(type => StockCard, stockcard => stockcard.businesslocation)
     stockcard: StockCard[];
-    @OneToMany(type => Customer, customer => customer.businesslocation)
-    customer: Customer[];
-    @OneToMany(type => Supplier, supplier => supplier.business)
-    supplier: Supplier[];
+    // @OneToMany(type => Customer, customer => customer.businesslocation)
+    // customer: Customer[];
+    // @OneToMany(type => Supplier, supplier => supplier.business)
+    // supplier: Supplier[];
 
     @OneToMany(type => StoreProduct, storeproduct => storeproduct.businesslocation)
     storeproduct: StoreProduct[];
@@ -76,22 +88,6 @@ export class BusinessLocation extends BaseEntityClass {
 
     @OneToMany(type => StockTransfer, stocktransfer => stocktransfer.businesslocationTo)
     stocktransferTo: StockTransfer[];
-
-}
-@Entity()
-export class BusinessLocationUser extends BaseEntityClass {
-
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-
-
-    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.businesslocationuser)
-    @JoinColumn()
-    businesslocation: BusinessLocation;
-
-    @ManyToOne(() => User, user => user.businesslocationuser)
-    @JoinColumn()
-    user: User;
 
 }
 

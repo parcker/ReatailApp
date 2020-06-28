@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, QueryFailedError, BaseEntity, OneToOne, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
-import { Business, BusinessLocationUser } from './business.entity';
+import { Business, BusinessLocation } from './business.entity';
 import { UserPremission, ApplicationRoute } from './role.entity';
 
 
@@ -45,6 +45,7 @@ export class User extends BaseEntity
     @Column()
     public isDisabled: boolean;
     
+ 
     @Column()
     
     public phonenumber: string;
@@ -59,8 +60,14 @@ export class User extends BaseEntity
     @OneToMany(type => UserPremission, userpermission => userpermission.user)
     userpermission: UserPremission[];
     
-    @OneToMany(type => BusinessLocationUser, businesslocationuser => businesslocationuser.user)
-    businesslocationuser: BusinessLocationUser[];
+   
+    @ManyToOne(type => BusinessLocation, {
+        cascade: true,
+        eager: true,
+      })
+    @JoinColumn()
+    businesslocation?: BusinessLocation;
+
     result: any;
     
 

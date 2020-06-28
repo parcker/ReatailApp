@@ -8,6 +8,7 @@ import { promises } from 'dns';
 import { CreatCategoryDto, CreatSubCategoryDto } from '../../app-Dto/category.dto';
 import { CreatProductDto, UpdateProductDto } from '../../app-Dto/product.dto';
 import { CreatCustomerDto, UpdateCustomerDto, CreatSupplierDto } from '../../app-Dto/partner.dto';
+import { CreatePurchaseOrderHeaderDto } from '../../app-Dto/purcahseorder.dto';
 
 @Injectable()
 export class PayloadvalidationService {
@@ -156,6 +157,20 @@ export class PayloadvalidationService {
             .NotNull(m => m.email, "Should not be null", "email.Null")
             .NotEmpty(m => m.password, "Should not be empty", "LoginDto.password.Empty")
             .NotNull(m => m.password, "Should not be null", "password.Null")
+            .ToResult();
+
+    };
+    async validatePurchaseOrderHeaderAsync(model: CreatePurchaseOrderHeaderDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validatePurchaseOrderHeaderRules);
+
+    };
+    validatePurchaseOrderHeaderRules = (validator: IValidator<CreatePurchaseOrderHeaderDto>): ValidationResult => {
+        return validator
+            .NotEmpty(m => m.supplierId, "Should not be empty", "CreateOrderDto.supplierId.Empty")
+            .NotNull(m => m.supplierId, "Should not be null", "CreateOrderDto.supplierId.Null")
+            .NotEmpty(m => m.shiptobusinessId, "Should not be empty", "CreateOrderDto.shiptobusinessId.Empty")
+            .NotNull(m => m.shiptobusinessId, "Should not be null", "CreateOrderDto.shiptobusinessId.Null")
+
             .ToResult();
 
     };
