@@ -25,7 +25,7 @@ export class Customer extends BaseEntityClass {
     @Column()
     birthmonth: string;
 
-    @ManyToOne(() => BusinessLocation, businesslocation => businesslocation.customer)
+    @ManyToOne(() => BusinessLocation)
     @JoinColumn()
     businesslocation: BusinessLocation;
 
@@ -67,7 +67,7 @@ export class Supplier extends BaseEntityClass {
     @JoinColumn()
     business: Business;
     
-    @ManyToOne(() => BusinessLocation, registeredlocation => registeredlocation.supplier)
+    @ManyToOne(() => BusinessLocation)
     @JoinColumn()
     registeredlocation: BusinessLocation;
     

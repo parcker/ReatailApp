@@ -94,7 +94,8 @@ export class AuthService {
             id: user.id,
             businessId:user.business.id,
             business:user.business,
-            businesslocationId:''
+            businesslocationId:user.businesslocation.id,
+            businesslocation:user.businesslocation
         };
         const token = jwt.sign(data, process.env.SECRET, { expiresIn: this.tokenExp });
 

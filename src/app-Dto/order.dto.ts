@@ -24,25 +24,4 @@ export class CreateOrderitemDto{
 
 }
 
-export class CreateOrderDto{
 
-   
-    @ApiModelProperty({ required: true})
-    public supplierid: string;
-
-    @ApiModelProperty({ required: true})
-    invoiceNumber:string;
-
-    @ApiModelProperty({ required: true})
-    totalcostprice:number;
-
-    @ApiModelProperty({ required: true})
-    businesslocationId: string;
-
-   
-    @Type(() => CreateOrderitemDto)
-    @ApiModelProperty({ type: [CreateOrderitemDto]})
-    Orderitem:CreateOrderitemDto[]
-
-
-}

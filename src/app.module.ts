@@ -27,13 +27,16 @@ import { RolesController } from './merchant/roles/roles.controller';
 import { FeaturesController } from './adminboard/settings/features/features.controller';
 import { UsersController } from './users/users.controller';
 import { CompanyController } from './adminboard/company/company.controller';
-import { OrderModule } from './merchant/inventory/order/order.module';
+
 import { PayloadvalidationModule } from './shared/payloadvalidation/payloadvalidation.module';
 
 import {UtilityModule } from './shared/utilityservice/utility.module';
 import { ApiResponseModule } from './shared/response/apiResponse.module';
 import { MerchantuseraccountModule } from './merchant/usermgr/merchantuseraccount.module';
 import { SupplierController } from './merchant/partners/supplier.controller';
+import { PurchaseorderModule } from './merchant/inventory/purchaseorder/purchaseorder.module';
+import { PurchaseorderController } from './merchant/inventory/purchaseorder/purchaseorder.controller';
+import { SettingsModule } from './merchant/settings/settings.module';
 
 
 
@@ -70,15 +73,16 @@ import { SupplierController } from './merchant/partners/supplier.controller';
         CategorysModule,
         PartnersModule,
         ProductModule,
-        OrderModule,
+        PurchaseorderModule,
         PayloadvalidationModule,
         UtilityModule,
         ApiResponseModule,
-        MerchantuseraccountModule
+        MerchantuseraccountModule,
+        SettingsModule
     
        
     ],
-    controllers: [AppController, CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,UsersController],
+    controllers: [AppController, CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,UsersController,PurchaseorderController],
     providers: []//{provide: APP_PIPE, useClass: ValidationPipe }
 })
 

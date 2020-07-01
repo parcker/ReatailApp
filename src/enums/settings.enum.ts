@@ -21,6 +21,11 @@ export enum OrderStatus {
     Approved=2,
     
 }
+export enum PostingType {
+    Normal = 1,
+    Reversal=2,
+    
+}
 export enum ActivityAction
 {
     CanCreate = 1,
@@ -38,7 +43,29 @@ export enum ApplicationBundles
     SupportAdminRep = 4,
     HRManagement = 5,
     InventoryManagement = 6,
-    CustomerManagement = 8
+    CustomerManagement = 7
 
+
+}
+export enum TransactionStatusEnum
+{
+    Created = 1,
+    OnHold = 2,
+    Open = 3,
+    Closed = 4,
+    PartialInvoice = 5,
+    Unpaid = 6,
+    PartialPayment = 7,
+    PartialTransferIn = 7
+
+}
+export enum DocType
+{
+    PurchaseOrder = 1,
+    PurchaseInvoice = 2,
+    SalesOrder = 3,
+    CashSalesInvoice = 4,
+    CreditSaleInvoice = 5,
+    
 
 }
