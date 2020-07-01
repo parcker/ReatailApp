@@ -4,15 +4,16 @@ import { PurchaseorderService } from './purchaseorder.service';
 import { PayloadvalidationModule } from '../../../shared/payloadvalidation/payloadvalidation.module';
 import { ApiResponseModule } from '../../../shared/response/apiResponse.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PurchaseOrder } from '../../../entities/order.entity';
+import { PurchaseOrder, OrderItem } from '../../../entities/order.entity';
 import { Supplier } from '../../../entities/partner.entity';
 import { SettingsModule } from '../../settings/settings.module';
 import { BusinessLocation } from '../../../entities/business.entity';
+import { Product } from '../../../entities/product.entity';
 
 
 @Module({
     imports: [
-      TypeOrmModule.forFeature([PurchaseOrder,Supplier,BusinessLocation]),//
+      TypeOrmModule.forFeature([PurchaseOrder,Supplier,BusinessLocation,Product,OrderItem]),//
       PayloadvalidationModule,ApiResponseModule,
      SettingsModule
   ],
