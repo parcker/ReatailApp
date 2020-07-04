@@ -53,6 +53,7 @@ export class AuthService {
                         `Authentication needs approval , please contact support team`,
                         HttpStatus.UNAUTHORIZED, '');
                 }
+                console.log('passed all authorization',foundUser);
                 //const permissions=await this.user_permissionRepository.find({where:{user:foundUser,isDisabled:false}});
                 const token= await this.createToken(foundUser);
                 const expiresIn = 60 * 60;
