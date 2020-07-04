@@ -105,7 +105,8 @@ export class PurchaseorderService {
                  itemp.product=product;
                  itemp.qty=item.quantity;
                  itemp.cost=item.unitcost;
-                 itemp.createdby=createdby
+                 itemp.createdby=createdby;
+                 itemp.purchaseorder=pucahseinfo;
                  itemp.isDisabled=false;
                  itemp.updatedby=''
                  totalcost+=item.unitcost;
