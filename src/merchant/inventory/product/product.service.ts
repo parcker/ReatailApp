@@ -52,6 +52,7 @@ export class ProductService {
 
       }
       catch (error) {
+         console.error('deleteproduct Error:',error.message);
          Logger.error(error);
          return new HttpException({
             message: 'Process error while executing operation:',
@@ -134,7 +135,7 @@ export class ProductService {
          return await this.payloadService.badRequestErrorMessage(validationResult);
       }
       catch (error) {
-         Logger.error(error);
+         console.error('createProduct Error:',error.message);
          return new HttpException({
             message: 'Process error while executing operation:',
             code: 500, status: false
@@ -163,6 +164,7 @@ export class ProductService {
 
       }
       catch (error) {
+         console.error('getProduct Error:',error.message);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
@@ -182,18 +184,25 @@ export class ProductService {
          productconfig.createdby = createdby;
          productconfig.updatedby = '';
          const responseproductconfig = await this.productconfigurationRepository.save(productconfig);
-         if (responseproductconfig) {
+         if (responseproductconfig) 
+         {
             product.productconfiguration = responseproductconfig;
-            await this.productRepository.save(product);
-            return this.apiResponseService.SuccessResponse(
-               `${product.name} configuration setup completed`,
-               HttpStatus.OK, responseproductconfig);
+
+            let update=await this.productRepository.save(product);
+            if(update){
+              
+               return this.apiResponseService.SuccessResponse(
+                  `${product.name} configuration setup completed`,
+                  HttpStatus.OK, responseproductconfig);
+            }
+            
          }
          return this.apiResponseService.FailedBadRequestResponse(
             `product configuration failed`,
             HttpStatus.INTERNAL_SERVER_ERROR, '');
       }
       catch (error) {
+         console.error('creatProductConfiguration Error:',error.message);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
@@ -208,6 +217,7 @@ export class ProductService {
 
       }
       catch (error) {
+         console.error('getpacking Error:',error.message);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
@@ -315,7 +325,7 @@ export class ProductService {
 
       }
       catch (error) {
-         console.log(error);
+         console.error('updateProduct Error:',error.message);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
@@ -345,7 +355,7 @@ export class ProductService {
       }
       catch (error) {
 
-         console.log(error);
+         console.error('updateProductConfiguration Error:',error.message);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }

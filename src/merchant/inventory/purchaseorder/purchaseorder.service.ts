@@ -39,7 +39,7 @@ export class PurchaseorderService {
                   `invalid or supplier Id , no supplier data found`,
                   HttpStatus.BAD_REQUEST, '');
             }
-
+           
             let businesslocation = await this.businesslocationRepository.findOne({ where: { business: business, id: model.shiptobusinessId } });
             if (!businesslocation) {
 
