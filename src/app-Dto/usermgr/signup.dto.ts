@@ -42,6 +42,6 @@ export class CreateNonAdminUser {
     @ApiModelProperty({ required: true })
     roleId: string;
     @ApiModelProperty({ required: true })
-    businesslocationids: [string]
+    businesslocationids: string
 
 }

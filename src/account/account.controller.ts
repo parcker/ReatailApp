@@ -23,11 +23,11 @@ export class AccountController {
         
     }
     @Get('/activate/:token')
-    async ActivateAcctount(@Param('token') token){
+    async ActivateAcctount(@Param('token') token,@Res() res){
         
         //console.log(token);
-        let response= await this.accountService.activateAccount(token);
-        if(response.status==false){throw new HttpException(response.message, HttpStatus.BAD_REQUEST);}
-        return response;
+        const response= await this.accountService.activateAccount(token);
+        if(response.status===false){return res.status(response.code).json(response);}
+        return res.status(HttpStatus.OK).json(response);
     }
 }

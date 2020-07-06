@@ -19,7 +19,7 @@ export class AccountService {
         private readonly apiResponseService: ApiResponseService,
         private readonly businesslocationService: BusinesslocationService) {}
 
-    public async create(signup: SigupDto): Promise<any> {
+     async create(signup: SigupDto): Promise<any> {
       
         try
         {

@@ -9,6 +9,7 @@ import { Business } from '../entities/business.entity';
 import { CreateNonAdminUser } from '../app-Dto/usermgr/signup.dto';
 import { RoleUser, Role } from '../entities/role.entity';
 import { EmailService } from '../shared/email/emailService';
+import { ApiResponseService } from '../shared/response/apiResponse.service';
 
 @Injectable()
 export class UsersService {
@@ -18,6 +19,7 @@ export class UsersService {
     @InjectRepository(Business)private readonly businessRepository: Repository<Business> ,
     @InjectRepository(RoleUser)private readonly roleuserRepository: Repository<RoleUser>,
     @InjectRepository(Role)private readonly roleRepository: Repository<Role>,
+    private readonly apiResponseService: ApiResponseService,
     private readonly emailservice:EmailService)
      { }
 
@@ -54,23 +56,31 @@ export class UsersService {
        
     }
     
-    async createStaff(createdby:string,model:CreateNonAdminUser): Promise<any> {
+    async createNonAdminUser(createdby:string,model:CreateNonAdminUser): Promise<any> {
    
         try
         {
             
             let user = await this.validateUserEmail(model.email);
             if (user) 
-            {
-                
-                let result= new ResponseObj<string>();
-                result.message=`Email address already exist !! account cannot be created` ;
-                result.status=false;
-                result.result="";
-                return result;
+            {  
+                return this.apiResponseService.FailedBadRequestResponse(
+                `Email address already exist !! account cannot be created`,
+                HttpStatus.BAD_REQUEST,'');
+               
+            }
+            const biz=await this.businessRepository.findOne({where:{id:model.businessId , isDisabled:false}});
+
+            const bizlocation=biz.businessLocation.find(c=>c.id==model.businesslocationids);
+            if (!bizlocation) 
+            {  
+                return this.apiResponseService.FailedBadRequestResponse(
+                `Invalid business location Id selected`,
+                HttpStatus.BAD_REQUEST,'');
+               
             }
             const usermodel=new User();
-            usermodel.business=await this.businessRepository.findOne({where:{id:model.businessId , isDisabled:false}});
+            usermodel.business=biz;
             usermodel.firstName=model.firstName.trim(),
             usermodel.email=model.email.trim();
             usermodel.emailConfirmed=false;
@@ -79,6 +89,7 @@ export class UsersService {
             usermodel.password=model.password;
             usermodel.username=model.email;
             usermodel.twoFactorEnable=false;
+            usermodel.businesslocation=bizlocation
             const response= await this.userRepository.save(usermodel);
 
             const roleuser=new RoleUser();
@@ -94,23 +105,21 @@ export class UsersService {
 
                 let emaildata={token:response.result.id, name: response.result.firstName,url:process.env.EMAIL_ACTIVATIONLINK};
                 this.emailservice.sendmail(response.email,'Ecorvids-Account','index.handlebars',emaildata);
-                
-                let result= new ResponseObj<string>();
-                result.message=`create user operation completed , ${response.firstName + response.lastName}
-                 has been assigned to Role : ${roleuser.role.name}` ;
-                result.status=true;
-                result.result="";
-                return result
+
+                return this.apiResponseService.SuccessResponse(
+                    `create user operation completed , ${response.firstName + response.lastName}
+                    has been assigned to Role : ${roleuser.role.name}`,
+                    HttpStatus.OK,'');
+
             }
-            const result= new ResponseObj<string>();
-            result.message=`create user operation failed` ;
-            result.status=false;
-            result.result="";
-            return result
+            return this.apiResponseService.SuccessResponse(
+                `create user operation failed`,
+                HttpStatus.OK,'');
+        
         }
         catch(error)
         {   
-            
+            console.error('createNonAdminUser Error:',error.message);
             Logger.error(error);
          
             return new 
