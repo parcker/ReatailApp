@@ -64,13 +64,15 @@ export class AccountService {
                         roleId:'',
                         
                     };
-                   
+                    
                     let response=await this.createBusinessSuperAdmins(userinfo,businessmodel);
                     if(response.status){
 
-                        await this.businesslocationService.create(signup.businesslocation.name,
-                            signup.businesslocation.address,
-                            businessmodel.id,response.result.id)
+                       
+                        let bizlocationreps=await this.businesslocationService.create(signup.businesslocation.name,
+                            signup.businesslocation.address,businessmodel.id,response.result.id);
+                        
+
                         let emaildata={token:response.result.id, name: response.result.firstName,url:process.env.EMAIL_ACTIVATIONLINK};
                         this.emailservice.sendmail(userinfo.email,'Ecorvids-Account','index.handlebars',emaildata);
                         
@@ -127,6 +129,7 @@ export class AccountService {
             newUser.siguptoken='';
             newUser.business=businessInfo;
             newUser.userType=UserType.merchant
+            newUser.createdby=userData.email;
             let response= await this.userRepository.save(newUser);
             if(response)
             {
