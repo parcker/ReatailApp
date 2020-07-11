@@ -1,5 +1,5 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import { CreatePurchaseOrderHeaderDto, CreatePurchaseOrderItemDto } from '../../../app-Dto/purcahseorder.dto';
+import { CreatePurchaseOrderHeaderDto, CreatePurchaseOrderItemDto } from '../../../app-Dto/merchant/purcahseorder.dto';
 import { Business, BusinessLocation } from '../../../entities/business.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
@@ -39,7 +39,7 @@ export class PurchaseorderService {
                   `invalid or supplier Id , no supplier data found`,
                   HttpStatus.BAD_REQUEST, '');
             }
-
+           
             let businesslocation = await this.businesslocationRepository.findOne({ where: { business: business, id: model.shiptobusinessId } });
             if (!businesslocation) {
 
@@ -54,7 +54,7 @@ export class PurchaseorderService {
             purchaseorder.invoiceNumber=uuidv4();
             purchaseorder.postingTypeId = PostingType.Normal;
             purchaseorder.transactionstatusId = TransactionStatusEnum.Created;
-            purchaseorder.businesslocation = await this.businesslocationRepository.findOne({ where: { business: business, id: purchaseorderlocationId } });
+            purchaseorder.businesslocation = null//await this.businesslocationRepository.findOne({ where: { business: business, id: purchaseorderlocationId } });
             purchaseorder.doctypeId = DocType.PurchaseOrder;
             purchaseorder.isDisabled = false;
             purchaseorder.supplier=supplierinfo;
@@ -105,7 +105,8 @@ export class PurchaseorderService {
                  itemp.product=product;
                  itemp.qty=item.quantity;
                  itemp.cost=item.unitcost;
-                 itemp.createdby=createdby
+                 itemp.createdby=createdby;
+                 itemp.purchaseorder=pucahseinfo;
                  itemp.isDisabled=false;
                  itemp.updatedby=''
                  totalcost+=item.unitcost;

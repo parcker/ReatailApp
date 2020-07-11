@@ -1,7 +1,7 @@
 
 import { CreateCompanyDto, CreateBusinessLocationDto } from "./company/company.dto";
-import { CreateUserDto } from "../../users/user.dto";
-import { ApiModelProperty } from "@nestjs/swagger";
+import { CreateUserDto } from "./user.dto";
+import { ApiModelProperty, ApiModelPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 
 
@@ -22,26 +22,22 @@ export class SigupDto {
     
 
 }
-export class CreateNonAdminUser {
+export class MerchantUserDto {
 
 
-    @ApiModelProperty({ required: true })
-    email: string;
+  
     @ApiModelProperty({ required: true, })
     firstName: string;
-    @ApiModelProperty()
+    @ApiModelPropertyOptional()
     lastName?: string;
-    @ApiModelProperty({ required: true })
-    password: string;
     @ApiModelProperty({ required: true })
     phonenumber: string;
     @ApiModelProperty({ required: true })
-    username: string;
+    password: string;
     @ApiModelProperty({ required: true })
-    businessId: string;
-    @ApiModelProperty({ required: true })
-    roleId: string;
-    @ApiModelProperty({ required: true })
-    businesslocationids: [string]
+    confirmpassword: string;
+    @ApiModelProperty({ required: true, })
+    token: string;
+   
 
 }

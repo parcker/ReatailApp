@@ -16,8 +16,8 @@ export class BusinesslocationService {
        
        try
         { 
-           
-            const business=await this.buisnessRepository.findOne({where:{Id:businessId}});
+            console.log('Inside BusinesslocationService ID==>',businessId);
+            let business=await this.buisnessRepository.findOneOrFail({where:{id:businessId}});
             if (!business) {
 
                 return this.apiResponseService.FailedBadRequestResponse(
@@ -25,6 +25,7 @@ export class BusinesslocationService {
                     HttpStatus.BAD_REQUEST,'');
                
             }
+            console.log('Inside BusinesslocationService ==>',business);
             let model=new BusinessLocation();
             model.name=buisnesslocationname;
             model.address=address;

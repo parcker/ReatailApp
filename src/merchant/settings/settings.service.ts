@@ -5,11 +5,11 @@ import { Business } from '../../entities/business.entity';
 import { PayloadvalidationService } from '../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../shared/response/apiResponse.service';
 import { FiscalYear } from '../../entities/fiscalyear.entity';
-import { FiscalYearDto } from '../../app-Dto/fiscalyear.dto';
+import { FiscalYearDto } from '../../app-Dto/merchant/fiscalyear.dto';
 import { PaymentMode } from '../../entities/paymentmode.entity';
 import { PaymentTerm } from '../../entities/paymentterm.entity';
-import { CreatePaymentModeDto } from '../../app-Dto/paymentmode.dto';
-import { CreatePaymentTermDto } from '../../app-Dto/paymentterm.dto';
+import { CreatePaymentModeDto } from '../../app-Dto/merchant/paymentmode.dto';
+import { CreatePaymentTermDto } from '../../app-Dto/merchant/paymentterm.dto';
 
 @Injectable()
 export class SettingsService {

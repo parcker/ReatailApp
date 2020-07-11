@@ -6,10 +6,11 @@ export class CreateUserDto {
  
     public readonly email: string;
     @ApiModelProperty({ required: true, example: 'changeme' })
-  
     public readonly password: string;
 
-  
+    @ApiModelProperty({ required: true, example: 'changeme' })
+    public readonly confirmpassword: string;
+
     @ApiModelProperty({ example: 'John' })
     public readonly firstName: string;
 

@@ -2,7 +2,7 @@ import { Controller, Post, UsePipes, ValidationPipe, Body, HttpException, HttpSt
 import { BusinesslocationService } from './businesslocation.service';
 import { CreateBusinessLocationDto } from '../../app-Dto/usermgr/company/company.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { UpdateProductDto } from '../../app-Dto/product.dto';
+import { UpdateProductDto } from '../../app-Dto/merchant/product.dto';
 
 
 @Controller('/api/businesslocation')

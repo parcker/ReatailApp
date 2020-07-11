@@ -1,6 +1,6 @@
 import { Controller, Patch, UseGuards, Param, Res, Body,Request, HttpStatus, Get, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { UpdateProductDto } from '../../app-Dto/product.dto';
+import { UpdateProductDto } from '../../app-Dto/merchant/product.dto';
 import { CompanyService } from './company.service';
 
 
