@@ -1,5 +1,5 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import { CreatCustomerDto, CreatSupplierDto, UpdateCustomerDto } from '../../app-Dto/partner.dto';
+import { CreatCustomerDto, CreatSupplierDto, UpdateCustomerDto } from '../../app-Dto/merchant/partner.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Business, BusinessLocation } from '../../entities/business.entity';
 import { Repository, Any } from 'typeorm';

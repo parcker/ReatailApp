@@ -1,7 +1,7 @@
 import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body,Request, HttpException, HttpStatus, Get, Put, Param, Delete, Patch, Res } from '@nestjs/common';
 import { CategorysService } from './categorys.service';
 import { AuthGuard } from '@nestjs/passport';
-import { CreatCategoryDto, CreatSubCategoryDto, UpdateCategoryDto, UpdateSubCategoryDto } from '../../../app-Dto/category.dto';
+import { CreatCategoryDto, CreatSubCategoryDto, UpdateCategoryDto, UpdateSubCategoryDto } from '../../../app-Dto/merchant/category.dto';
 
 @Controller('/api/categorys')
 export class CategorysController {

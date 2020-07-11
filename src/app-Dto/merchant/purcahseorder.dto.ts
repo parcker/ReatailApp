@@ -23,11 +23,14 @@ export class PurchaseOrderItemDto{
     public quantity: number;
 
     @ApiModelProperty({ required: true})
-    public unitcost: number;
+    public carton: number;
 
+    @ApiModelProperty({ required: true})
+    public unitcost: number;
     
     @ApiModelProperty({ required: true})
     public totalCost: number;
+
 
     
 }

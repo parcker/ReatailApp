@@ -1,7 +1,7 @@
 import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, Request, Get, HttpException, HttpStatus, Patch, Param, Res, Delete, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CreatProductDto } from '../../../app-Dto/product.dto';
-import { CreatePurchaseOrderHeaderDto, CreatePurchaseOrderItemDto } from '../../../app-Dto/purcahseorder.dto';
+import { CreatProductDto } from '../../../app-Dto/merchant/product.dto';
+import { CreatePurchaseOrderHeaderDto, CreatePurchaseOrderItemDto } from '../../../app-Dto/merchant/purcahseorder.dto';
 import { PurchaseorderService } from './purchaseorder.service';
 
 @Controller('/api/purchaseorder')

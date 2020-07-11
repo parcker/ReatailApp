@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Product } from '../../../entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category, SubCategory } from '../../../entities/category.entity';
-import { CreatProductDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/product.dto';
+import { CreatProductDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/merchant/product.dto';
 import { Business } from '../../../entities/business.entity';
 import { ResponseObj } from '../../../shared/generic.response';
 import { PayloadvalidationService } from '../../../shared/payloadvalidation/payloadvalidation.service';

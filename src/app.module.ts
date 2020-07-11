@@ -3,7 +3,6 @@ import { Module} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
 
 import { RolesModule } from './merchant/roles/roles.module';
 import { CompanyModule } from './adminboard/company/company.module';
@@ -25,7 +24,6 @@ import { ProductController } from './merchant/inventory/product/product.controll
 import { ProductModule } from './merchant/inventory/product/product.module';
 import { RolesController } from './merchant/roles/roles.controller';
 import { FeaturesController } from './adminboard/settings/features/features.controller';
-import { UsersController } from './users/users.controller';
 import { CompanyController } from './adminboard/company/company.controller';
 
 import { PayloadvalidationModule } from './shared/payloadvalidation/payloadvalidation.module';
@@ -44,7 +42,7 @@ import { SettingsModule } from './merchant/settings/settings.module';
 @Module({
     imports: [
         TypeOrmModule.forRoot(),
-        UsersModule,
+        
         AuthModule,
         RolesModule,
         CompanyModule,
@@ -82,7 +80,7 @@ import { SettingsModule } from './merchant/settings/settings.module';
     
        
     ],
-    controllers: [AppController, CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,UsersController,PurchaseorderController],
+    controllers: [AppController, CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,PurchaseorderController],
     providers: []//{provide: APP_PIPE, useClass: ValidationPipe }
 })
 

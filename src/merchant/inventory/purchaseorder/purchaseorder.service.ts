@@ -1,5 +1,5 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import { CreatePurchaseOrderHeaderDto, CreatePurchaseOrderItemDto } from '../../../app-Dto/purcahseorder.dto';
+import { CreatePurchaseOrderHeaderDto, CreatePurchaseOrderItemDto } from '../../../app-Dto/merchant/purcahseorder.dto';
 import { Business, BusinessLocation } from '../../../entities/business.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';

@@ -2,7 +2,7 @@ import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, Request, G
 import { ProductService } from './product.service';
 import { AuthGuard } from '@nestjs/passport';
 
-import { CreatProductDto, ProductStatusDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/product.dto';
+import { CreatProductDto, ProductStatusDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/merchant/product.dto';
 
 @Controller('/api/product')
 export class ProductController {

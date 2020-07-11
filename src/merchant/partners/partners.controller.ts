@@ -1,7 +1,7 @@
 import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, HttpException, HttpStatus,Request, Get, Res, Patch, Param, Query } from '@nestjs/common';
 import { PartnersService } from './partners.service';
 import { AuthGuard } from '@nestjs/passport';
-import { CreatCustomerDto, CreatSupplierDto, UpdateCustomerDto } from '../../app-Dto/partner.dto';
+import { CreatCustomerDto, CreatSupplierDto, UpdateCustomerDto } from '../../app-Dto/merchant/partner.dto';
 
 @Controller('/api/customer')
 export class CustomerController {

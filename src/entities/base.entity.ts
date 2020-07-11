@@ -6,13 +6,13 @@ export abstract class BaseEntityClass {
     public dateCreated?: Date;
     @UpdateDateColumn({ type: "timestamp" })
     public dateUpdated?: Date;
-    @Column()
+    
+    @Column({default: true})
     public isDisabled?: boolean;
     
-    @Column()
+    @Column({ length: "300" ,nullable: true})
     createdby?: string;
-    @Column()
+    @Column({ length: "300" ,nullable: true })
     updatedby?: string;
-    // @Column()
-    // public IsActive: boolean;
+   
 }

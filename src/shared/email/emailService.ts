@@ -11,11 +11,6 @@ export class EmailService{
     constructor(private readonly mailerService: MailerService) {}
     public sendmail(mailto:string, mailsubject:string,template:string,data:any): boolean {
 
-        // console.log(__dirname + '/templates');
-        // console.log(template);
-        // console.log(process.env.PWD);
-
-        // console.log( path.join(rootPath, '/templates/emails/'));
         let mailstatus=false;
         this .mailerService.sendMail({
                     to: mailto, // sender address

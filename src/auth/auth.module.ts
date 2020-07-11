@@ -1,5 +1,5 @@
 import { forwardRef, Module, RequestMethod } from '@nestjs/common';
-import { UsersModule } from '../users/users.module';
+
 import { IsAuthenticated } from './auth.middleware';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -15,7 +15,6 @@ import { ApiResponseModule } from '../shared/response/apiResponse.module';
 @Module({
     imports: [
         TypeOrmModule.forFeature([User,Business,UserPremission]),
-        UsersModule,
         PayloadvalidationModule,
         ApiResponseModule
     ],

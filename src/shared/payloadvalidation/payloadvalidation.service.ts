@@ -1,14 +1,15 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 
 import { IValidator, Validator, ValidationResult } from 'ts.validator.fluent/dist';
-import { SigupDto } from '../../app-Dto/usermgr/signup.dto';
+import { SigupDto, MerchantUserDto } from '../../app-Dto/usermgr/signup.dto';
 import { LoginDto } from '../../auth/auth.dto';
 import { ResponseObj } from '../generic.response';
 import { promises } from 'dns';
-import { CreatCategoryDto, CreatSubCategoryDto } from '../../app-Dto/category.dto';
-import { CreatProductDto, UpdateProductDto } from '../../app-Dto/product.dto';
-import { CreatCustomerDto, UpdateCustomerDto, CreatSupplierDto } from '../../app-Dto/partner.dto';
-import { CreatePurchaseOrderHeaderDto } from '../../app-Dto/purcahseorder.dto';
+import { CreatCategoryDto, CreatSubCategoryDto } from '../../app-Dto/merchant/category.dto';
+import { CreatProductDto, UpdateProductDto } from '../../app-Dto/merchant/product.dto';
+import { CreatCustomerDto, UpdateCustomerDto, CreatSupplierDto } from '../../app-Dto/merchant/partner.dto';
+import { CreatePurchaseOrderHeaderDto } from '../../app-Dto/merchant/purcahseorder.dto';
+import { CreateUserDto } from '../../app-Dto/usermgr/user.dto';
 
 @Injectable()
 export class PayloadvalidationService {
@@ -31,15 +32,15 @@ export class PayloadvalidationService {
     }
 
 
-    async validateSignUpAsync(model: SigupDto): Promise<ValidationResult> {
-        return await new Validator(model).ValidateAsync(this.validateSignUpRules);
+    async validateBusinessSignUpAsync(model: SigupDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateBusinessSignUpRules);
 
     }
     async validateSignInAsync(model: LoginDto): Promise<ValidationResult> {
         return await new Validator(model).ValidateAsync(this.validateSignInRules);
 
     }
-    validateSignUpRules = (validator: IValidator<SigupDto>): ValidationResult => {
+    validateBusinessSignUpRules = (validator: IValidator<SigupDto>): ValidationResult => {
         return validator
             .If(m => m.contactPerson.email != '', validator => validator.Email(m => m.contactPerson.email, "Should not be invalid", "RegistrationDto.email.Invalid").ToResult())
 
@@ -171,6 +172,53 @@ export class PayloadvalidationService {
             .NotEmpty(m => m.shiptobusinessId, "Should not be empty", "CreateOrderDto.shiptobusinessId.Empty")
             .NotNull(m => m.shiptobusinessId, "Should not be null", "CreateOrderDto.shiptobusinessId.Null")
 
+            .ToResult();
+
+    };
+
+    async validateMerchantUserAsync(model: MerchantUserDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateMerchantUserRules);
+
+    };
+    validateMerchantUserRules = (validator: IValidator<MerchantUserDto>): ValidationResult => {
+        return validator
+            
+            .NotEmpty(m => m.confirmpassword, "Should not be empty", "MerchantUserDto.confirmpassword.Empty")
+            .NotEmpty(m => m.token, "Should not be empty", "MerchantUserDto.token.Empty")
+            .NotEmpty(m => m.firstName, "Should not be empty", "MerchantUserDto.firstName.Empty")
+            .NotEmpty(m => m.phonenumber, "Should not be empty", "MerchantUserDto.phonenumber.Empty")
+            .NotEmpty(m => m.password, "Should not be empty", "MerchantUserDto.phonenumber.Empty")
+            .If(m => m.password != '', validator => validator
+                .ForStringProperty(m => m.password, passwordValidator => passwordValidator
+                    .Matches("(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])", "Password strength is not valid", "MerchantUserDto.Password.Strength")
+                    .Required((m, pwd) => pwd.length > 6, "Password length should be greater than 6", "MerchantUserDto.Password.Length")
+                    .Required((m, pwd) => pwd == m.confirmpassword, "Password and Confirm Password are not the same", "Password:ConfirmNotSame")   
+
+                    .ToResult())
+                .ToResult())
+            .ToResult();
+
+    };
+
+    async validateSupperAdminUserSignUpAsync(model: CreateUserDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateSupperAdminUserSignUpRules);
+
+    };
+    validateSupperAdminUserSignUpRules = (validator: IValidator<CreateUserDto>): ValidationResult => {
+        return validator
+            
+            .NotEmpty(m => m.confirmpassword, "Should not be empty", "CreateUserDto.confirmpassword.Empty")
+            .NotEmpty(m => m.lastName, "Should not be empty", "CreateUserDto.token.Empty")
+            .NotEmpty(m => m.firstName, "Should not be empty", "CreateUserDto.firstName.Empty")
+            .NotEmpty(m => m.phonenumber, "Should not be empty", "CreateUserDto.phonenumber.Empty")
+            .NotEmpty(m => m.password, "Should not be empty", "CreateUserDto.phonenumber.Empty")
+            .If(m => m.password != '', validator => validator
+                .ForStringProperty(m => m.password, passwordValidator => passwordValidator
+                    .Matches("(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])", "Password strength is not valid", "CreateUserDto.Password.Strength")
+                    .Required((m, pwd) => pwd.length > 6, "Password length should be greater than 6", "CreateUserDto.Password.Length")
+                    .Required((m, pwd) => pwd == m.confirmpassword, "Password and Confirm Password are not the same", "Password:ConfirmNotSame")    
+                    .ToResult())
+                .ToResult())
             .ToResult();
 
     };
