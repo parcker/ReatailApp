@@ -14,7 +14,7 @@ export class MerchantuseraccountController {
     @Post('/user')
     public async Sigup(@Body() body: MerchantUserDto,@Res() res){
   
-        const response = await this.merchantuseraccountService.createMerchantuser(res.user.email,body);
+        const response = await this.merchantuseraccountService.createMerchantuser(body);
         return res.status(response.code).json(response);
        
     }

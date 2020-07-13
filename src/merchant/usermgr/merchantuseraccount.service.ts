@@ -11,6 +11,7 @@ import { EmailService } from '../../shared/email/emailService';
 import { ApiResponseService } from '../../shared/response/apiResponse.service';
 import { PayloadvalidationService } from '../../shared/payloadvalidation/payloadvalidation.service';
 import { SignUpMagicDto } from '../../app-Dto/usermgr/signupmagiclink.dto';
+import { UserType } from '../../enums/settings.enum';
 
 
 @Injectable()
@@ -22,14 +23,14 @@ export class MerchantuseraccountService {
     private readonly emailservice:EmailService,
     private readonly payloadService:PayloadvalidationService)
     { }
-    async createMerchantuser(createdby:string,model:MerchantUserDto): Promise<any> {
+    async createMerchantuser(model:MerchantUserDto): Promise<any> {
    
         try
         {
             let validationResult = await this.payloadService.validateMerchantUserAsync(model);
             if (validationResult.IsValid) {
                 
-                let userinfo=await this.userRepository.findOne({where:{siguptoken:model.token}});
+                let userinfo=await this.userRepository.findOne({where:{siguptoken:model.token,emailConfirmed:false}});
                 if (!userinfo) 
                 {  
                     return this.apiResponseService.FailedBadRequestResponse(
@@ -46,8 +47,8 @@ export class MerchantuseraccountService {
                 const response= await this.userRepository.save(userinfo);
                 if(response)
                 {
-    
-                    let emaildata={token:response.result.id, name: response.result.firstName,url:process.env.EMAIL_ACTIVATIONLINK};
+                    
+                    let emaildata={token:response.id, name: response.firstName,url:process.env.EMAIL_ACTIVATIONLINK};
                    this.emailservice.sendmail(response.email,'Ecorvids-Account','index.handlebars',emaildata);
                     return this.apiResponseService.SuccessResponse(
                         `create user operation completed , ${response.firstName + response.lastName}`,
@@ -79,6 +80,7 @@ export class MerchantuseraccountService {
         try
         {
            
+           
             const foundUser = await this.userRepository.findOne({ where: { email:model.email} });
             if (foundUser && foundUser.emailConfirmed) 
             {  
@@ -89,14 +91,18 @@ export class MerchantuseraccountService {
             }
             if (foundUser && foundUser.emailConfirmed==false && (foundUser.siguptoken!==null || foundUser.siguptoken!=='')) 
             {  
-                let emaildata={token:foundUser.siguptoken, name: name,url:process.env.MAGIC_LINK};
+                let emaildata={token:foundUser.siguptoken, name: model.name,url:process.env.MAGIC_LINK};
                 this.emailservice.sendmail(model.email,'Ecorvids Magic link','signup.handlebars',emaildata);
                 return this.apiResponseService.SuccessResponse(
                     `magic link sent to , ${model.email}`,
                     HttpStatus.OK,'');
                 
             }
-            let bizlocation=await this.businesslocationRepository.findOne({where:{id:model.businesslocationId , isDisabled:false}});
+            let bizlocation=await this.businesslocationRepository.findOne({
+                where:{id:model.businesslocationId , isDisabled:false},
+                relations: ['business']});
+                console.log('=======>***',bizlocation);
+            
             if (!bizlocation) 
             {  
                 return this.apiResponseService.FailedBadRequestResponse(
@@ -104,14 +110,17 @@ export class MerchantuseraccountService {
                 HttpStatus.BAD_REQUEST,'');
             
             }
+            console.log('Biz and location ===>',bizlocation)
             let usermodel= await this.returnuserModel(model,bizlocation,createdby);
-            console.log('====>',usermodel)
             usermodel.password='Default';
-            usermodel.siguptoken='uuidv4()';
+            usermodel.siguptoken=uuidv4();
+            usermodel.business=bizlocation.business;
+            usermodel.businesslocation=bizlocation;
+            usermodel.userType=UserType.merchantuser;
             const response= await this.userRepository.save(usermodel);
             if(response)
             {
-                let emaildata={token:usermodel.siguptoken, name: name,url:process.env.MAGIC_LINK};
+                let emaildata={token:usermodel.siguptoken, name: model.name,url:process.env.MAGIC_LINK};
                 this.emailservice.sendmail(model.email,'Ecorvids Magic link','signup.handlebars',emaildata);
                 return this.apiResponseService.SuccessResponse(
                     `magic link sent to , ${model.email}`,
@@ -143,7 +152,7 @@ export class MerchantuseraccountService {
     async returnuserModel(model:any,bizinfo:BusinessLocation,createdby:string):Promise<User>{
 
         let usermodel=new User();
-        usermodel.business=bizinfo.business;
+       
         usermodel.firstName=model.firstName?'':'';
         usermodel.email=model.email;
         usermodel.emailConfirmed=false;
@@ -155,7 +164,7 @@ export class MerchantuseraccountService {
          usermodel.accessFailedCount=0;
          usermodel.username=model.email;
          usermodel.twoFactorEnable=false;
-    //    usermodel.businesslocation=bizinfo;
+        
        return usermodel;
     }
 }

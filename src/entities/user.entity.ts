@@ -38,7 +38,8 @@ export class User extends BaseEntityClass {
     public isDisabled: boolean;
     @Column({ length: "15" })
     public phonenumber: string;
-    @OneToOne(() => Business, (business: Business) => business.user, {
+
+    @ManyToOne(() => Business, (business: Business) => business.user, {
         cascade: true,
         eager: true,
     })

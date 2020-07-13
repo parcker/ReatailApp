@@ -17,12 +17,12 @@ export class PurchaseOrder extends BaseEntityClass {
     @Column()
     invoiceNumber: string;
 
-    @Column({nullable:true})
+    @Column({ nullable: true })
     inputedinvoiceNumber?: string;
-    
-    @Column({nullable:true})
+
+    @Column({ nullable: true })
     totalcostprice?
-    : number;
+        : number;
     @Column()
     transactionstatusId: number;
     @Column()
@@ -32,32 +32,32 @@ export class PurchaseOrder extends BaseEntityClass {
 
     @Column()
     postingTypeId: number;
-    
-    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.purchaseorder,{cascade: true})
+
+    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.purchaseorder, { cascade: true })
     @JoinColumn()
     businesslocation: BusinessLocation;
 
-    @ManyToOne(type => BusinessLocation, shipbusinesslocation => shipbusinesslocation.purchaseorder,{cascade: true,})
+    @ManyToOne(type => BusinessLocation, shipbusinesslocation => shipbusinesslocation.purchaseorder, { cascade: true, })
     @JoinColumn()
     shipbusinesslocation: BusinessLocation;
 
-    @ManyToOne(type => Supplier, supplier => supplier.purchaseorder,{cascade: true})
+    @ManyToOne(type => Supplier, supplier => supplier.purchaseorder, { cascade: true })
     supplier: Supplier;
 
     // @BeforeInsert()
     // private async updateinvoiceNumber() {
     //     this.invoiceNumber = await bcrypt.hash(this.password, User.DEFAULT_SALT_ROUNDS);
-        
+
     // }
 
-    
-    @ManyToOne(type => FiscalYear, fiscalyear => fiscalyear.purchaseorders,{cascade: true})
+
+    @ManyToOne(type => FiscalYear, fiscalyear => fiscalyear.purchaseorders, { cascade: true })
     fiscalyear?: FiscalYear;
 
-    @ManyToOne(type => PurchaseOrderPayment, orderpayment => orderpayment.purchaseorder,{cascade: true})
+    @ManyToOne(type => PurchaseOrderPayment, orderpayment => orderpayment.purchaseorder, { cascade: true })
     orderpayment?: PurchaseOrderPayment[];
 
-    @OneToMany(type => OrderItem, orderitem => orderitem.purchaseorder,{cascade: true})
+    @OneToMany(type => OrderItem, orderitem => orderitem.purchaseorder, { cascade: true })
     orderitem?: OrderItem[];
 
     @Column()
@@ -66,7 +66,7 @@ export class PurchaseOrder extends BaseEntityClass {
     @ManyToOne(type => User)
     confirmedby?: User;
 
-    @ManyToOne(() => Business, business => business.purchaseorders,{cascade: true})
+    @ManyToOne(() => Business, business => business.purchaseorders, { cascade: true })
     @JoinColumn()
     business: Business;
 
@@ -79,23 +79,14 @@ export class OrderItem extends BaseEntityClass {
     @ManyToOne(type => Product, product => product.orderitem)
     @JoinColumn()
     product: Product;
-
     @Column()
-
     qty: number;
-
-    @Column()
-
+    @Column({ type: "decimal" })
     cost: number;
-
-    @Column()
-
+    @Column({ type: "decimal" })
     unitprice: number;
-
     @Column()
-
     previousqty: number;
-
     @ManyToOne(type => PurchaseOrder, purchaseorder => purchaseorder.orderitem)
     purchaseorder: PurchaseOrder;
 

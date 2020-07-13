@@ -14,11 +14,8 @@ export class CompanyController {
     //@UseGuards(new RoleGuard())
     async changeStoreStatus(@Param('id') id:string,@Param('status') status:boolean, @Request() req, @Res() res) {
 
-        const response = await this.buisnesService.businessStatus(id,status,req.user.id);
-        if (response.status === false) {
-            return res.status(response.code).json(response);
-        }
-        return res.status(HttpStatus.OK).json(response);
+        const response = await this.buisnesService.businessStatus(id,status,req.user.email);
+        return res.status(response.code).json(response);
 
     }
     @Get('/getallbusiness')
@@ -26,10 +23,7 @@ export class CompanyController {
     async getallbusiness(@Query('page') page: number,@Request() req, @Res() res) {
 
         const response = await this.buisnesService.getAllBusiness(page);
-        if (response.status === false) {
-            return res.status(response.code).json(response);
-        }
-        return res.status(HttpStatus.OK).json(response);
+        return res.status(response.code).json(response);
 
     }
 }

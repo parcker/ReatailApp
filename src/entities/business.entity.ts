@@ -28,7 +28,7 @@ export class Business extends BaseEntityClass {
     @OneToMany(type => BusinessLocation, businessLocation => businessLocation.business)
     businessLocation: BusinessLocation[];
 
-    @OneToOne(() => User, (user: User) => user.business)
+    @OneToMany(() => User, (user: User) => user.business)
     public user: User;
 
     @OneToMany(type => Role, roles => roles.business)
