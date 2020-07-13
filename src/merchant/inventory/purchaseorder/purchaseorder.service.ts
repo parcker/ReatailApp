@@ -54,7 +54,7 @@ export class PurchaseorderService {
             purchaseorder.invoiceNumber=uuidv4();
             purchaseorder.postingTypeId = PostingType.Normal;
             purchaseorder.transactionstatusId = TransactionStatusEnum.Created;
-            purchaseorder.businesslocation = null//await this.businesslocationRepository.findOne({ where: { business: business, id: purchaseorderlocationId } });
+            purchaseorder.businesslocation = await this.businesslocationRepository.findOne({ where: { business: business, id: purchaseorderlocationId } });
             purchaseorder.doctypeId = DocType.PurchaseOrder;
             purchaseorder.isDisabled = false;
             purchaseorder.supplier=supplierinfo;
@@ -68,7 +68,7 @@ export class PurchaseorderService {
             let response = await this.purchaseOrderRepository.save(purchaseorder);
 
             return this.apiResponseService.SuccessResponse(
-               `$Purshase order has been created and activated`,
+               `Purshase order has been created and activated`,
                HttpStatus.OK, response);
          }
          return await this.payloadService.badRequestErrorMessage(validationResult);
@@ -94,10 +94,12 @@ export class PurchaseorderService {
              }
              let totalcost=0;
              let saveitem=[];
+         
              for (let index = 0; index < model.purchaseItems.length; index++) {
                  
                  const item = model.purchaseItems[index];
-                 const product= await this.productRepository.findOne({where:{id:item.productId}});
+             
+                 const product= await this.productRepository.findOne({where:{id:item.productId,isDisabled:false}});
                  if(!product){
                     continue;
                  }
@@ -107,6 +109,8 @@ export class PurchaseorderService {
                  itemp.cost=item.unitcost;
                  itemp.createdby=createdby;
                  itemp.purchaseorder=pucahseinfo;
+                 itemp.previousqty=0;
+                 itemp.unitprice=0.0
                  itemp.isDisabled=false;
                  itemp.updatedby=''
                  totalcost+=item.unitcost;

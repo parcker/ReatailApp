@@ -38,7 +38,9 @@ export class AuthService {
             if(validationResult.IsValid)
             {
               
-                const foundUser = await this.userRepository.findOne({email:email,emailConfirmed:true});
+                const foundUser = await this.userRepository.find({
+                    where:{email:email,emailConfirmed:true},
+                    relations: ['business','businesslocation']});
                 if (!foundUser){
     
                     return this.apiResponseService.FailedBadRequestResponse(
@@ -46,15 +48,15 @@ export class AuthService {
                         HttpStatus.UNAUTHORIZED, '');
                     
                 }
-                if (!(await this.isValidPassword(foundUser,password))){
+                if (!(await this.isValidPassword(foundUser[0],password))){
                     return this.apiResponseService.FailedBadRequestResponse(
                         `User does not exist`,
                         HttpStatus.UNAUTHORIZED, '');
                 }
                
-                if(foundUser.userType!==UserType.admin){
-                  
-                    if(foundUser.business.isDisabled){
+                if(foundUser[0].userType!==UserType.admin){
+                    console.log('=========>',foundUser);
+                    if(foundUser[0].business.isDisabled){
 
                         return this.apiResponseService.FailedBadRequestResponse(
                             `Authentication needs approval , please contact support team`,
@@ -63,13 +65,13 @@ export class AuthService {
                 }
               
                 //const permissions=await this.user_permissionRepository.find({where:{user:foundUser,isDisabled:false}});
-                const token= await this.createToken(foundUser);
+                const token= await this.createToken(foundUser[0]);
                 const expiresIn = 60 * 60;
                 let data = {
 
                     token: token.access_token,
                     expire: expiresIn ,role:'',
-                    username:foundUser.username,
+                    username:foundUser[0].username,
                     views:[],
                     apis:[]
                 };

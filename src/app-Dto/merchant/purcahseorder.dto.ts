@@ -39,7 +39,7 @@ export class CreatePurchaseOrderItemDto{
     
     @ApiModelProperty({ required: true})
     public purcahseId: number;
-    @ApiModelProperty({ type: PurchaseOrderItemDto })
+    @ApiModelProperty({ type: [PurchaseOrderItemDto] })
     @Type(() => PurchaseOrderItemDto)
     purchaseItems:PurchaseOrderItemDto[]
 }

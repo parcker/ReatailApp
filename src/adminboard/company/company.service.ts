@@ -38,21 +38,23 @@ export class CompanyService {
             let response= await this.buisnessRepository.findOne({where: { id: businessId } });
             if(response)
             {
-                let businesslocations=await this.businesslocationService.getbusinesslocationBusinessId(businessId);
+                let businesslocations=await this.businesslocationService.getbusinesslocationBusinessId(businessId,status);
+               
                 if(businesslocations){
-                    for (let index = 0; index < businesslocations.length; index++) {
-                        
-                        const element = businesslocations[index];
-                        await this.businesslocationService.businesslocationStatus(element.id,status,updateby);
-                        
-                    }
+                  	
+                        for (let index = 0; index < businesslocations.result.length; index++) {
+                                    
+                            let element = businesslocations.result[index];
+                            await this.businesslocationService.businesslocationStatus(element.id,status,updateby);
+                            
+                        }
                 }
                 response.isDisabled=status;
                 response.updatedby=updateby;
                 await this.buisnessRepository.save(response);
                 
                  return this.apiResponseService.SuccessResponse(
-                    `Business is ${status ? 'Enabled' : 'Disabled'} and ${businesslocations.length} ${status ? 'Enabled' : 'Disabled'} `,
+                    `Business is ${status ? 'Enabled' : 'Disabled'} and ${businesslocations.result.length} ${status ? 'Enabled' : 'Disabled'} `,
                     HttpStatus.OK, response);
             }
             return this.apiResponseService.FailedBadRequestResponse(

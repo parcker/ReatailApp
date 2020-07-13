@@ -74,12 +74,12 @@ export class BusinesslocationService {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    async getbusinesslocationBusinessId(businessId:string): Promise<any>{
+    async getbusinesslocationBusinessId(businessId:string,status:boolean): Promise<any>{
        
         try
          { 
             
-             let response= await this.buisnesLocationRepository.find({ where: { businessId: businessId},order: { name: 'ASC' }});
+             let response= await this.buisnesLocationRepository.find({ where: { businessId: businessId,isDisabled:status},order: { name: 'ASC' }});
              return this.apiResponseService.SuccessResponse(
                 `${response.length} Business location data`,
                 HttpStatus.OK, response);
