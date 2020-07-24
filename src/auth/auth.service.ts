@@ -56,7 +56,7 @@ export class AuthService {
                
                 if(foundUser[0].userType!==UserType.admin){
                     
-                    if(foundUser[0].business.isDisabled===false){
+                    if(foundUser[0].business.isDisabled){
 
                         return this.apiResponseService.FailedBadRequestResponse(
                             `Authentication needs approval , please contact support team`,
