@@ -22,7 +22,7 @@ export class CompanyService {
              model.name=companyDTO.comapanyName;
              model.address=companyDTO.address;
              model.logoPath='No Logo'
-             model.isDisabled=true;
+             model.isDisabled=false;
              model.createdby='';
              model.updatedby='';
             const response= await this.buisnessRepository.save(model);
