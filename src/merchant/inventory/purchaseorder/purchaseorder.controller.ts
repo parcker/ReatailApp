@@ -3,6 +3,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreatProductDto } from '../../../app-Dto/merchant/product.dto';
 import { CreatePurchaseOrderHeaderDto, CreatePurchaseOrderItemDto } from '../../../app-Dto/merchant/purcahseorder.dto';
 import { PurchaseorderService } from './purchaseorder.service';
+import { PaginationDto } from '../../../shared/pagenation/PaginationDto';
+import { SearchParametersDto } from '../../../app-Dto/merchant/searchparameters.dto';
 
 @Controller('/api/purchaseorder')
 export class PurchaseorderController {
@@ -32,6 +34,14 @@ export class PurchaseorderController {
         }
         
         return res.status(HttpStatus.OK).json(response);
+
+    }
+    @Get('/getpurchaseinfo')
+    @UseGuards(AuthGuard('jwt'))
+     async getpurchaseOrders(@Body() model: SearchParametersDto, @Request() req, @Res() res) {
+
+        const response = await this.purchaseorderservice.getpurchaseorders(model,req.user.business,req.user.businesslocation);
+        return res.status(response.code).json(response);
 
     }
 

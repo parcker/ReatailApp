@@ -17,6 +17,7 @@ export class ApiResponseService {
         result.result = data;
         return result;
     }
+   
     async FailedBadRequestResponse <T> (message:string,code:number,data: any):Promise<any>{
 
         let result = new ResponseObj<T>();

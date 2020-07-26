@@ -12,10 +12,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { SettingsService } from '../../settings/settings.service';
 import { PostingType, TransactionStatusEnum, DocType } from '../../../enums/settings.enum';
 import { Product } from '../../../entities/product.entity';
+import { SearchParametersDto } from '../../../app-Dto/merchant/searchparameters.dto';
 
 @Injectable()
 export class PurchaseorderService {
-
+  
    constructor(@InjectRepository(PurchaseOrder) private readonly purchaseOrderRepository: Repository<PurchaseOrder>,
       @InjectRepository(Supplier) private readonly supplierRepository: Repository<Supplier>,
       @InjectRepository(Product) private readonly productRepository: Repository<Product>,
@@ -134,4 +135,32 @@ export class PurchaseorderService {
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
    }
+   async getpurchaseorders(searchparameter: SearchParametersDto, business: Business,businesslocation: BusinessLocation):Promise<any> {
+    try{
+
+     
+
+       const getpurchaseorder=await this.purchaseOrderRepository.find({
+         where:{
+            business:business,
+            businesslocation:businesslocation,
+            
+         },
+        });
+
+         return this.apiResponseService.SuccessResponse(
+            `${getpurchaseorder.length} records found`,
+            HttpStatus.OK, getpurchaseorder);
+      }
+      catch (error) {
+         console.error('getpurchaseorders Error:',error.message);
+         Logger.error(error);
+         return new HttpException({
+            message: 'Process error while executing operation:',
+            code: 500, status: false
+         },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+
 }
