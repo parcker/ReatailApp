@@ -144,5 +144,5 @@ export class BusinesslocationService {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+    ///
 }
