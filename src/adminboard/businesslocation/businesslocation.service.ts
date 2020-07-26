@@ -121,6 +121,28 @@ export class BusinesslocationService {
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
     }
-    
+    async getmybusinesslocation(business:Business): Promise<any>{
+       
+        try
+         { 
+            
+             let response= await this.buisnesLocationRepository.find({where:{business:business,isDisabled:status}});
+             return this.apiResponseService.SuccessResponse(
+                `${response.length} Business location data`,
+                HttpStatus.OK, response);
+       
+ 
+ 
+         }catch (error) {
+
+            Logger.error(error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     
 }

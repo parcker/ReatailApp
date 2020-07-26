@@ -45,4 +45,12 @@ export class BusinesslocationController {
         return res.status(HttpStatus.OK).json(response);
 
     }
+    @Get('/mybusinesslocations')
+    @UseGuards(AuthGuard('jwt'))
+    async getmystorebybusinesslocation(@Request() req, @Res() res) {
+
+        const response = await this.businessloactionService.getmybusinesslocation(req.user.business);
+        return res.status(response.code).json(response);
+
+    }
 }
