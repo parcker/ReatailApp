@@ -50,7 +50,10 @@ export class BusinesslocationController {
     async getmystorebybusinesslocation(@Request() req, @Res() res) {
 
         const response = await this.businessloactionService.getmybusinesslocation(req.user.business);
-        return res.status(response.code).json(response);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
 
     }
 }
