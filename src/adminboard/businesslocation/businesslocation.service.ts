@@ -126,7 +126,7 @@ export class BusinesslocationService {
         try
          { 
             
-             let response= await this.buisnesLocationRepository.find({where:{business:business,isDisabled:status}});
+             let response= await this.buisnesLocationRepository.find({where:{business:business,isDisabled:false}});
              return this.apiResponseService.SuccessResponse(
                 `${response.length} Business location data`,
                 HttpStatus.OK, response);
