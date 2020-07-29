@@ -190,7 +190,7 @@ export class CategorysService {
             }
 
             const model = new SubCategory();
-            model.business = business;
+           // model.business = business;
             model.name = subname.trim().toLocaleLowerCase();
             model.createdby = createdby;
             model.category = getcategoryInfo;

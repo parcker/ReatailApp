@@ -8,10 +8,11 @@ import { ApiResponseModule } from '../../shared/response/apiResponse.module';
 import { FiscalYear } from '../../entities/fiscalyear.entity';
 import { PaymentMode } from '../../entities/paymentmode.entity';
 import { PaymentTerm } from '../../entities/paymentterm.entity';
+import { Tax } from '../../entities/tax.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Business,FiscalYear,PaymentMode,PaymentTerm]),
+    TypeOrmModule.forFeature([Business,FiscalYear,PaymentMode,PaymentTerm,Tax]),
     PayloadvalidationModule,ApiResponseModule
 ],
   providers: [SettingsService],

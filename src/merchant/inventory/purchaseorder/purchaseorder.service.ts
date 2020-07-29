@@ -55,7 +55,7 @@ export class PurchaseorderService {
             purchaseorder.invoiceNumber=uuidv4();
             purchaseorder.postingTypeId = PostingType.Normal;
             purchaseorder.transactionstatusId = TransactionStatusEnum.Created;
-            purchaseorder.businesslocation = await this.businesslocationRepository.findOne({ where: { business: business, id: purchaseorderlocationId } });
+            purchaseorder.raisedlocation = await this.businesslocationRepository.findOne({ where: { business: business, id: purchaseorderlocationId } });
             purchaseorder.doctypeId = DocType.PurchaseOrder;
             purchaseorder.isDisabled = false;
             purchaseorder.supplier=supplierinfo;

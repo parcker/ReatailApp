@@ -9,11 +9,12 @@ import { PayloadvalidationModule } from '../../../shared/payloadvalidation/paylo
 import { ApiResponseModule } from '../../../shared/response/apiResponse.module';
 import { ProductConfiguration } from '../../../entities/productconfiguration.entity';
 import { StoreProduct } from '../../../entities/storeproduct.entity';
+import { Tax } from '../../../entities/tax.entity';
 
 @Module({
 
     imports: [
-        TypeOrmModule.forFeature([Product,Category,SubCategory,Business,ProductConfiguration,StoreProduct]),
+        TypeOrmModule.forFeature([Product,Category,SubCategory,Business,ProductConfiguration,StoreProduct,Tax]),
         PayloadvalidationModule,ApiResponseModule
     ],
     providers: [ProductService],
