@@ -297,7 +297,7 @@ export class SettingsService
 
                 }
 
-                if(await this.taxRepository.findOne({where:{id:taxId,name:request.name,business:business}})){
+                if(await this.taxRepository.findOne({where:{id:taxId,name:request.name,code:request.code,value:request.value,business:business}})){
 
                     return this.apiResponseService.FailedBadRequestResponse(
                         `${request.name} tax information already exist `,
