@@ -4,7 +4,7 @@ import { CreatProductDto, UpdateProductDto } from '../../app-Dto/merchant/produc
 import {SettingsService} from '../settings/settings.service';
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
 
-@Controller('settings')
+@Controller('api/settings')
 export class SettingsController {
 
 
