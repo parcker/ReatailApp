@@ -5,7 +5,7 @@ import { CreateRoleDto } from '../../app-Dto/usermgr/role/role.dto';
 import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/warehouse.dto';
 import { UpdateProductDto } from '../../app-Dto/merchant/product.dto';
 
-@Controller('warehouse')
+@Controller('/api/warehouse')
 export class WarehouseController {
 
     constructor(private readonly warehouseService: WarehouseService ) {}

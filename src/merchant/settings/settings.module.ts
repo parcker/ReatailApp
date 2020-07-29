@@ -9,10 +9,11 @@ import { FiscalYear } from '../../entities/fiscalyear.entity';
 import { PaymentMode } from '../../entities/paymentmode.entity';
 import { PaymentTerm } from '../../entities/paymentterm.entity';
 import { Tax } from '../../entities/tax.entity';
+import { ProductConfiguration } from '../../entities/productconfiguration.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Business,FiscalYear,PaymentMode,PaymentTerm,Tax]),
+    TypeOrmModule.forFeature([Business,FiscalYear,PaymentMode,PaymentTerm,Tax,ProductConfiguration]),
     PayloadvalidationModule,ApiResponseModule
 ],
   providers: [SettingsService],

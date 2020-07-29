@@ -12,6 +12,7 @@ import { CreatePaymentModeDto } from '../../app-Dto/merchant/paymentmode.dto';
 import { CreatePaymentTermDto } from '../../app-Dto/merchant/paymentterm.dto';
 import { Tax } from '../../entities/tax.entity';
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
+import { ProductConfiguration } from '../../entities/productconfiguration.entity';
 
 @Injectable()
 export class SettingsService 
@@ -22,6 +23,7 @@ export class SettingsService
     @InjectRepository(PaymentMode) private readonly paymentmodeRepository: Repository<PaymentMode>,
     @InjectRepository(PaymentTerm) private readonly paymenttermRepository: Repository<PaymentTerm>,
     @InjectRepository(Tax) private readonly taxRepository: Repository<Tax>,
+    @InjectRepository(ProductConfiguration) private readonly productconfigRepository: Repository<ProductConfiguration>,
     @InjectRepository(FiscalYear) private readonly fiscalyearRepository: Repository<FiscalYear>,
     private readonly payloadService: PayloadvalidationService,
     private readonly apiResponseService: ApiResponseService) {
@@ -315,6 +317,40 @@ export class SettingsService
                     HttpStatus.OK,dbresponse);
             }
             return await this.payloadService.badRequestErrorMessage(validation);
+          
+
+        }
+        catch (error) {
+            console.log('UpdateTaxforBusiness Error',error)
+           
+            return new HttpException({
+               message: 'Process error while executing operation:',
+               code: 500, status: false
+            },
+               HttpStatus.INTERNAL_SERVER_ERROR);
+         }
+    }
+    async DeleteTaxforBusiness(taxId:string,business:Business):Promise<any>{
+        try{
+            
+            let  getexistingtax=await this.taxRepository.findOne({where:{id:taxId,business:business}})
+            if(!getexistingtax){
+
+                return this.apiResponseService.FailedBadRequestResponse(
+                    `${getexistingtax.name} does not exist  `,
+                    HttpStatus.BAD_REQUEST,'');
+
+            }
+            let checktaxInuse=await this.productconfigRepository.findOne({where:{salestax:getexistingtax}});
+            if(checktaxInuse){
+                return this.apiResponseService.FailedBadRequestResponse(
+                    `${getexistingtax.name} is in use and cannot be deleted`,
+                    HttpStatus.BAD_REQUEST,'');
+            }
+            const dbresponse=await this.taxRepository.remove(getexistingtax);
+            return this.apiResponseService.SuccessResponse(
+                `${dbresponse.name} has been deleted`,
+                HttpStatus.OK,dbresponse);
           
 
         }

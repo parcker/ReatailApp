@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Body, Res, HttpStatus,Request, Patch, Param, Get, Query } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Res, HttpStatus,Request, Patch, Param, Get, Query, Delete } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatProductDto, UpdateProductDto } from '../../app-Dto/merchant/product.dto';
 import {SettingsService} from '../settings/settings.service';
@@ -27,6 +27,17 @@ export class SettingsController {
     async update(@Param('id') id,@Request() req, @Res() res, @Body() body: TaxDto) {
 
         const response = await this.SettingsService.UpdateTaxforBusiness(body,id,req.user.business,req.user.email);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+
+    }
+    @Delete('/deletetax/:id')
+    @UseGuards(AuthGuard('jwt'))
+    async deletetax(@Param('id') id,@Request() req, @Res() res) {
+
+        const response = await this.SettingsService.DeleteTaxforBusiness(id,req.user.business);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
