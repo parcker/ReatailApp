@@ -14,10 +14,9 @@ import { Tax } from '../../entities/tax.entity';
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
 
 @Injectable()
-export class SettingsService {
-    GetPaymentMode(arg0: { where: { id: string; business: Business; isDisabled: boolean; }; }) {
-        throw new Error("Method not implemented.");
-    }
+export class SettingsService 
+{
+   
 
     constructor(@InjectRepository(Business) private readonly businessRepository: Repository<Business>,
     @InjectRepository(PaymentMode) private readonly paymentmodeRepository: Repository<PaymentMode>,
@@ -144,7 +143,9 @@ export class SettingsService {
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
     }
-
+    async GetPaymentMode(arg0: { where: { id: string; business: Business; isDisabled: boolean; }; }) {
+        throw new Error("Method not implemented.");
+    }
     /// PAyment Temrs and Mode
     async GetCurrentPaymentModes(business:Business):Promise<any>{
         try{
@@ -224,7 +225,7 @@ export class SettingsService {
     }
 
     ////Tax Operation
-    async CreatTaxforBusiness(request:TaxDto,business:Business):Promise<any>{
+    async CreatTaxforBusiness(request:TaxDto,business:Business,createdby:string):Promise<any>{
         try{
             
             let validation=await this.payloadService.validateTaxAsync(request);
@@ -239,9 +240,11 @@ export class SettingsService {
                 tax.name=request.name;
                 tax.code=request.code.toUpperCase();
                 tax.business=business;
+                tax.createdby=createdby;
+                tax.isDisabled=false;
+                tax.updatedby="";
                 tax.value=request.value;
                 const dbresponse=await this.taxRepository.save(tax);
-
                 return this.apiResponseService.SuccessResponse(
                     `${dbresponse.name} has been created and activated`,
                     HttpStatus.OK,dbresponse);
@@ -279,7 +282,7 @@ export class SettingsService {
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
     }
-    async UpdateTaxforBusiness(request:TaxDto,taxId:string,business:Business):Promise<any>{
+    async UpdateTaxforBusiness(request:TaxDto,taxId:string,business:Business,updatedby:string):Promise<any>{
         try{
             
             let validation=await this.payloadService.validateTaxAsync(request);
@@ -304,6 +307,7 @@ export class SettingsService {
                 getexistingtax.name=request.name;
                 getexistingtax.code=request.code.toUpperCase();
                 getexistingtax.value=request.value;
+                getexistingtax.updatedby=updatedby;
                 const dbresponse=await this.taxRepository.save(getexistingtax);
 
                 return this.apiResponseService.SuccessResponse(
