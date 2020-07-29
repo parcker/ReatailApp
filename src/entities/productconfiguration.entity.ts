@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne, OneToMany, Index } from 'typeorm';
 import { BaseEntityClass } from './base.entity';
 import { Product } from './product.entity';
+import { Tax } from './tax.entity';
 @Entity()
 export class ProductConfiguration extends BaseEntityClass {
 
@@ -19,7 +20,10 @@ export class ProductConfiguration extends BaseEntityClass {
     public canbepurchased: boolean;
     @Column()
     public anypromo: boolean;
-
+    @Index()
+    @ManyToOne(() => Tax)
+    @JoinColumn()
+    salestax?: Tax;
     // @Index()
     // @OneToOne(type => Product, product => product.productconfiguration,{onDelete:'CASCADE'})
     // @JoinColumn()

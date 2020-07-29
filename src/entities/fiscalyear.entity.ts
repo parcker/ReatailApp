@@ -23,9 +23,9 @@ export class FiscalYear extends BaseEntityClass {
     @Column()
     name: string;
 
-    @OneToMany(type => Business, business => business.fiscalyear)
+    @ManyToOne(type => Business, business => business.fiscalyear)
     @JoinColumn()
-    business: Business[];
+    business: Business;
 
     
     @OneToMany(type => PurchaseOrder, purchaseorders => purchaseorders.fiscalyear)

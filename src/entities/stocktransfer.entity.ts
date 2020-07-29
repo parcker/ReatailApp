@@ -13,13 +13,13 @@ export class StockTransfer extends BaseEntityClass {
     @Column()
     transfertype:number;
 
-    @Index()
-    @ManyToOne(type => BusinessLocation, businesslocationFrom => businesslocationFrom.storeproduct)
-    @JoinColumn()
-    businesslocationFrom: BusinessLocation;
+    // @Index()
+    // @ManyToOne(type => BusinessLocation, businesslocationFrom => businesslocationFrom.storeproduct)
+    // @JoinColumn()
+    // businesslocationFrom: BusinessLocation;
 
-    @Index()
-    @ManyToOne(type => BusinessLocation, businesslocationTo => businesslocationTo.storeproduct)
-    @JoinColumn()
-    businesslocationTo: BusinessLocation;
+    // @Index()
+    // @ManyToOne(type => BusinessLocation, businesslocationTo => businesslocationTo.storeproduct)
+    // @JoinColumn()
+    // businesslocationTo: BusinessLocation;
 }

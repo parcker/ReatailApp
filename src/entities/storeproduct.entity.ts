@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany
 import { BaseEntityClass } from './base.entity';
 import { Product } from './product.entity';
 import { Business, BusinessLocation } from './business.entity';
+import { Warehouse } from './warehouse.entity';
 
 @Entity()
 export class StoreProduct  {
@@ -19,9 +20,9 @@ export class StoreProduct  {
     public availableqty: number;
 
     @Index()
-    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.storeproduct)
+    @ManyToOne(type => Warehouse,warehouse => warehouse.storproduct)
     @JoinColumn()
-    businesslocation: BusinessLocation;
+    warehouse: Warehouse;
 
     @Index()
     @ManyToOne(type => Product, product => product.storeproduct)

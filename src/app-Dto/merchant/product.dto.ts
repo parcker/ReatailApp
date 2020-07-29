@@ -20,6 +20,12 @@ export class ProductConfigurationDto {
     public canbepurchased: boolean;
     @ApiModelPropertyOptional()
     public anypromo: boolean;
+    @ApiModelPropertyOptional()
+    public salestaxId?: string;
+
+   
+
+
 }
 export class CreatProductDto {
 
