@@ -12,6 +12,8 @@ import { StockTransfer } from './stocktransfer.entity';
 import { FiscalYear } from './fiscalyear.entity';
 import { PaymentMode } from './paymentmode.entity';
 import { PaymentTerm } from './paymentterm.entity';
+import { Warehouse } from './warehouse.entity';
+import { Tax } from './tax.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
@@ -37,8 +39,8 @@ export class Business extends BaseEntityClass {
     @OneToMany(type => Category, category => category.business)
     category: Category[];
 
-    @OneToMany(type => SubCategory, subcategory => subcategory.business)
-    subcategory: SubCategory[];
+    // @OneToMany(type => SubCategory, subcategory => subcategory.business)
+    // subcategory: SubCategory[];
     
     @OneToMany(type => Supplier, suppliers => suppliers.business)
     suppliers: Supplier[];
@@ -56,6 +58,9 @@ export class Business extends BaseEntityClass {
     @OneToMany(type => PurchaseOrder, purchaseorders => purchaseorders.business)
     purchaseorders: PurchaseOrder[];
 
+    @OneToMany(type => Tax, tax => tax.business)
+    tax: Tax[];
+
 }
 @Entity()
 export class BusinessLocation extends BaseEntityClass {
@@ -70,24 +75,16 @@ export class BusinessLocation extends BaseEntityClass {
     @JoinColumn()
     business: Business;
    
-    @OneToMany(type => PurchaseOrder, purchaseorder => purchaseorder.businesslocation)
+    @OneToMany(type => PurchaseOrder, purchaseorder => purchaseorder.raisedlocation)
     purchaseorder: PurchaseOrder[];
+
     @OneToMany(type => StockCard, stockcard => stockcard.businesslocation)
     stockcard: StockCard[];
-    // @OneToMany(type => Customer, customer => customer.businesslocation)
-    // customer: Customer[];
-    // @OneToMany(type => Supplier, supplier => supplier.business)
-    // supplier: Supplier[];
+   
 
-    @OneToMany(type => StoreProduct, storeproduct => storeproduct.businesslocation)
-    storeproduct: StoreProduct[];
+    @OneToMany(type => Warehouse, warehouse => warehouse.businesslocation)
+    warehouse: Warehouse[];
 
-
-    @OneToMany(type => StockTransfer, stocktransfer => stocktransfer.businesslocationFrom)
-    stocktransferFrom: StockTransfer[];
-
-    @OneToMany(type => StockTransfer, stocktransfer => stocktransfer.businesslocationTo)
-    stocktransferTo: StockTransfer[];
 
 }
 

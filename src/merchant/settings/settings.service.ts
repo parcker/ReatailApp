@@ -10,16 +10,18 @@ import { PaymentMode } from '../../entities/paymentmode.entity';
 import { PaymentTerm } from '../../entities/paymentterm.entity';
 import { CreatePaymentModeDto } from '../../app-Dto/merchant/paymentmode.dto';
 import { CreatePaymentTermDto } from '../../app-Dto/merchant/paymentterm.dto';
+import { Tax } from '../../entities/tax.entity';
+import { TaxDto } from '../../app-Dto/merchant/tax.dto';
 
 @Injectable()
-export class SettingsService {
-    GetPaymentMode(arg0: { where: { id: string; business: Business; isDisabled: boolean; }; }) {
-        throw new Error("Method not implemented.");
-    }
+export class SettingsService 
+{
+   
 
     constructor(@InjectRepository(Business) private readonly businessRepository: Repository<Business>,
     @InjectRepository(PaymentMode) private readonly paymentmodeRepository: Repository<PaymentMode>,
     @InjectRepository(PaymentTerm) private readonly paymenttermRepository: Repository<PaymentTerm>,
+    @InjectRepository(Tax) private readonly taxRepository: Repository<Tax>,
     @InjectRepository(FiscalYear) private readonly fiscalyearRepository: Repository<FiscalYear>,
     private readonly payloadService: PayloadvalidationService,
     private readonly apiResponseService: ApiResponseService) {
@@ -39,6 +41,7 @@ export class SettingsService {
             fiscalyear.startdate=model.startdate;
             fiscalyear.enddate=model.enddate;
             fiscalyear.isDisabled=false;
+            fiscalyear.business=business
             fiscalyear.iscurrent=model.iscurrent;
             fiscalyear.createdby=createdby;
             fiscalyear.updatedby='';
@@ -140,6 +143,10 @@ export class SettingsService {
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
     }
+    async GetPaymentMode(arg0: { where: { id: string; business: Business; isDisabled: boolean; }; }) {
+        throw new Error("Method not implemented.");
+    }
+    /// PAyment Temrs and Mode
     async GetCurrentPaymentModes(business:Business):Promise<any>{
         try{
             
@@ -216,5 +223,111 @@ export class SettingsService {
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
     }
-    
+
+    ////Tax Operation
+    async CreatTaxforBusiness(request:TaxDto,business:Business,createdby:string):Promise<any>{
+        try{
+            
+            let validation=await this.payloadService.validateTaxAsync(request);
+            if(validation.IsValid){
+                if(await this.taxRepository.findOne({where:{name:request.name,business:business}})){
+
+                    return this.apiResponseService.FailedBadRequestResponse(
+                        `${request.name} already exist `,
+                        HttpStatus.BAD_REQUEST,'');
+                }
+                let tax =new Tax();
+                tax.name=request.name;
+                tax.code=request.code.toUpperCase();
+                tax.business=business;
+                tax.createdby=createdby;
+                tax.isDisabled=false;
+                tax.updatedby="";
+                tax.value=request.value;
+                const dbresponse=await this.taxRepository.save(tax);
+                return this.apiResponseService.SuccessResponse(
+                    `${dbresponse.name} has been created and activated`,
+                    HttpStatus.OK,dbresponse);
+            }
+            return await this.payloadService.badRequestErrorMessage(validation);
+          
+
+        }
+        catch (error) {
+            console.log('CreatSeedTax Error',error)
+           
+            return new HttpException({
+               message: 'Process error while executing operation:',
+               code: 500, status: false
+            },
+               HttpStatus.INTERNAL_SERVER_ERROR);
+         }
+    }
+    async GettaxbyBusiness(business:Business):Promise<any>{
+        try{
+            
+            const taxs=await this.taxRepository.find({where:{business:business}});
+            return this.apiResponseService.SuccessResponse(
+                `${taxs.length}  tax data found`,
+                HttpStatus.OK,taxs);
+
+        }
+        catch (error) {
+            console.log(error)
+            Logger.error(error);
+            return new HttpException({
+               message: 'Process error while executing operation:',
+               code: 500, status: false
+            },
+               HttpStatus.INTERNAL_SERVER_ERROR);
+         }
+    }
+    async UpdateTaxforBusiness(request:TaxDto,taxId:string,business:Business,updatedby:string):Promise<any>{
+        try{
+            
+            let validation=await this.payloadService.validateTaxAsync(request);
+            if(validation.IsValid)
+            {
+                let  getexistingtax=await this.taxRepository.findOne({where:{id:taxId,business:business}})
+                if(!getexistingtax){
+
+                    return this.apiResponseService.FailedBadRequestResponse(
+                        `${request.name} does not exist  `,
+                        HttpStatus.BAD_REQUEST,'');
+
+                }
+
+                if(await this.taxRepository.findOne({where:{id:taxId,name:request.name,code:request.code,value:request.value,business:business}})){
+
+                    return this.apiResponseService.FailedBadRequestResponse(
+                        `${request.name} tax information already exist `,
+                        HttpStatus.BAD_REQUEST,'');
+                }
+
+                getexistingtax.name=request.name;
+                getexistingtax.code=request.code.toUpperCase();
+                getexistingtax.value=request.value;
+                getexistingtax.updatedby=updatedby;
+                const dbresponse=await this.taxRepository.save(getexistingtax);
+
+                return this.apiResponseService.SuccessResponse(
+                    `${dbresponse.name} has been created and activated`,
+                    HttpStatus.OK,dbresponse);
+            }
+            return await this.payloadService.badRequestErrorMessage(validation);
+          
+
+        }
+        catch (error) {
+            console.log('UpdateTaxforBusiness Error',error)
+           
+            return new HttpException({
+               message: 'Process error while executing operation:',
+               code: 500, status: false
+            },
+               HttpStatus.INTERNAL_SERVER_ERROR);
+         }
+    }
+
+
 }

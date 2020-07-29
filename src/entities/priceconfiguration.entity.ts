@@ -1,6 +1,7 @@
-import { PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, Index, Entity } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, Index, Entity, OneToOne } from 'typeorm';
 import { BaseEntityClass } from './base.entity';
 import { Product } from './product.entity';
+import { Tax } from './tax.entity';
 @Entity()
 export class PriceConfiguration extends BaseEntityClass {
 
@@ -22,4 +23,10 @@ export class PriceConfiguration extends BaseEntityClass {
     @ManyToOne(() => Product, product => product.priceconfiguration)
     @JoinColumn()
     product: Product;
+
+    // @Index()
+    // @OneToOne(() => Product, product => product.priceconfiguration)
+    // @JoinColumn()
+    // product: Product;
+
 }

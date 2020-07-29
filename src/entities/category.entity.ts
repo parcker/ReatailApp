@@ -35,9 +35,9 @@ export class SubCategory extends BaseEntityClass {
     @JoinColumn()
     category: Category;
 
-    @ManyToOne(() => Business, business => business.category,{onDelete:'CASCADE'})
-    @JoinColumn()
-    business: Business;
+    // @ManyToOne(() => Business, business => business.subcategory,{onDelete:'CASCADE'})
+    // @JoinColumn()
+    // business: Business;
 
     
     @OneToMany(() => Product, product => product.subCategory)

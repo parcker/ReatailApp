@@ -10,6 +10,8 @@ import { CreatProductDto, UpdateProductDto } from '../../app-Dto/merchant/produc
 import { CreatCustomerDto, UpdateCustomerDto, CreatSupplierDto } from '../../app-Dto/merchant/partner.dto';
 import { CreatePurchaseOrderHeaderDto } from '../../app-Dto/merchant/purcahseorder.dto';
 import { CreateUserDto } from '../../app-Dto/usermgr/user.dto';
+import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/warehouse.dto';
+import { TaxDto } from '../../app-Dto/merchant/tax.dto';
 
 @Injectable()
 export class PayloadvalidationService {
@@ -182,7 +184,7 @@ export class PayloadvalidationService {
     };
     validateMerchantUserRules = (validator: IValidator<MerchantUserDto>): ValidationResult => {
         return validator
-            
+
             .NotEmpty(m => m.confirmpassword, "Should not be empty", "MerchantUserDto.confirmpassword.Empty")
             .NotEmpty(m => m.token, "Should not be empty", "MerchantUserDto.token.Empty")
             .NotEmpty(m => m.firstName, "Should not be empty", "MerchantUserDto.firstName.Empty")
@@ -192,7 +194,7 @@ export class PayloadvalidationService {
                 .ForStringProperty(m => m.password, passwordValidator => passwordValidator
                     .Matches("(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])", "Password strength is not valid", "MerchantUserDto.Password.Strength")
                     .Required((m, pwd) => pwd.length > 6, "Password length should be greater than 6", "MerchantUserDto.Password.Length")
-                    .Required((m, pwd) => pwd == m.confirmpassword, "Password and Confirm Password are not the same", "Password:ConfirmNotSame")   
+                    .Required((m, pwd) => pwd == m.confirmpassword, "Password and Confirm Password are not the same", "Password:ConfirmNotSame")
 
                     .ToResult())
                 .ToResult())
@@ -206,7 +208,7 @@ export class PayloadvalidationService {
     };
     validateSupperAdminUserSignUpRules = (validator: IValidator<CreateUserDto>): ValidationResult => {
         return validator
-            
+
             .NotEmpty(m => m.confirmpassword, "Should not be empty", "CreateUserDto.confirmpassword.Empty")
             .NotEmpty(m => m.lastName, "Should not be empty", "CreateUserDto.token.Empty")
             .NotEmpty(m => m.firstName, "Should not be empty", "CreateUserDto.firstName.Empty")
@@ -216,9 +218,50 @@ export class PayloadvalidationService {
                 .ForStringProperty(m => m.password, passwordValidator => passwordValidator
                     .Matches("(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])", "Password strength is not valid", "CreateUserDto.Password.Strength")
                     .Required((m, pwd) => pwd.length > 6, "Password length should be greater than 6", "CreateUserDto.Password.Length")
-                    .Required((m, pwd) => pwd == m.confirmpassword, "Password and Confirm Password are not the same", "Password:ConfirmNotSame")    
+                    .Required((m, pwd) => pwd == m.confirmpassword, "Password and Confirm Password are not the same", "Password:ConfirmNotSame")
                     .ToResult())
                 .ToResult())
+            .ToResult();
+
+    };
+
+    async validateCreateWarehouseAsync(model: CreatWarehouseDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateCreateWarehouseRules);
+
+    };
+    validateCreateWarehouseRules = (validator: IValidator<CreatWarehouseDto>): ValidationResult => {
+        return validator
+            .NotEmpty(m => m.name, "Should not be empty", "CreatWarehouseDto.name.Empty")
+            .NotNull(m => m.name, "Should not be null", "name.Null")
+            .NotEmpty(m => m.address, "Should not be empty", "CreatWarehouseDto.address.Empty")
+            .NotNull(m => m.address, "Should not be null", "address.Null")
+            .NotEmpty(m => m.businesslocationId, "Should not be empty", "CreatWarehouseDto.businesslocationId.Empty")
+            .ToResult();
+
+    };
+    async validateUpdateWarehouseAsync(model: UpdateWarehouseDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateUpdateWarehouseRules);
+
+    };
+    validateUpdateWarehouseRules = (validator: IValidator<UpdateWarehouseDto>): ValidationResult => {
+        return validator
+            .NotEmpty(m => m.name, "Should not be empty", "CreatWarehouseDto.name.Empty")
+            .NotNull(m => m.name, "Should not be null", "name.Null")
+            .NotEmpty(m => m.address, "Should not be empty", "CreatWarehouseDto.address.Empty")
+            .NotNull(m => m.address, "Should not be null", "address.Null")
+            .NotEmpty(m => m.businesslocationId, "Should not be empty", "CreatWarehouseDto.businesslocationId.Empty")
+            .ToResult();
+
+    };
+    async validateTaxAsync(model: TaxDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateTaxRules);
+
+    };
+    validateTaxRules = (validator: IValidator<TaxDto>): ValidationResult => {
+        return validator
+            .NotEmpty(m => m.name, "Should not be empty", "TaxDto.name.Empty")
+            .NotEmpty(m => m.code, "Should not be empty", "TaxDto.code.Empty")
+            .IsNumberGreaterThan(m => m.value,0, "TaxDto.value.below 1")
             .ToResult();
 
     };

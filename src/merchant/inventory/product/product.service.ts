@@ -10,6 +10,7 @@ import { PayloadvalidationService } from '../../../shared/payloadvalidation/payl
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
 import { ProductConfiguration } from '../../../entities/productconfiguration.entity';
 import { StoreProduct } from '../../../entities/storeproduct.entity';
+import { Tax } from '../../../entities/tax.entity';
 
 @Injectable()
 export class ProductService {
@@ -19,6 +20,7 @@ export class ProductService {
       @InjectRepository(Category) private readonly categoryRepository: Repository<Category>,
       @InjectRepository(SubCategory) private readonly subcategoryRepository: Repository<SubCategory>,
       @InjectRepository(Business) private readonly businessRepository: Repository<Business>,
+      @InjectRepository(Tax) private readonly taxRepository: Repository<Tax>,
       @InjectRepository(ProductConfiguration) private readonly productconfigurationRepository: Repository<ProductConfiguration>,
       @InjectRepository(StoreProduct) private readonly StoreProductRepository: Repository<StoreProduct>,
 
@@ -110,7 +112,7 @@ export class ProductService {
             model.itemcode = product.itemcode;
             model.isDisabled = false;
             model.createdby = createdby;
-
+            
             model.updatedby = '';
             model.imagelink = '/defaullink.jpeg';
             const response = await this.productRepository.save(model);
@@ -169,7 +171,7 @@ export class ProductService {
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   async creatProductConfiguration(productconfiguration: ProductConfigurationDto, product: Product, createdby: string): Promise<any> {
+   async creatProductConfiguration(productconfiguration: ProductConfigurationDto,product: Product, createdby: string): Promise<any> {
       try {
 
 
@@ -180,6 +182,11 @@ export class ProductService {
          productconfig.canexpire = productconfiguration.canexpire;
          productconfig.pack = productconfiguration.pack;
          productconfig.leadtime = productconfiguration.leadtime;
+         if(productconfiguration.salestaxId!=='')
+         {
+            productconfig.salestax=await this.taxRepository.findOne({where:{id:productconfiguration.salestaxId}});
+         }
+
          productconfig.isDisabled = false;
          productconfig.createdby = createdby;
          productconfig.updatedby = '';
