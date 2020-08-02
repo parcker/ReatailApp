@@ -49,7 +49,7 @@ export class SettingsController {
     @UseGuards(AuthGuard('jwt'))
     async gettaxes(@Request() req, @Res() res): Promise<any> {
 
-        const response = await this.SettingsService.GettaxbyBusiness(req.user.businessId);
+        const response = await this.SettingsService.GettaxbyBusiness(req.user.business);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }

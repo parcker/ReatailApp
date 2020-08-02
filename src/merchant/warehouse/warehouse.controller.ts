@@ -23,9 +23,9 @@ export class WarehouseController {
     
     @Get('/:status')
     @UseGuards(AuthGuard('jwt'))
-    async getstorebybusinesslocation(@Param('status') status:boolean,@Request() req, @Res() res) {
+    async getwarehousebybusinesslocation(@Param('status') status:boolean,@Request() req, @Res() res) {
 
-        const response = await this.warehouseService.getWarehouseByBusinesslocationId(req.user.businesslocation,status);
+        const response = await this.warehouseService.getWarehouseByBusinesslocationId(req.user.businesslocation,req.user.business,status);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
@@ -34,7 +34,7 @@ export class WarehouseController {
     }
     @Delete('/deletewarehouse/:warehouseId')
     @UseGuards(AuthGuard('jwt'))
-    async deleteproduct(@Param('warehouseId') warehouseId:string,@Request() req, @Res() res): Promise<any> {
+    async deletewarehouse(@Param('warehouseId') warehouseId:string,@Request() req, @Res() res): Promise<any> {
 
         const response = await this.warehouseService.deleteWarehouse(warehouseId);
         if (response.status === false) {

@@ -1,7 +1,7 @@
 import { Injectable, HttpStatus, Logger, HttpException } from '@nestjs/common';
 import { BusinessLocation, Business } from '../../entities/business.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { PayloadvalidationService } from '../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../shared/response/apiResponse.service';
 import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/warehouse.dto';
@@ -139,17 +139,44 @@ export class WarehouseService {
                     HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }
-     async getWarehouseByBusinesslocationId(businessLocation:BusinessLocation,status:boolean): Promise<any>{
+     async getWarehouseByBusinesslocationId(businessLocation:BusinessLocation,business:Business,status:boolean): Promise<any>{
         
          try
           { 
              
-              let response= await this.warehouseRepository.find({ where: { businesslocation:businessLocation,isDisabled:status},order: { name: 'ASC' }});
-              return this.apiResponseService.SuccessResponse(
-                 `${response.length} Warehouse data`,
-                 HttpStatus.OK, response);
+            if(businessLocation!==null )
+            {
+                 let response= await this.warehouseRepository.find({ where: 
+                    { businesslocation:businessLocation,isDisabled:status},order: { name: 'ASC' }});
+                return this.apiResponseService.SuccessResponse(
+                   `${response.length} Warehouse data`,
+                   HttpStatus.OK, response);
+            }
+            else
+            {
+                const businesslocation= await this.businesslocationRepository.find({where:{business:business}});//.map(a => a.foo);
+                const businesslocationIds =businesslocation.map(c=>c.id);
+                if(businesslocationIds.length)
+                {
+                    const data =  await this.warehouseRepository.createQueryBuilder("warehouse")
+                    .where("warehouse.businesslocation.id IN (:...id)", { id:businesslocationIds})
+                    .andWhere("warehouse.isDisabled = :isDisabled",{isDisabled:status})
+                    .orderBy("warehouse.name")
+                    .getMany();
+
+                    return this.apiResponseService.SuccessResponse(
+                        `Warehouse data`,
+                        HttpStatus.OK, data);
+                }else{
+
+                    
+                    return this.apiResponseService.SuccessResponse(
+                        `${businesslocation.length} Warehouse data , no business location configured`,
+                        HttpStatus.OK, businesslocation);
+
+                }
+            }
             
-  
   
           }catch (error) {
  
