@@ -76,15 +76,6 @@ export class WarehouseService {
                         HttpStatus.BAD_REQUEST,'');
                     
                 }
-                let checkduplicate=await this.warehouseRepository.findOneOrFail({where:{id:warehouseId,name:request.name}});
-                if (checkduplicate) {
-    
-                    return this.apiResponseService.FailedBadRequestResponse(
-                        `duplicate warehouse data found, update failed`,
-                        HttpStatus.BAD_REQUEST,'');
-                    
-                }
-
                 let business=await this.businesslocationRepository.findOneOrFail({where:{id:resquest.businesslocationId}});
                 if (!business) {
     
@@ -97,8 +88,9 @@ export class WarehouseService {
                 warehouse.address=resquest.address;
                 warehouse.updatedby=updatedby;
                 warehouse.businesslocation =business;
-                warehouse.isDisabled=resquest.isDefault;
+                warehouse.isDisabled=resquest.isDisable;
                 let response= await this.warehouseRepository.save(warehouse);
+                
 
                 return this.apiResponseService.SuccessResponse(
                     `${warehouse.name}  updated under ${business.name}`,

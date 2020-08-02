@@ -26,6 +26,6 @@ export class UpdateWarehouseDto{
     readonly businesslocationId:string;
 
     @ApiModelProperty({ required: true})
-    isDefault:boolean;
+    isDisable:boolean;
 
 }
