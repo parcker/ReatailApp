@@ -4,13 +4,15 @@ import { Product } from '../../../entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category, SubCategory } from '../../../entities/category.entity';
 import { CreatProductDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/merchant/product.dto';
-import { Business } from '../../../entities/business.entity';
+import { Business, BusinessLocation } from '../../../entities/business.entity';
 import { ResponseObj } from '../../../shared/generic.response';
 import { PayloadvalidationService } from '../../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
 import { ProductConfiguration } from '../../../entities/productconfiguration.entity';
 import { StoreProduct } from '../../../entities/storeproduct.entity';
 import { Tax } from '../../../entities/tax.entity';
+import { Warehouse } from '../../../entities/warehouse.entity';
+import { StockCard } from '../../../entities/stockcard.entity';
 
 @Injectable()
 export class ProductService {
@@ -20,6 +22,9 @@ export class ProductService {
       @InjectRepository(Category) private readonly categoryRepository: Repository<Category>,
       @InjectRepository(SubCategory) private readonly subcategoryRepository: Repository<SubCategory>,
       @InjectRepository(Business) private readonly businessRepository: Repository<Business>,
+      @InjectRepository(Warehouse) private readonly warehouseRepository: Repository<Warehouse>,
+      @InjectRepository(StoreProduct) private readonly storeproductRepository: Repository<StoreProduct>,
+      @InjectRepository(StockCard) private readonly stockcardRepository: Repository<StockCard>,
       @InjectRepository(Tax) private readonly taxRepository: Repository<Tax>,
       @InjectRepository(ProductConfiguration) private readonly productconfigurationRepository: Repository<ProductConfiguration>,
       @InjectRepository(StoreProduct) private readonly StoreProductRepository: Repository<StoreProduct>,
@@ -363,6 +368,119 @@ export class ProductService {
       catch (error) {
 
          console.error('updateProductConfiguration Error:',error.message);
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   async getstockforbusinesslocation(businesslocationId:string,business: Business) : Promise<any>{
+
+
+      try{
+
+           const data =  await this.storeproductRepository.createQueryBuilder("store_product")
+           
+           .innerJoinAndSelect("store_product.product","product")
+           .innerJoinAndSelect("product.productconfiguration","product_configuration")
+           .innerJoinAndSelect("store_product.warehouse","warehouse")
+           .leftJoinAndSelect("product.priceconfiguration","price_configuration")
+           .where("warehouse.businesslocation.id = :id", { id:businesslocationId})
+           .cache(60000)
+           .getMany();
+           return this.apiResponseService.SuccessResponse(
+            `${data.length} product data found`,
+            HttpStatus.OK, data);
+       
+
+      }
+      catch (error) {
+
+         console.error('getstockforbusinesslocation Error:',error.message);
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   async SeedProducttoStock(productId:string,warehouseId:string,quantity:number,businesslocation:BusinessLocation,business:Business):Promise<any>{
+
+      try{
+
+            const product=await this.productRepository.findOne({where:{id:productId,isDisabled:false,business:business}});
+            if(!product){
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `invalid or product Id , no product data found`,
+                  HttpStatus.BAD_REQUEST, '');
+            }
+             const data =  await this.warehouseRepository.createQueryBuilder("warehouse")
+             .where("warehouse.businesslocation.id = :id", { id:businesslocation.id})
+             .andWhere("warehouse.isDisabled = :isDisabled",{isDisabled:false})
+             .getOne();
+            
+            if(!data){
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `invalid or warehouse Id , no product data found`,
+                  HttpStatus.BAD_REQUEST, '');
+            }
+           
+            const getstockInfo=await this.storeproductRepository.findOne({where:{product:product,warehouse:data}});
+            if(getstockInfo)
+            {
+               getstockInfo.instockqty=(getstockInfo.instockqty+22);
+               const response=await this.storeproductRepository.save(getstockInfo);
+               if(response.id){
+
+                  const stockmovemnt=new StockCard();
+                  stockmovemnt.Direction=1;//In
+                  stockmovemnt.StockMovementDescription='Sock-IN';
+                  stockmovemnt.businesslocation=businesslocation;
+                  stockmovemnt.Quantity=quantity;
+                  stockmovemnt.product=product;
+                  const stockcardResp=await this.stockcardRepository.save(stockmovemnt);
+                  if(stockcardResp){
+
+                     return this.apiResponseService.SuccessResponse(
+                        `Product added to stock`,
+                        HttpStatus.OK, '');
+                  }
+               }
+            }
+            else{
+
+               const model=new StoreProduct();
+               model.product=product;
+               model.warehouse=data;
+               model.instockqty=quantity;
+               model.availableqty=0;
+               model.committedqty=0;
+               model.orderedqty=0;
+
+               const response=await this.storeproductRepository.save(model);
+               if(response.id){
+
+                  const stockmovemnt=new StockCard();
+                  stockmovemnt.Direction=1;//In
+                  stockmovemnt.StockMovementDescription='Sock-IN';
+                  stockmovemnt.businesslocation=businesslocation;
+                  stockmovemnt.Quantity=quantity;
+                  stockmovemnt.createdby='System'
+                  stockmovemnt.updatedby='';
+                  stockmovemnt.product=product;
+                  const stockcardResp=await this.stockcardRepository.save(stockmovemnt);
+                  if(stockcardResp){
+
+                     return this.apiResponseService.SuccessResponse(
+                        `Product added to stock`,
+                        HttpStatus.OK, '');
+                  }
+               }
+            }
+          
+           
+            
+      }
+      catch (error) {
+
+         console.error('getstockforbusinesslocation Error:',error.message);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }

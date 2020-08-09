@@ -3,6 +3,7 @@ import { ProductService } from './product.service';
 import { AuthGuard } from '@nestjs/passport';
 
 import { CreatProductDto, ProductStatusDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/merchant/product.dto';
+import { SeedProductDto } from '../../../app-Dto/merchant/seedstock.dto';
 
 @Controller('/api/product')
 export class ProductController {
@@ -91,6 +92,32 @@ export class ProductController {
     async getmyproducts(@Query('page') page: number,@Request() req, @Res() res): Promise<any> {
 
         const response = await this.productService.getProductwithfulldetails(page,req.user.businessId);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+
+    }
+
+    @Post('/seedProductTostock')
+    @UseGuards(AuthGuard('jwt'))
+
+    async seedProductTostock(@Request() req, @Res() res, @Body() body: SeedProductDto) {
+
+        const response = await this.productService.SeedProducttoStock(body.productId,body.warehouseId,body.quantity,req.user.businesslocation,req.user.business);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+
+
+    }
+
+    @Get('/getStock')
+    @UseGuards(AuthGuard('jwt'))
+    async getStock(@Request() req, @Res() res): Promise<any> {
+
+        const response = await this.productService.getstockforbusinesslocation(req.user.businesslocationId,req.user.businessId);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }

@@ -1,20 +1,17 @@
-import { Injectable, HttpStatus, Logger, HttpException } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { BusinessLocation, Business } from '../../entities/business.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { PayloadvalidationService } from '../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../shared/response/apiResponse.service';
 import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/warehouse.dto';
 import { Warehouse } from '../../entities/warehouse.entity';
 import { StoreProduct } from '../../entities/storeproduct.entity';
-import { UpdateCategoryDto } from '../../app-Dto/merchant/category.dto';
-import { request } from 'http';
 
 @Injectable()
 export class WarehouseService {
 
-    constructor(@InjectRepository(Business) private readonly businessRepository: Repository<Business>,
-    @InjectRepository(BusinessLocation) private readonly businesslocationRepository: Repository<BusinessLocation>,
+    constructor(@InjectRepository(BusinessLocation) private readonly businesslocationRepository: Repository<BusinessLocation>,
     @InjectRepository(Warehouse) private readonly warehouseRepository: Repository<Warehouse>,
     @InjectRepository(StoreProduct) private readonly storeproductRepository: Repository<StoreProduct>,
     private readonly payloadService: PayloadvalidationService,

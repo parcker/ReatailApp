@@ -9,7 +9,7 @@ export class PriceConfiguration extends BaseEntityClass {
     id: string;
     @Column()
     qty: number;
-    @Column()
+    @Column({type:"decimal"})
     price: number;
     @Column()
     ispromo: boolean;
@@ -19,11 +19,14 @@ export class PriceConfiguration extends BaseEntityClass {
     end: Date;
     @Column()
     extracolum: number;
+
     @Index()
     @ManyToOne(() => Product, product => product.priceconfiguration)
     @JoinColumn()
     product: Product;
 
+    @Column()
+    Active:boolean;
     // @Index()
     // @OneToOne(() => Product, product => product.priceconfiguration)
     // @JoinColumn()
