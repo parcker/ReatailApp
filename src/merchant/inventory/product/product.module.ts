@@ -10,11 +10,13 @@ import { ApiResponseModule } from '../../../shared/response/apiResponse.module';
 import { ProductConfiguration } from '../../../entities/productconfiguration.entity';
 import { StoreProduct } from '../../../entities/storeproduct.entity';
 import { Tax } from '../../../entities/tax.entity';
+import { Warehouse } from '../../../entities/warehouse.entity';
+import { StockCard } from '../../../entities/stockcard.entity';
 
 @Module({
 
     imports: [
-        TypeOrmModule.forFeature([Product,Category,SubCategory,Business,ProductConfiguration,StoreProduct,Tax]),
+        TypeOrmModule.forFeature([Product,Category,SubCategory,Business,ProductConfiguration,StoreProduct,Tax,Warehouse,StoreProduct,StockCard]),
         PayloadvalidationModule,ApiResponseModule
     ],
     providers: [ProductService],
