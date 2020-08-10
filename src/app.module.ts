@@ -37,6 +37,8 @@ import { PurchaseorderController } from './merchant/inventory/purchaseorder/purc
 import { SettingsModule } from './merchant/settings/settings.module';
 import { WarehouseController } from './merchant/warehouse/warehouse.controller';
 import { WarehouseModule } from './merchant/warehouse/warehouse.module';
+import { WholesaleController } from './merchant/inventory/wholesale/wholesale.controller';
+import { WholesaleModule } from './merchant/inventory/wholesale/wholesale.module';
 
 
 
@@ -79,11 +81,12 @@ import { WarehouseModule } from './merchant/warehouse/warehouse.module';
         ApiResponseModule,
         MerchantuseraccountModule,
         SettingsModule,
-        WarehouseModule
+        WarehouseModule,
+        WholesaleModule
     
        
     ],
-    controllers: [AppController, CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,PurchaseorderController,WarehouseController],
+    controllers: [AppController, CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,PurchaseorderController,WarehouseController,WholesaleController],
     providers: []//{provide: APP_PIPE, useClass: ValidationPipe }
 })
 

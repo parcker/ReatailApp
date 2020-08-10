@@ -8,18 +8,17 @@ import { SaleOrderDto } from '../../../app-Dto/merchant/saleorder.dto';
 export class WholesaleController {
 constructor(private readonly  wholesaleService:WholesaleService) {}
 
-@Post('/create')
-@UseGuards(AuthGuard('jwt'))
+    @Post('/postSalesOrder')
+    @UseGuards(AuthGuard('jwt'))
+    async postSalesOrder(@Body() salesorder: SaleOrderDto, @Request() req, @Res() res) {
 
-async postSalesOrder(@Body() salesorder: SaleOrderDto, @Request() req, @Res() res) {
+        const response = await this.wholesaleService.salesOrderInfo(salesorder, req.user.id, req.user.business,req.user.businesslocation);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        
+        return res.status(HttpStatus.OK).json(response);
 
-    const response = await this.wholesaleService.salesOrderInfo(salesorder, req.user.id, req.user.business,req.user.businesslocation);
-    if (response.status === false) {
-        return res.status(response.code).json(response);
     }
-    
-    return res.status(HttpStatus.OK).json(response);
-
-}
 
 }

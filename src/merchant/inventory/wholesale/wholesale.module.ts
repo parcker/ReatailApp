@@ -16,6 +16,7 @@ import { Customer } from '../../../entities/partner.entity';
     PayloadvalidationModule,ApiResponseModule,SettingsModule
 ],
   providers: [WholesaleService],
-  controllers: [WholesaleController]
+  controllers: [WholesaleController],
+  exports: [WholesaleService]
 })
 export class WholesaleModule {}
