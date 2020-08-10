@@ -113,11 +113,23 @@ export class ProductController {
 
     }
 
-    @Get('/getStock')
+    @Get('/getProductForSale')
     @UseGuards(AuthGuard('jwt'))
-    async getStock(@Request() req, @Res() res): Promise<any> {
+    async getProductForSale(@Request() req, @Res() res): Promise<any> {
 
-        const response = await this.productService.getstockforbusinesslocation(req.user.businesslocationId,req.user.businessId);
+        const response = await this.productService.getProductForSale(req.user.businesslocationId,req.user.businessId);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+
+    }
+
+    @Get('/getProductForPurchase')
+    @UseGuards(AuthGuard('jwt'))
+    async getProductForPurchase(@Request() req, @Res() res): Promise<any> {
+
+        const response = await this.productService.getProductForPurchase(req.user.business);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
