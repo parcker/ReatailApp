@@ -12,6 +12,7 @@ import { CreatePurchaseOrderHeaderDto } from '../../app-Dto/merchant/purcahseord
 import { CreateUserDto } from '../../app-Dto/usermgr/user.dto';
 import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/warehouse.dto';
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
+import { SalesItemDto, SaleOrderDto } from '../../app-Dto/merchant/saleorder.dto';
 
 @Injectable()
 export class PayloadvalidationService {
@@ -265,6 +266,21 @@ export class PayloadvalidationService {
             .ToResult();
 
     };
+
+    async validateSalesOrderAsync(model: SaleOrderDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateSalesOrderRules);
+
+    };
+    validateSalesOrderRules = (validator: IValidator<SaleOrderDto>): ValidationResult => {
+        return validator
+            .NotEmpty(m => m.customerId, "Should not be empty", "SaleOrderDto.customerId.Empty")
+            .NotNull(m => m.customerId, "Should not be null", "customerId.Null")
+            // .NotEmpty(m => m.code, "Should not be empty", "TaxDto.code.Empty")
+            // .IsNumberGreaterThan(m => m.value,0, "TaxDto.value.below 1")
+            .ToResult();
+
+    };
+
 
 
 }

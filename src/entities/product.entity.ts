@@ -8,6 +8,7 @@ import { StockCard } from './stockcard.entity';
 import { StoreProduct } from './storeproduct.entity';
 import { ProductConfiguration } from './productconfiguration.entity';
 import { PriceConfiguration } from './priceconfiguration.entity';
+import { SalesItems } from './salesitems.entity';
 
 @Entity()
 export class Product extends BaseEntityClass {
@@ -59,6 +60,10 @@ export class Product extends BaseEntityClass {
     @OneToMany(type => PriceConfiguration, priceconfiguration => priceconfiguration.product)
     @JoinColumn()
     priceconfiguration: PriceConfiguration[];
+
+    @OneToMany(type => SalesItems, saleitem => saleitem.product)
+    @JoinColumn()
+    saleitem: SalesItems[];
 
 }
 

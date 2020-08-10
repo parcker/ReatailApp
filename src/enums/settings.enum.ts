@@ -28,10 +28,15 @@ export enum OrderStatus {
     Approved=2,
     
 }
-export enum PostingType {
-    Normal = 1,
-    Reversal=2,
+export enum SalesLevel {
+    SaleOrder = 1,
+    SaleInvoice=2,
     
+}
+export enum SalesType {
+    Wholesale = 1,
+    retail=2,
+     
 }
 export enum ActivityAction
 {

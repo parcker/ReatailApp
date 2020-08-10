@@ -10,7 +10,7 @@ import { Supplier } from '../../../entities/partner.entity';
 import { v4 as uuidv4 } from 'uuid';
 
 import { SettingsService } from '../../settings/settings.service';
-import { PostingType, TransactionStatusEnum, DocType } from '../../../enums/settings.enum';
+import {TransactionStatusEnum, DocType } from '../../../enums/settings.enum';
 import { Product } from '../../../entities/product.entity';
 import { SearchParametersDto } from '../../../app-Dto/merchant/searchparameters.dto';
 
@@ -53,7 +53,7 @@ export class PurchaseorderService {
             let purchaseorder = new PurchaseOrder();
             purchaseorder.fiscalyear = null;
             purchaseorder.invoiceNumber=uuidv4();
-            purchaseorder.postingTypeId = PostingType.Normal;
+            purchaseorder.postingTypeId =1;
             purchaseorder.transactionstatusId = TransactionStatusEnum.Created;
             purchaseorder.raisedlocation = await this.businesslocationRepository.findOne({ where: { business: business, id: purchaseorderlocationId } });
             purchaseorder.doctypeId = DocType.PurchaseOrder;

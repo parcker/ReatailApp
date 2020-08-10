@@ -373,7 +373,7 @@ export class ProductService {
       }
    }
 
-   async getstockforbusinesslocation(businesslocationId:string,business: Business) : Promise<any>{
+   async getProductForSale(businesslocationId:string,business: Business) : Promise<any>{
 
 
       try{
@@ -400,7 +400,31 @@ export class ProductService {
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
+   async getProductForPurchase(business: Business) : Promise<any>{
 
+
+      try{
+
+           const data =  await this.productRepository.createQueryBuilder("product")
+           .leftJoinAndSelect("product.productconfiguration","product_configuration")
+           .leftJoinAndSelect("product.priceconfiguration","price_configuration")
+           .where("product.businessId = :id", { id:business.id})
+           .andWhere("product.isDisabled = :isDisabled",{isDisabled:false})
+           .cache(60000)
+           .getMany();
+           return this.apiResponseService.SuccessResponse(
+            `${data.length} product data found`,
+            HttpStatus.OK, data);
+       
+
+      }
+      catch (error) {
+
+         console.error('getstockforbusinesslocation Error:',error.message);
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
    async SeedProducttoStock(productId:string,warehouseId:string,quantity:number,businesslocation:BusinessLocation,business:Business):Promise<any>{
 
       try{
