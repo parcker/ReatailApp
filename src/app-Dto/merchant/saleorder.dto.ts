@@ -1,5 +1,6 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
+import { SalesType } from "../../enums/settings.enum";
 
 
 export class SalesItemDto{
@@ -56,7 +57,7 @@ export class SaleOrderDto{
     @ApiModelProperty({ required: true})
     totalcharges: number;
 
-    @ApiModelProperty({ required: true})
+    @ApiModelProperty({ enum:SalesType})// @ApiProperty({ enum:SalesType})
     saleType:number;
 
     @ApiModelProperty({ required: true})
