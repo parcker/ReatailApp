@@ -9,5 +9,9 @@ export class SeedProductDto{
 
     @ApiModelProperty({ required: true, example: 'category test' })
     readonly quantity:number;
+
+    
+    @ApiModelProperty({ required: true, example: 'category test' })
+    readonly price:number;
     
 }
