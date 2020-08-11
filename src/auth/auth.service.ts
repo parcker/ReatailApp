@@ -54,7 +54,7 @@ export class AuthService {
                 
                 if (!(await this.isValidPassword(foundUser[0],model.password))){
                     return this.apiResponseService.FailedBadRequestResponse(
-                        `User does not exist`,
+                        `Password  or username is incorrect`,
                         HttpStatus.UNAUTHORIZED, '');
                 }
                
