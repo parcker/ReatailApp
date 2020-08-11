@@ -140,6 +140,6 @@ export class AuthService {
     }
     public async isValidPassword(user: User, password: string): Promise<boolean> {
         console.log('=====>>>>>>',user,'=======>',password);
-        return await bcrypt.compare(user.password,password);
+        return await bcrypt.compare(password,user.password);
     }
 }
