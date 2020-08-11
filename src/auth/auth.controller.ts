@@ -12,7 +12,7 @@ export class AuthController {
     @Post('/login')
     public async login(@Body() body: LoginDto,@Res() res) {
         
-        let response= await this.authService.login(body.email, body.password);
+        let response= await this.authService.login(body);
         if(response.status===false){
 
             return res.status(response.code).json(response);

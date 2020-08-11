@@ -9,6 +9,7 @@ import { UserPremission } from '../entities/role.entity';
 import { PayloadvalidationService } from '../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../shared/response/apiResponse.service';
 import { UserType } from '../enums/settings.enum';
+import { LoginDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,24 +32,27 @@ export class AuthService {
         return !!foundUser;
     }
 
-    public async login(email, password):Promise<any> {
+    public async login(model:LoginDto):Promise<any> {
 
         try{
-            let validationResult = await this.payloadService.validateSignInAsync({email:email,password:password}); 
+            let validationResult = await this.payloadService.validateSignInAsync(model); 
             if(validationResult.IsValid)
             {
               
                 const foundUser = await this.userRepository.find({
-                    where:{email:email,emailConfirmed:true},
+                    where:{email:model.email,emailConfirmed:true},
                     relations: ['business','businesslocation']});
-                if (!foundUser){
+
+                
+                if (!foundUser ||foundUser.length==0 ){
     
                     return this.apiResponseService.FailedBadRequestResponse(
                         `User does not exist`,
                         HttpStatus.UNAUTHORIZED, '');
                     
                 }
-                if (!(await this.isValidPassword(foundUser[0],password))){
+                
+                if (!(await this.isValidPassword(foundUser[0],model.password))){
                     return this.apiResponseService.FailedBadRequestResponse(
                         `User does not exist`,
                         HttpStatus.UNAUTHORIZED, '');
@@ -135,6 +139,7 @@ export class AuthService {
         };
     }
     public async isValidPassword(user: User, password: string): Promise<boolean> {
-        return await bcrypt.compare(password, user.password);
+        console.log('=====>>>>>>',user,'=======>',password);
+        return await bcrypt.compare(user.password,password);
     }
 }
