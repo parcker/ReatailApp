@@ -126,6 +126,8 @@ export class SettingsService
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
     }
+
+   
     async GetCurrentFiscalYear(business:Business):Promise<any>{
         try{
             
@@ -168,10 +170,10 @@ export class SettingsService
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
     }
-    async GetCurrentPaymentTerms(business:Business):Promise<any>{
+    async GetCurrentPaymentTerms():Promise<any>{
         try{
             
-            const paymentterms=await this.paymenttermRepository.find({where:{business:business}});
+            const paymentterms=await this.paymenttermRepository.find({where:{isDisabled:false}});
             return this.apiResponseService.SuccessResponse(
                 `${paymentterms.length}  payment term data found`,
                 HttpStatus.OK,paymentterms);

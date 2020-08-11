@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreatProductDto, UpdateProductDto } from '../../app-Dto/merchant/product.dto';
 import {SettingsService} from '../settings/settings.service';
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
+import { CreatePaymentTermDto } from '../../app-Dto/merchant/paymentterm.dto';
 
 @Controller('api/settings')
 export class SettingsController {
@@ -15,6 +16,18 @@ export class SettingsController {
     async create(@Body() taxmodel: TaxDto, @Request() req, @Res() res) {
 
         const response = await this.SettingsService.CreatTaxforBusiness(taxmodel, req.user.business,req.user.email);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        
+        return res.status(HttpStatus.OK).json(response);
+
+    }
+    @Post('/createPaymentTerm')
+    @UseGuards(AuthGuard('jwt'))
+    async createPaymentTerm(@Body() model: CreatePaymentTermDto, @Request() req, @Res() res) {
+
+        const response = await this.SettingsService.CreatPaymentTerm(model, req.user.business,req.user.email);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
@@ -50,6 +63,17 @@ export class SettingsController {
     async gettaxes(@Request() req, @Res() res): Promise<any> {
 
         const response = await this.SettingsService.GettaxbyBusiness(req.user.business);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+
+    }
+    @Get('/getpaymentterms')
+    @UseGuards(AuthGuard('jwt'))
+    async getpaymentterms(@Request() req, @Res() res): Promise<any> {
+
+        const response = await this.SettingsService.GetCurrentPaymentTerms();
         if (response.status === false) {
             return res.status(response.code).json(response);
         }

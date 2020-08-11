@@ -275,7 +275,10 @@ export class PayloadvalidationService {
         return validator
             .NotEmpty(m => m.customerId, "Should not be empty", "SaleOrderDto.customerId.Empty")
             .NotNull(m => m.customerId, "Should not be null", "customerId.Null")
-            // .NotEmpty(m => m.code, "Should not be empty", "TaxDto.code.Empty")
+            .NotEmpty(m => m.paymenttermId, "Should not be empty", "SaleOrderDto.paymenttermId.Empty")
+            .NotNull(m => m.paymenttermId, "Should not be null", "paymenttermId.Null")
+            .IsNumberGreaterThan(m => m.total, 0, "total value should be above zero")
+            .IsNumberGreaterThan(m => m.subTotal, 0, "subTotal value should be above zero")
             // .IsNumberGreaterThan(m => m.value,0, "TaxDto.value.below 1")
             .ToResult();
 
