@@ -8,7 +8,7 @@ import { promises } from 'dns';
 import { CreatCategoryDto, CreatSubCategoryDto } from '../../app-Dto/merchant/category.dto';
 import { CreatProductDto, UpdateProductDto } from '../../app-Dto/merchant/product.dto';
 import { CreatCustomerDto, UpdateCustomerDto, CreatSupplierDto } from '../../app-Dto/merchant/partner.dto';
-import { CreatePurchaseOrderHeaderDto } from '../../app-Dto/merchant/purcahseorder.dto';
+import { CreatePurchaseOrderDto } from '../../app-Dto/merchant/purcahseorder.dto';
 import { CreateUserDto } from '../../app-Dto/usermgr/user.dto';
 import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/warehouse.dto';
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
@@ -164,16 +164,18 @@ export class PayloadvalidationService {
             .ToResult();
 
     };
-    async validatePurchaseOrderHeaderAsync(model: CreatePurchaseOrderHeaderDto): Promise<ValidationResult> {
+    async validatePurchaseOrderHeaderAsync(model: CreatePurchaseOrderDto): Promise<ValidationResult> {
         return await new Validator(model).ValidateAsync(this.validatePurchaseOrderHeaderRules);
 
     };
-    validatePurchaseOrderHeaderRules = (validator: IValidator<CreatePurchaseOrderHeaderDto>): ValidationResult => {
+    validatePurchaseOrderHeaderRules = (validator: IValidator<CreatePurchaseOrderDto>): ValidationResult => {
         return validator
             .NotEmpty(m => m.supplierId, "Should not be empty", "CreateOrderDto.supplierId.Empty")
             .NotNull(m => m.supplierId, "Should not be null", "CreateOrderDto.supplierId.Null")
             .NotEmpty(m => m.shiptobusinessId, "Should not be empty", "CreateOrderDto.shiptobusinessId.Empty")
             .NotNull(m => m.shiptobusinessId, "Should not be null", "CreateOrderDto.shiptobusinessId.Null")
+            .NotEmpty(m => m.warehouseId, "Should not be empty", "CreateOrderDto.warehouseId.Empty")
+            .NotNull(m => m.warehouseId, "Should not be null", "CreateOrderDto.warehouseId.Null")
 
             .ToResult();
 

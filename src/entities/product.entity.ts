@@ -38,7 +38,7 @@ export class Product extends BaseEntityClass {
     subCategory: SubCategory;
 
     @Index()
-    @ManyToOne(() => Business, business => business.category,{onDelete:'CASCADE'})
+    @ManyToOne(() => Business, business => business.products,{onDelete:'CASCADE'})
     @JoinColumn()
     business: Business;
 

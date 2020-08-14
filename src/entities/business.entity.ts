@@ -14,6 +14,7 @@ import { PaymentMode } from './paymentmode.entity';
 import { PaymentTerm } from './paymentterm.entity';
 import { Warehouse } from './warehouse.entity';
 import { Tax } from './tax.entity';
+import { Product } from './product.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
@@ -39,8 +40,8 @@ export class Business extends BaseEntityClass {
     @OneToMany(type => Category, category => category.business)
     category: Category[];
 
-    // @OneToMany(type => SubCategory, subcategory => subcategory.business)
-    // subcategory: SubCategory[];
+    @OneToMany(type => SubCategory, products => products.product)
+    products: Product[];
     
     @OneToMany(type => Supplier, suppliers => suppliers.business)
     suppliers: Supplier[];

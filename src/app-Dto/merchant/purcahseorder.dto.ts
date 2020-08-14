@@ -1,44 +1,50 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-export class CreatePurchaseOrderHeaderDto{
 
-   
-    @ApiModelProperty({ required: true})
-    public supplierId: string;
-    @ApiModelPropertyOptional()
-    invoiceNumber:string;
-    @ApiModelProperty({ required: true})
-    shiptobusinessId: string;
-   
-    @ApiModelProperty({ required: true})
-    duedate: Date;
-
-}
 export class PurchaseOrderItemDto{
 
     @ApiModelProperty({ required: true})
     public productId: string;
 
     @ApiModelProperty({ required: true})
-    public quantity: number;
+    public unitquantity: number;
 
     @ApiModelProperty({ required: true})
-    public carton: number;
+    public ctnquanity: number;
 
     @ApiModelProperty({ required: true})
-    public unitcost: number;
+    public retailcost: number;
+
+    @ApiModelProperty({ required: true})
+    public wholesalecost: number;
     
     @ApiModelProperty({ required: true})
-    public totalCost: number;
+    public lineretailcost: number;
+
+    @ApiModelProperty({ required: true})
+    public linewholesalecost: number;
 
 
     
 }
-export class CreatePurchaseOrderItemDto{
+export class CreatePurchaseOrderDto{
 
-    
     @ApiModelProperty({ required: true})
-    public purcahseId: number;
+    public supplierId: string;
+
+    @ApiModelPropertyOptional()
+    invoiceNumber:string;
+
+    @ApiModelProperty({ required: true})
+    shiptobusinessId: string;
+   
+    @ApiModelProperty({ required: true})
+    warehouseId: string;
+
+    @ApiModelProperty({ required: true})
+    duedate: Date;
+    
+    
     @ApiModelProperty({ type: [PurchaseOrderItemDto] })
     @Type(() => PurchaseOrderItemDto)
     purchaseItems:PurchaseOrderItemDto[]
