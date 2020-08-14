@@ -384,6 +384,7 @@ export class ProductService {
          productconfig.canexpire = productconfiguration.canexpire;
          productconfig.pack = productconfiguration.pack;
          productconfig.leadtime = productconfiguration.leadtime;
+         productconfig.salestax=await this.taxRepository.findOne({where:{id:productconfiguration.salestaxId}});
          productconfig.isDisabled = status;
          productconfig.updatedby = updatedby;
          const responseproductconfig = await this.productconfigurationRepository.save(productconfig);
