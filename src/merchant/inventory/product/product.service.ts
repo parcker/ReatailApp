@@ -13,6 +13,8 @@ import { StoreProduct } from '../../../entities/storeproduct.entity';
 import { Tax } from '../../../entities/tax.entity';
 import { Warehouse } from '../../../entities/warehouse.entity';
 import { StockCard } from '../../../entities/stockcard.entity';
+import { PriceConfiguration } from '../../../entities/priceconfiguration.entity';
+import { PriceConfigurationDto } from '../../../app-Dto/merchant/priceconfiguration.dto';
 
 @Injectable()
 export class ProductService {
@@ -27,6 +29,7 @@ export class ProductService {
       @InjectRepository(StockCard) private readonly stockcardRepository: Repository<StockCard>,
       @InjectRepository(Tax) private readonly taxRepository: Repository<Tax>,
       @InjectRepository(ProductConfiguration) private readonly productconfigurationRepository: Repository<ProductConfiguration>,
+      @InjectRepository(PriceConfiguration) private readonly priceconfigRepository: Repository<PriceConfiguration>,
       @InjectRepository(StoreProduct) private readonly StoreProductRepository: Repository<StoreProduct>,
 
       private readonly payloadService: PayloadvalidationService,
@@ -124,6 +127,8 @@ export class ProductService {
 
             const configRes = await this.creatProductConfiguration(product.productconfiguration, response, createdby);
             if (configRes.status && response) {
+
+               await this.creatDefaultPriceConfiguration(response,createdby);
                return this.apiResponseService.SuccessResponse(
                   `${response.name} has been created and activated`,
                   HttpStatus.OK, response);
@@ -215,6 +220,27 @@ export class ProductService {
       }
       catch (error) {
          console.error('creatProductConfiguration Error:',error.message);
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   async creatDefaultPriceConfiguration(product: Product, createdby: string): Promise<any> {
+      try {
+
+
+         const price = new PriceConfiguration();
+         price.isDisabled = false;
+         price.product=product;
+         price.createdby = createdby;
+         price.updatedby = '';
+         await this.priceconfigRepository.save(price);
+          return this.apiResponseService.SuccessResponse(
+            `Price configuration failed`,
+            HttpStatus.INTERNAL_SERVER_ERROR, '');
+      }
+      catch (error) {
+         console.error('creatDefaultPriceConfiguration Error:',error.message);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
@@ -507,6 +533,39 @@ export class ProductService {
          console.error('getstockforbusinesslocation Error:',error.message);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   async updatePriceConfiguration(model:PriceConfigurationDto,updatedby:string,business:Business):Promise<any>{
+      try{
+
+         const productinfo=await this.productRepository.findOne({where:{id:model.productId,isDisabled:false,business:business}});
+         if(!productinfo){
+            return this.apiResponseService.FailedBadRequestResponse(
+               `invalid  product Id , no product data found`,
+               HttpStatus.BAD_REQUEST, '');
+         }
+
+         const priceinfo=await this.priceconfigRepository.findOne({where:{product:productinfo,isDisabled:false}});
+         if(!priceinfo){
+            return this.apiResponseService.FailedBadRequestResponse(
+               `invalid  price configuration Id , no price configuration data found`,
+               HttpStatus.BAD_REQUEST, '');
+         }
+         priceinfo.updatedby=updatedby;
+         var response =await this.priceconfigRepository.save(priceinfo);
+         return this.apiResponseService.SuccessResponse(
+            `${productinfo.name} : price configuration processed completed`,
+            HttpStatus.OK,response);
+
+      }
+      catch (error) {
+         console.error('deleteproduct Error:',error.message);
+         return new HttpException({
+            message: 'Process error while executing operation:',
+            code: 500, status: false
+         },
+            HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
 

@@ -4,7 +4,6 @@ import { User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ResponseObj } from '../shared/generic.response';
 import { UserPremission } from '../entities/role.entity';
 import { PayloadvalidationService } from '../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../shared/response/apiResponse.service';
@@ -139,7 +138,7 @@ export class AuthService {
         };
     }
     public async isValidPassword(user: User, password: string): Promise<boolean> {
-        console.log('=====>>>>>>',user,'=======>',password);
+        
         return await bcrypt.compare(password,user.password);
     }
 }

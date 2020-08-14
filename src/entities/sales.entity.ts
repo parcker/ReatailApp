@@ -27,6 +27,11 @@ export class Sales extends BaseEntityClass {
     @Column({nullable: true })
     paymenttermId:string
 
+    @Column()
+    transactionstatusId: number;
+
+    @Column()
+    doctypeId: number;
     
     @OneToMany(type => SalesItems, saleitem => saleitem.saledetail)
     saleitem: SalesItems[];

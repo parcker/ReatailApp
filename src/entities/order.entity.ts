@@ -33,14 +33,10 @@ export class PurchaseOrder extends BaseEntityClass {
     @Column()
     dueDate: Date;
 
-    @Column()
-    postingTypeId: number;
-
     @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.purchaseorder, { cascade: true })
     @JoinColumn()
     raisedlocation: BusinessLocation;
-
-    
+ 
     @ManyToOne(type => BusinessLocation, shipbusinesslocation => shipbusinesslocation.purchaseorder, { cascade: true, })
     @JoinColumn()
     shipbusinesslocation: BusinessLocation;
@@ -51,8 +47,7 @@ export class PurchaseOrder extends BaseEntityClass {
 
     @ManyToOne(type => Supplier, supplier => supplier.purchaseorder, { cascade: true })
     supplier: Supplier;
-
-    
+ 
     @ManyToOne(type => FiscalYear, fiscalyear => fiscalyear.purchaseorders, { cascade: true })
     fiscalyear?: FiscalYear;
 
@@ -61,12 +56,6 @@ export class PurchaseOrder extends BaseEntityClass {
 
     @OneToMany(type => OrderItem, orderitem => orderitem.purchaseorder, { cascade: true })
     orderitem?: OrderItem[];
-
-    @Column()
-    isconfirmed: boolean;
-
-    @ManyToOne(type => User)
-    confirmedby?: User;
 
     @ManyToOne(() => Business, business => business.purchaseorders, { cascade: true })
     @JoinColumn()
@@ -81,14 +70,32 @@ export class OrderItem extends BaseEntityClass {
     @ManyToOne(type => Product, product => product.orderitem)
     @JoinColumn()
     product: Product;
+
     @Column()
-    qty: number;
+    ctnqty: number;
+
+    @Column()
+    unitqty: number;
+
     @Column({ type: "decimal" })
-    cost: number;
+    retailcost: number;
+
+    @Column({ type: "decimal" })
+    wholesalecost: number;
+    
     @Column({ type: "decimal" })
     unitprice: number;
-    @Column()
-    previousqty: number;
+
+    @Column({ type: "decimal" })
+    wholesaleprice: number;
+
+    @Column({ type: "decimal" })
+    linetotalretailCost: number;
+
+    @Column({ type: "decimal" })
+    linetotalwholesaleCost: number;
+
+
     @ManyToOne(type => PurchaseOrder, purchaseorder => purchaseorder.orderitem)
     purchaseorder: PurchaseOrder;
 

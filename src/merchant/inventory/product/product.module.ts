@@ -12,11 +12,12 @@ import { StoreProduct } from '../../../entities/storeproduct.entity';
 import { Tax } from '../../../entities/tax.entity';
 import { Warehouse } from '../../../entities/warehouse.entity';
 import { StockCard } from '../../../entities/stockcard.entity';
+import { PriceConfiguration } from '../../../entities/priceconfiguration.entity';
 
 @Module({
 
     imports: [
-        TypeOrmModule.forFeature([Product,Category,SubCategory,Business,ProductConfiguration,StoreProduct,Tax,Warehouse,StoreProduct,StockCard]),
+        TypeOrmModule.forFeature([Product,Category,SubCategory,Business,ProductConfiguration,PriceConfiguration,StoreProduct,Tax,Warehouse,StoreProduct,StockCard]),
         PayloadvalidationModule,ApiResponseModule
     ],
     providers: [ProductService],

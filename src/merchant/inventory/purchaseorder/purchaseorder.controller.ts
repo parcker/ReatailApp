@@ -1,7 +1,7 @@
 import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, Request, Get, HttpException, HttpStatus, Patch, Param, Res, Delete, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatProductDto } from '../../../app-Dto/merchant/product.dto';
-import { CreatePurchaseOrderHeaderDto, CreatePurchaseOrderItemDto } from '../../../app-Dto/merchant/purcahseorder.dto';
+import { CreatePurchaseOrderDto } from '../../../app-Dto/merchant/purcahseorder.dto';
 import { PurchaseorderService } from './purchaseorder.service';
 import { PaginationDto } from '../../../shared/pagenation/PaginationDto';
 import { SearchParametersDto } from '../../../app-Dto/merchant/searchparameters.dto';
@@ -11,9 +11,9 @@ export class PurchaseorderController {
 
     constructor(private readonly purchaseorderservice: PurchaseorderService) { }
 
-    @Post('/creatpurchaseheader')
+    @Post('/creatpurchaseOrder')
     @UseGuards(AuthGuard('jwt'))
-     async creatpurchaseheader(@Body() model: CreatePurchaseOrderHeaderDto, @Request() req, @Res() res) {
+     async creatpurchaseOrder(@Body() model: CreatePurchaseOrderDto, @Request() req, @Res() res) {
 
         const response = await this.purchaseorderservice.creatPurchaseHeader(model, req.user.business,req.user.id,req.user.businesslocationId);
         if (response.status === false) {
@@ -24,18 +24,7 @@ export class PurchaseorderController {
 
 
     }
-    @Post('/creatpurchaseitems')
-    @UseGuards(AuthGuard('jwt'))
-     async creatpurchaseitems(@Body() model: CreatePurchaseOrderItemDto, @Request() req, @Res() res) {
-
-        const response = await this.purchaseorderservice.postpurchaseitem(model ,req.user.id);
-        if (response.status === false) {
-            return res.status(response.code).json(response);
-        }
-        
-        return res.status(HttpStatus.OK).json(response);
-
-    }
+   
     @Get('/getpurchaseinfo')
     @UseGuards(AuthGuard('jwt'))
      async getpurchaseOrders(@Body() model: SearchParametersDto, @Request() req, @Res() res) {
