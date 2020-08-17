@@ -435,9 +435,11 @@ export class ProductService {
            const data =  await this.productRepository.createQueryBuilder("product")
            .leftJoinAndSelect("product.productconfiguration","product_configuration")
            .leftJoinAndSelect("product.priceconfiguration","price_configuration")
-           .where("product.businessId = :id", { id:business.id})
+           .leftJoinAndSelect("product.business","business")
+           .where("business.Id = :Id", { Id:business.id})
            .andWhere("product.isDisabled = :isDisabled",{isDisabled:false})
            .cache(60000)
+           .printSql()
            .getMany();
            return this.apiResponseService.SuccessResponse(
             `${data.length} product data found`,
