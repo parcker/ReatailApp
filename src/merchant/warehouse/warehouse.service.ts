@@ -128,7 +128,7 @@ export class WarehouseService {
                     HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }
-     async getWarehouseByBusinesslocationId(businessLocation:BusinessLocation,business:Business,status:boolean): Promise<any>{
+     async getWarehouseByBusinesslocation(businessLocation:BusinessLocation,business:Business,status:boolean): Promise<any>{
         
          try
           { 
@@ -178,6 +178,34 @@ export class WarehouseService {
                      HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }
+     async getWarehouseByBusinesslocationId(businessLocationId:string): Promise<any>{
+        
+        try
+         { 
+            
+            const data =  await this.warehouseRepository.createQueryBuilder("warehouse")
+                .where("warehouse.businesslocation.id =:id", { id:businessLocationId})
+                .andWhere("warehouse.isDisabled = :isDisabled",{isDisabled:false})
+                .orderBy("warehouse.name")
+                .getMany();
+               return this.apiResponseService.SuccessResponse(
+                  `${data.length} Warehouse data`,
+                  HttpStatus.OK, data);
+          
+         }
+           
+ 
+         catch (error) {
+
+           console.error('getWarehouseByBusinesslocationId',error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
      async changeWarehouseStatus(warehouseId:string,status:boolean,updatedby:string):Promise<any>{
          try{
              let response= await this.warehouseRepository.findOne({where: { id: warehouseId } });
