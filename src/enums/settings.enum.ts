@@ -78,6 +78,14 @@ export enum DocType
     SalesOrder = 3,
     CashSalesInvoice = 4,
     CreditSaleInvoice = 5,
+
+}
+export enum PurchaseSearchType
+{
+    InvoiceSearch = 1,
+    SupplierSearch = 2,
+    DateRangeSearch = 3,
+    
     
 
 }

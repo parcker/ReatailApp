@@ -77,22 +77,22 @@ export class OrderItem extends BaseEntityClass {
     @Column()
     unitqty: number;
 
-    @Column({ type: "decimal" })
+    @Column({ type: "decimal" ,default:0.00 })
     retailcost: number;
 
-    @Column({ type: "decimal" })
+    @Column({ type: "decimal",default:0.00  })
     wholesalecost: number;
     
-    @Column({ type: "decimal" })
+    @Column({ type: "decimal",default:0.00 })
     unitprice: number;
 
-    @Column({ type: "decimal" })
+    @Column({ type: "decimal",default:0.00  })
     wholesaleprice: number;
 
-    @Column({ type: "decimal" })
+    @Column({ type: "decimal",default:0.00  })
     linetotalretailCost: number;
 
-    @Column({ type: "decimal" })
+    @Column({ type: "decimal",default:0.00  })
     linetotalwholesaleCost: number;
 
 

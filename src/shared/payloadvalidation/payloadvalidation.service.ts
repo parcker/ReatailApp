@@ -8,11 +8,13 @@ import { promises } from 'dns';
 import { CreatCategoryDto, CreatSubCategoryDto } from '../../app-Dto/merchant/category.dto';
 import { CreatProductDto, UpdateProductDto } from '../../app-Dto/merchant/product.dto';
 import { CreatCustomerDto, UpdateCustomerDto, CreatSupplierDto } from '../../app-Dto/merchant/partner.dto';
-import { CreatePurchaseOrderDto } from '../../app-Dto/merchant/purcahseorder.dto';
+import { CreatePurchaseOrderDto, PurchaseOrderItemDto } from '../../app-Dto/merchant/purcahseorder.dto';
 import { CreateUserDto } from '../../app-Dto/usermgr/user.dto';
 import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/warehouse.dto';
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
 import { SalesItemDto, SaleOrderDto } from '../../app-Dto/merchant/saleorder.dto';
+import { SearchParametersDto } from '../../app-Dto/merchant/searchparameters.dto';
+import { PurchaseSearchType } from '../../enums/settings.enum';
 
 @Injectable()
 export class PayloadvalidationService {
@@ -164,18 +166,34 @@ export class PayloadvalidationService {
             .ToResult();
 
     };
+
+    
     async validatePurchaseOrderHeaderAsync(model: CreatePurchaseOrderDto): Promise<ValidationResult> {
         return await new Validator(model).ValidateAsync(this.validatePurchaseOrderHeaderRules);
 
     };
+    validatePurchaseProductRules =  (validator: IValidator<PurchaseOrderItemDto>) : ValidationResult => {  
+        return validator
+                .IsGuid(m => m.productId, "Invalid productId id ", "PurchaseOrderItemDto.productId.Invalid")
+                .NotEmpty(m => m.productId, "Should not be empty", "PurchaseOrderItemDto.productId.Empty")
+                .NotNull(m => m.productId, "Should not be null", "PurchaseOrderItemDto.productId.Null")
+             .ToResult();
+         };
     validatePurchaseOrderHeaderRules = (validator: IValidator<CreatePurchaseOrderDto>): ValidationResult => {
         return validator
             .NotEmpty(m => m.supplierId, "Should not be empty", "CreateOrderDto.supplierId.Empty")
             .NotNull(m => m.supplierId, "Should not be null", "CreateOrderDto.supplierId.Null")
+            .IsGuid(m => m.supplierId, "Invalid supplier id ", "CreateOrderDto.supplierId.Invalid")
             .NotEmpty(m => m.shiptobusinessId, "Should not be empty", "CreateOrderDto.shiptobusinessId.Empty")
             .NotNull(m => m.shiptobusinessId, "Should not be null", "CreateOrderDto.shiptobusinessId.Null")
+            .IsGuid(m => m.shiptobusinessId, "Invalid shiptobusinessId id ", "CreateOrderDto.shiptobusinessId.Invalid")
+            .IsGuid(m => m.warehouseId, "Invalid warehouseId id ", "CreateOrderDto.warehouseId.Invalid")
             .NotEmpty(m => m.warehouseId, "Should not be empty", "CreateOrderDto.warehouseId.Empty")
             .NotNull(m => m.warehouseId, "Should not be null", "CreateOrderDto.warehouseId.Null")
+            .If(m => m.purchaseItems != null && m.purchaseItems.length > 0, 
+                validator => validator
+                              .ForEach(m => m.purchaseItems, this.validatePurchaseProductRules)
+                      .ToResult())
 
             .ToResult();
 
@@ -283,6 +301,33 @@ export class PayloadvalidationService {
             .IsNumberGreaterThan(m => m.subTotal, 0, "subTotal value should be above zero")
             // .IsNumberGreaterThan(m => m.value,0, "TaxDto.value.below 1")
             .ToResult();
+
+    };
+    async validateGetPurchaseParametersAsync(model: SearchParametersDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateGetPurchaseParametersRules);
+
+    };
+    validateGetPurchaseParametersRules = (validator: IValidator<SearchParametersDto>): ValidationResult => {
+        return validator
+           
+        .If(m => m.searchtype===PurchaseSearchType.SupplierSearch, validator => validator
+            .NotEmpty(m => m.supplierSearch.supplierId, "Should not be empty", "SaleOrderDto.customerId.Empty")
+            .NotNull(m => m.supplierSearch.endDate, "Should not be null", "supplierSearch.endDate.Null")
+            .IsDateOnOrAfter(m => m.supplierSearch.endDate, new Date(), "Should be on or after today's date", "supplierSearch.endDate.Invalid")
+            .NotNull(m => m.supplierSearch.startDate, "Should not be null", "supplierSearch.startDate.Null")
+            .IsDateOnOrAfter(m => m.supplierSearch.startDate, new Date(), "Should be on or after today's date", "supplierSearch.startDate.Invalid")
+        .ToResult())
+        .If(m => m.searchtype===PurchaseSearchType.InvoiceSearch, validator => validator
+            .NotEmpty(m => m.invoiceNumber, "Should not be empty", "SearchParametersDto.invoiceNumber.Empty")
+        .ToResult())
+        .If(m => m.searchtype===PurchaseSearchType.DateRangeSearch, validator => validator
+            .NotNull(m => m.endDate, "Should not be null", "SearchParametersDto.endDate.Null")
+            .IsDateOnOrAfter(m => m.endDate, new Date(), "Should be on or after today's date", "SearchParametersDto.endDate.Invalid")
+            .NotNull(m => m.startDate, "Should not be null", "SearchParametersDto.startDate.Null")
+            .IsDateOnOrAfter(m => m.startDate, new Date(), "Should be on or after today's date", "SearchParametersDto.startDate.Invalid")
+        .ToResult())
+
+        .ToResult();
 
     };
 

@@ -15,7 +15,7 @@ export class PurchaseorderController {
     @UseGuards(AuthGuard('jwt'))
      async creatpurchaseOrder(@Body() model: CreatePurchaseOrderDto, @Request() req, @Res() res) {
 
-        const response = await this.purchaseorderservice.creatPurchaseHeader(model, req.user.business,req.user.id,req.user.businesslocationId);
+        const response = await this.purchaseorderservice.creatPurchaseHeader(model, req.user.business,req.user.email,req.user.businesslocationId);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
