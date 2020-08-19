@@ -10,7 +10,7 @@ import { Supplier } from '../../../entities/partner.entity';
 import { v4 as uuidv4 } from 'uuid';
 
 import { SettingsService } from '../../settings/settings.service';
-import {TransactionStatusEnum, DocType } from '../../../enums/settings.enum';
+import {TransactionStatusEnum, DocType, PurchaseSearchType } from '../../../enums/settings.enum';
 import { Product } from '../../../entities/product.entity';
 import { SearchParametersDto } from '../../../app-Dto/merchant/searchparameters.dto';
 import { Warehouse } from '../../../entities/warehouse.entity';
@@ -58,7 +58,17 @@ export class PurchaseorderService {
                   `invalid warehouse Id , no warehouse data found`,
                   HttpStatus.BAD_REQUEST, '');
             }
+            if(model.invoiceNumber.length>0){
 
+               console.log('Checking invoice');
+               const duplicatecheck=await this.purchaseOrderRepository.findOne({where:{inputedinvoiceNumber:model.invoiceNumber}});
+               if(duplicatecheck){
+
+                  return this.apiResponseService.FailedBadRequestResponse(
+                     `duplicate invoice number detected , please double check invoice number`,
+                     HttpStatus.BAD_REQUEST, '');
+               }
+            }
            
             let purchaseorder = new PurchaseOrder();
             purchaseorder.fiscalyear = null;
@@ -78,12 +88,12 @@ export class PurchaseorderService {
             let response = await this.purchaseOrderRepository.save(purchaseorder);
             if(response){
               
-               this.postpurchaseitem(model,createdby,purchaseorder);
-
+               const itemResponse=this.postpurchaseitem(model,createdby,purchaseorder);
+               return this.apiResponseService.SuccessResponse(
+                  `Purshase order has been created and activated`,
+                  HttpStatus.OK, response);
             }
-            return this.apiResponseService.SuccessResponse(
-               `Purshase order has been created and activated`,
-               HttpStatus.OK, response);
+      
          }
          return await this.payloadService.badRequestErrorMessage(validationResult);
       }
@@ -102,7 +112,7 @@ export class PurchaseorderService {
             
              let totalcost=0;
              let saveitem=[];
-         
+             console.log('Entered postpurchaseitem',model.purchaseItems);
              for (let index = 0; index < model.purchaseItems.length; index++) 
              {
                  
@@ -115,6 +125,7 @@ export class PurchaseorderService {
                  itemp.product=product;
                  itemp.ctnqty=item.ctnquanity;
                  itemp.unitqty=item.unitquantity;
+               
                  itemp.retailcost=item.retailcost;
                  itemp.wholesalecost=item.wholesalecost;
                  itemp.linetotalretailCost=(item.retailcost*itemp.unitqty);
@@ -122,6 +133,7 @@ export class PurchaseorderService {
                  itemp.createdby=createdby;
                  itemp.purchaseorder=purchaseOrder;
                  itemp.isDisabled=false;
+            
                  itemp.updatedby=''
                  const response= await this.purchaseitemRepository.save(itemp);
                  saveitem.push({response})
@@ -146,19 +158,23 @@ export class PurchaseorderService {
    async getpurchaseorders(searchparameter: SearchParametersDto, business: Business,businesslocation: BusinessLocation):Promise<any> {
     try{
 
-     
+         const validation=await this.payloadService.validateGetPurchaseParametersAsync(searchparameter);
+         if(validation.IsValid){
 
-       const getpurchaseorder=await this.purchaseOrderRepository.find({
-         where:{
-            business:business,
-            businesslocation:businesslocation,
-            
-         },
-        });
+             if(searchparameter.searchtype===PurchaseSearchType.SupplierSearch){
 
-         return this.apiResponseService.SuccessResponse(
-            `${getpurchaseorder.length} records found`,
-            HttpStatus.OK, getpurchaseorder);
+               const response= await this.purchaseOrderRepository
+               .createQueryBuilder('purchase_order')
+               .innerJoin(OrderItem, 'items', 'purchase_order.id = items.purchaseorderId')
+               //    .select(['inq.ID','inq.dt','inq.status','inq.bsnr'])
+               // .addSelect('dut.name')
+               .where('purchase_order.supplierId = :supplierId', { supplierId:searchparameter.supplierSearch.supplierId })
+               .orderBy('purchase_order.dateCreated', 'DESC')
+               .getMany();
+
+             }
+         }
+         return await this.payloadService.badRequestErrorMessage(validation);
       }
       catch (error) {
          console.error('getpurchaseorders Error:',error.message);
