@@ -58,6 +58,7 @@ export class PurchaseorderService {
                   `invalid warehouse Id , no warehouse data found`,
                   HttpStatus.BAD_REQUEST, '');
             }
+
             if(model.invoiceNumber.length>0){
 
                console.log('Checking invoice');
@@ -108,11 +109,11 @@ export class PurchaseorderService {
       }
    }
    async postpurchaseitem(model:CreatePurchaseOrderDto,createdby:string , purchaseOrder:PurchaseOrder):Promise<any>{
-    try{
+   try{
             
              let totalcost=0;
              let saveitem=[];
-             console.log('Entered postpurchaseitem',model.purchaseItems);
+             
              for (let index = 0; index < model.purchaseItems.length; index++) 
              {
                  
@@ -158,20 +159,42 @@ export class PurchaseorderService {
    async getpurchaseorders(searchparameter: SearchParametersDto, business: Business,businesslocation: BusinessLocation):Promise<any> {
     try{
 
+         console.log('Before validation===>',searchparameter)
          const validation=await this.payloadService.validateGetPurchaseParametersAsync(searchparameter);
          if(validation.IsValid){
 
+            console.log('After validation===>',searchparameter)
              if(searchparameter.searchtype===PurchaseSearchType.SupplierSearch){
 
-               const response= await this.purchaseOrderRepository
-               .createQueryBuilder('purchase_order')
-               .innerJoin(OrderItem, 'items', 'purchase_order.id = items.purchaseorderId')
-               //    .select(['inq.ID','inq.dt','inq.status','inq.bsnr'])
-               // .addSelect('dut.name')
-               .where('purchase_order.supplierId = :supplierId', { supplierId:searchparameter.supplierSearch.supplierId })
-               .orderBy('purchase_order.dateCreated', 'DESC')
+                const response =  await this.purchaseOrderRepository
+               .createQueryBuilder("purchase_order")
+               .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
+               .leftJoinAndSelect("orderitem.product", "product")
                .getMany();
+               // const response= await this.purchaseOrderRepository.find({
+               //    relations: ["orderitem", "orderitem.product"],
+               //    where: { supplier: { id: searchparameter.supplierSearch.supplierId }},
+               //    cache:6000
+               // });
+               return this.apiResponseService.SuccessResponse(
+                  `${response.length} purcahse info found`,
+                  HttpStatus.OK, response);
+               
+                  
+             }
+             if(searchparameter.searchtype===PurchaseSearchType.DateRangeSearch){
 
+               const response= await this.purchaseOrderRepository.find({
+                  relations: ["orderitem", "orderitem.product"],
+                  where: { supplier: { id: searchparameter.supplierSearch.supplierId } },
+                  cache:6000
+                });
+
+               return this.apiResponseService.SuccessResponse(
+                  `${response.length} purcahse info found`,
+                  HttpStatus.OK, response);
+               
+                  
              }
          }
          return await this.payloadService.badRequestErrorMessage(validation);

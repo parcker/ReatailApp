@@ -309,23 +309,29 @@ export class PayloadvalidationService {
     };
     validateGetPurchaseParametersRules = (validator: IValidator<SearchParametersDto>): ValidationResult => {
         return validator
-           
-        .If(m => m.searchtype===PurchaseSearchType.SupplierSearch, validator => validator
-            .NotEmpty(m => m.supplierSearch.supplierId, "Should not be empty", "SaleOrderDto.customerId.Empty")
+         
+        .If(m => m.searchtype==PurchaseSearchType.SupplierSearch && m.supplierSearch.startDate!=null && m.supplierSearch.endDate!=null, validator => validator
+            .NotEmpty(m => m.supplierSearch.supplierId, "Should not be empty", "supplierSearch.supplierId.Empty")
+            .IsGuid(m => m.supplierSearch.supplierId, "Invalid supplierId ", "supplierSearch.supplierId.Invalid")
+            
             .NotNull(m => m.supplierSearch.endDate, "Should not be null", "supplierSearch.endDate.Null")
-            .IsDateOnOrAfter(m => m.supplierSearch.endDate, new Date(), "Should be on or after today's date", "supplierSearch.endDate.Invalid")
+           // .IsDateOnOrAfter(m => m.supplierSearch.endDate, new Date(), "Should be on or after today's date", "supplierSearch.endDate.Invalid")
+            
             .NotNull(m => m.supplierSearch.startDate, "Should not be null", "supplierSearch.startDate.Null")
-            .IsDateOnOrAfter(m => m.supplierSearch.startDate, new Date(), "Should be on or after today's date", "supplierSearch.startDate.Invalid")
+           // .IsDateOnOrAfter(m => m.supplierSearch.startDate, new Date(), "Should be on or after today's date", "supplierSearch.startDate.Invalid")
         .ToResult())
+       
         .If(m => m.searchtype===PurchaseSearchType.InvoiceSearch, validator => validator
             .NotEmpty(m => m.invoiceNumber, "Should not be empty", "SearchParametersDto.invoiceNumber.Empty")
         .ToResult())
+      
         .If(m => m.searchtype===PurchaseSearchType.DateRangeSearch, validator => validator
-            .NotNull(m => m.endDate, "Should not be null", "SearchParametersDto.endDate.Null")
-            .IsDateOnOrAfter(m => m.endDate, new Date(), "Should be on or after today's date", "SearchParametersDto.endDate.Invalid")
-            .NotNull(m => m.startDate, "Should not be null", "SearchParametersDto.startDate.Null")
-            .IsDateOnOrAfter(m => m.startDate, new Date(), "Should be on or after today's date", "SearchParametersDto.startDate.Invalid")
+            .NotNull(m => m.daterangeSearch.endDate, "Should not be null", "SearchParametersDto.endDate.Null")
+            .IsDateOnOrAfter(m => m.daterangeSearch.endDate, new Date(), "Should be on or after today's date", "SearchParametersDto.endDate.Invalid")
+            .NotNull(m => m.daterangeSearch.startDate, "Should not be null", "SearchParametersDto.startDate.Null")
+            .IsDateOnOrAfter(m => m.daterangeSearch.startDate, new Date(), "Should be on or after today's date", "SearchParametersDto.startDate.Invalid")
         .ToResult())
+
 
         .ToResult();
 
