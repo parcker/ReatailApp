@@ -82,11 +82,10 @@ export enum DocType
 }
 export enum PurchaseSearchType
 {
-    
+    default=0,
     InvoiceSearch = 1,
     SupplierSearch = 2,
     DateRangeSearch = 3,
     logedInUser=4
     
-
 }

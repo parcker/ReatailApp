@@ -203,6 +203,24 @@ export class PurchaseorderService {
                
                   
              }
+             else if(searchparameter.searchtype===PurchaseSearchType.default){
+                
+               const response =  await this.purchaseOrderRepository
+               .createQueryBuilder("purchase_order")
+               .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
+               .leftJoinAndSelect("orderitem.product", "product")
+               .innerJoinAndSelect("purchase_order.supplier", "supplier")
+               .orderBy('purchase_order.dateCreated', 'DESC')
+               .take(20)
+               .cache(6000)
+               .getMany();
+
+               return this.apiResponseService.SuccessResponse(
+                  `${response.length} purcahse info found`,
+                  HttpStatus.OK, response);
+               
+             }
+         
          }
          return await this.payloadService.badRequestErrorMessage(validation);
       }
