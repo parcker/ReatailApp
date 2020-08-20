@@ -76,7 +76,8 @@ export class AuthService {
                     expire: expiresIn ,role:'',
                     username:foundUser[0].username,
                     views:[],
-                    apis:[]
+                    apis:[],
+                    usertype:token.usertype
                 };
                 return this.apiResponseService.SuccessResponse(
                     `Login was successful`,
@@ -104,6 +105,8 @@ export class AuthService {
     }
     private async createToken(user: User) {
       
+        var type: UserType = user.userType;
+        console.log(UserType[type]); //Edit
         const data = {
             email: user.email,
             firstName: user.firstName,
@@ -113,7 +116,7 @@ export class AuthService {
             business:null,
             businesslocationId:'',
             businesslocation:null,
-            userType:user.userType.toString()
+            userType:UserType[type]
            
         };
         
@@ -134,7 +137,8 @@ export class AuthService {
 
         return {
             
-            access_token: token
+            access_token: token,
+            usertype:UserType[type]
         };
     }
     public async isValidPassword(user: User, password: string): Promise<boolean> {
