@@ -159,23 +159,25 @@ export class PurchaseorderService {
    async getpurchaseorders(searchparameter: SearchParametersDto, business: Business,businesslocation: BusinessLocation):Promise<any> {
     try{
 
-         console.log('Before validation===>',searchparameter)
+        
          const validation=await this.payloadService.validateGetPurchaseParametersAsync(searchparameter);
          if(validation.IsValid){
 
-            console.log('After validation===>',searchparameter)
+            
              if(searchparameter.searchtype===PurchaseSearchType.SupplierSearch){
 
+                const begin=searchparameter.supplierSearch.startDate;
+                const end=searchparameter.supplierSearch.endDate;
                 const response =  await this.purchaseOrderRepository
                .createQueryBuilder("purchase_order")
                .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
                .leftJoinAndSelect("orderitem.product", "product")
+               .innerJoinAndSelect("purchase_order.supplier", "supplier")
+               .where('purchase_order.supplier.id = :id', { id: searchparameter.supplierSearch.supplierId})
+               .andWhere('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
+               .cache(6000)
                .getMany();
-               // const response= await this.purchaseOrderRepository.find({
-               //    relations: ["orderitem", "orderitem.product"],
-               //    where: { supplier: { id: searchparameter.supplierSearch.supplierId }},
-               //    cache:6000
-               // });
+               
                return this.apiResponseService.SuccessResponse(
                   `${response.length} purcahse info found`,
                   HttpStatus.OK, response);
@@ -184,15 +186,20 @@ export class PurchaseorderService {
              }
              if(searchparameter.searchtype===PurchaseSearchType.DateRangeSearch){
 
-               const response= await this.purchaseOrderRepository.find({
-                  relations: ["orderitem", "orderitem.product"],
-                  where: { supplier: { id: searchparameter.supplierSearch.supplierId } },
-                  cache:6000
-                });
-
-               return this.apiResponseService.SuccessResponse(
-                  `${response.length} purcahse info found`,
-                  HttpStatus.OK, response);
+               const begin=searchparameter.supplierSearch.startDate;
+               const end=searchparameter.supplierSearch.endDate;
+               const response =  await this.purchaseOrderRepository
+                  .createQueryBuilder("purchase_order")
+                  .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
+                  .leftJoinAndSelect("orderitem.product", "product")
+                  .innerJoinAndSelect("purchase_order.supplier", "supplier")
+                  .where('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
+                  .cache(6000)
+                  .getMany();
+              
+              return this.apiResponseService.SuccessResponse(
+                 `${response.length} purcahse info found`,
+                 HttpStatus.OK, response);
                
                   
              }
