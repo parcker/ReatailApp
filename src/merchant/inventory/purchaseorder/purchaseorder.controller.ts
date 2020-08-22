@@ -25,7 +25,7 @@ export class PurchaseorderController {
 
     }
    
-    @Get('/getpurchaseinfo')
+    @Post('/getpurchaseinfo')
     @UseGuards(AuthGuard('jwt'))
      async getpurchaseOrders(@Body() model: SearchParametersDto, @Request() req, @Res() res) {
 
