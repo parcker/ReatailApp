@@ -165,88 +165,80 @@ export class PurchaseorderService {
          const validation=await this.payloadService.validateGetPurchaseParametersAsync(searchparameter);
          if(validation.IsValid){
 
-            switch(searchparameter.searchtype)
-             { 
-               case PurchaseSearchType.SupplierSearch: { 
+            if(searchparameter.searchtype==PurchaseSearchType.SupplierSearch){
 
-                  const begin=searchparameter.supplierSearch.startDate;
-                  const end=searchparameter.supplierSearch.endDate;
-                  const response =  await this.purchaseOrderRepository
-                     .createQueryBuilder("purchase_order")
-                     .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
-                     .leftJoinAndSelect("orderitem.product", "product")
-                     .innerJoinAndSelect("purchase_order.supplier", "supplier")
-                     .where('purchase_order.supplier.id = :id', { id: searchparameter.supplierSearch.supplierId})
-                     .andWhere('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
-                     .orderBy('purchase_order.dateCreated', 'DESC')
-                     .cache(6000)
-                     .getMany();
-
-                     this.apiResponseService.SuccessResponse(
-                        `${response.length} purcahse info found`,
-                        HttpStatus.OK, response);
-
-                  break; 
-               } 
-               case PurchaseSearchType.DateRangeSearch: { 
-
-                  const begin=searchparameter.supplierSearch.startDate;
-                  const end=searchparameter.supplierSearch.endDate;
-                  const response =  await this.purchaseOrderRepository
-                     .createQueryBuilder("purchase_order")
-                     .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
-                     .leftJoinAndSelect("orderitem.product", "product")
-                     .innerJoinAndSelect("purchase_order.supplier", "supplier")
-                     .where('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
-                     .orderBy('purchase_order.dateCreated', 'DESC')
-                     .cache(6000)
-                     .getMany();
-                 
-                     this.apiResponseService.SuccessResponse(
-                    `${response.length} purcahse info found`,
-                    HttpStatus.OK, response);
-                  break; 
-               } 
-               case PurchaseSearchType.logedInUser: { 
-                  
-                  const response =  await this.purchaseOrderRepository
+               const begin=searchparameter.supplierSearch.startDate;
+               const end=searchparameter.supplierSearch.endDate;
+               const response =  await this.purchaseOrderRepository
                   .createQueryBuilder("purchase_order")
                   .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
                   .leftJoinAndSelect("orderitem.product", "product")
                   .innerJoinAndSelect("purchase_order.supplier", "supplier")
-                  .where('purchase_order.createdby  :userid', { userid: email})
+                  .where('purchase_order.supplier.id = :id', { id: searchparameter.supplierSearch.supplierId})
+                  .andWhere('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
                   .orderBy('purchase_order.dateCreated', 'DESC')
-                  .take(20)
                   .cache(6000)
                   .getMany();
-   
-                   this.apiResponseService.SuccessResponse(
+
+                  return this.apiResponseService.SuccessResponse(
                      `${response.length} purcahse info found`,
                      HttpStatus.OK, response);
+               
+            }
+            if(searchparameter.searchtype==PurchaseSearchType.default){
 
-                  break; 
-               } 
-               default: { 
+               const response =  await this.purchaseOrderRepository
+               .createQueryBuilder("purchase_order")
+               .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
+               .leftJoinAndSelect("orderitem.product", "product")
+               .innerJoinAndSelect("purchase_order.supplier", "supplier")
+               .orderBy('purchase_order.dateCreated', 'DESC')
+               .take(20)
+               .cache(6000)
+               .getMany();
 
-                  const response =  await this.purchaseOrderRepository
+                return this.apiResponseService.SuccessResponse(
+                  `${response.length} purcahse info found`,
+                  HttpStatus.OK, response);
+            }
+            if(searchparameter.searchtype==PurchaseSearchType.DateRangeSearch){
+
+               const begin=searchparameter.supplierSearch.startDate;
+               const end=searchparameter.supplierSearch.endDate;
+               const response =  await this.purchaseOrderRepository
                   .createQueryBuilder("purchase_order")
                   .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
                   .leftJoinAndSelect("orderitem.product", "product")
                   .innerJoinAndSelect("purchase_order.supplier", "supplier")
+                  .where('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
                   .orderBy('purchase_order.dateCreated', 'DESC')
-                  .take(20)
                   .cache(6000)
                   .getMany();
-   
-                   this.apiResponseService.SuccessResponse(
-                     `${response.length} purcahse info found`,
-                     HttpStatus.OK, response);
+              
+                  return this.apiResponseService.SuccessResponse(
+                 `${response.length} purcahse info found`,
+                 HttpStatus.OK, response);
+            }
+            if(searchparameter.searchtype==PurchaseSearchType.logedInUser){
 
-                  break; 
-               } 
+               const response =  await this.purchaseOrderRepository
+               .createQueryBuilder("purchase_order")
+               .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
+               .leftJoinAndSelect("orderitem.product", "product")
+               .innerJoinAndSelect("purchase_order.supplier", "supplier")
+               .where('purchase_order.createdby  :userid', { userid: email})
+               .orderBy('purchase_order.dateCreated', 'DESC')
+               .take(20)
+               .cache(6000)
+               .getMany();
+
+                return this.apiResponseService.SuccessResponse(
+                  `${response.length} purcahse info found`,
+                  HttpStatus.OK, response);
             }
             
-         
+
+          
          }
          return await this.payloadService.badRequestErrorMessage(validation);
       }
