@@ -1,5 +1,5 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import {CreatePurchaseOrderDto } from '../../../app-Dto/merchant/purcahseorder.dto';
+import {CreatePurchaseOrderDto, ApprovePurchaseOrderDto } from '../../../app-Dto/merchant/purcahseorder.dto';
 import { Business, BusinessLocation } from '../../../entities/business.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
@@ -17,6 +17,7 @@ import { Warehouse } from '../../../entities/warehouse.entity';
 
 @Injectable()
 export class PurchaseorderService {
+   
   
    constructor(@InjectRepository(PurchaseOrder) private readonly purchaseOrderRepository: Repository<PurchaseOrder>,
       @InjectRepository(Supplier) private readonly supplierRepository: Repository<Supplier>,
@@ -75,6 +76,8 @@ export class PurchaseorderService {
             purchaseorder.fiscalyear = null;
             purchaseorder.invoiceNumber=uuidv4();
             purchaseorder.transactionstatusId = TransactionStatusEnum.Created;
+            var type: TransactionStatusEnum =  purchaseorder.transactionstatusId;
+            purchaseorder.transactionstatus=TransactionStatusEnum[type]
             purchaseorder.raisedlocation = await this.businesslocationRepository.findOne({ where: { business: business, id: purchaseorderlocationId } });
             purchaseorder.doctypeId = DocType.PurchaseOrder;
             purchaseorder.isDisabled = false;
@@ -126,7 +129,6 @@ export class PurchaseorderService {
                  itemp.product=product;
                  itemp.ctnqty=item.ctnquanity;
                  itemp.unitqty=item.unitquantity;
-               
                  itemp.retailcost=item.retailcost;
                  itemp.wholesalecost=item.wholesalecost;
                  itemp.linetotalretailCost=(item.retailcost*itemp.unitqty);
@@ -156,70 +158,94 @@ export class PurchaseorderService {
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
    }
-   async getpurchaseorders(searchparameter: SearchParametersDto, business: Business,businesslocation: BusinessLocation):Promise<any> {
+   async getpurchaseorders(searchparameter: SearchParametersDto,email:string):Promise<any> {
     try{
 
         
          const validation=await this.payloadService.validateGetPurchaseParametersAsync(searchparameter);
          if(validation.IsValid){
 
-            
-             if(searchparameter.searchtype===PurchaseSearchType.SupplierSearch){
+            switch(searchparameter.searchtype)
+             { 
+               case PurchaseSearchType.SupplierSearch: { 
 
-                const begin=searchparameter.supplierSearch.startDate;
-                const end=searchparameter.supplierSearch.endDate;
-                const response =  await this.purchaseOrderRepository
-               .createQueryBuilder("purchase_order")
-               .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
-               .leftJoinAndSelect("orderitem.product", "product")
-               .innerJoinAndSelect("purchase_order.supplier", "supplier")
-               .where('purchase_order.supplier.id = :id', { id: searchparameter.supplierSearch.supplierId})
-               .andWhere('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
-               .cache(6000)
-               .getMany();
-               
-               return this.apiResponseService.SuccessResponse(
-                  `${response.length} purcahse info found`,
-                  HttpStatus.OK, response);
-               
+                  const begin=searchparameter.supplierSearch.startDate;
+                  const end=searchparameter.supplierSearch.endDate;
+                  const response =  await this.purchaseOrderRepository
+                     .createQueryBuilder("purchase_order")
+                     .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
+                     .leftJoinAndSelect("orderitem.product", "product")
+                     .innerJoinAndSelect("purchase_order.supplier", "supplier")
+                     .where('purchase_order.supplier.id = :id', { id: searchparameter.supplierSearch.supplierId})
+                     .andWhere('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
+                     .orderBy('purchase_order.dateCreated', 'DESC')
+                     .cache(6000)
+                     .getMany();
+
+                     this.apiResponseService.SuccessResponse(
+                        `${response.length} purcahse info found`,
+                        HttpStatus.OK, response);
+
+                  break; 
+               } 
+               case PurchaseSearchType.DateRangeSearch: { 
+
+                  const begin=searchparameter.supplierSearch.startDate;
+                  const end=searchparameter.supplierSearch.endDate;
+                  const response =  await this.purchaseOrderRepository
+                     .createQueryBuilder("purchase_order")
+                     .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
+                     .leftJoinAndSelect("orderitem.product", "product")
+                     .innerJoinAndSelect("purchase_order.supplier", "supplier")
+                     .where('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
+                     .orderBy('purchase_order.dateCreated', 'DESC')
+                     .cache(6000)
+                     .getMany();
+                 
+                     this.apiResponseService.SuccessResponse(
+                    `${response.length} purcahse info found`,
+                    HttpStatus.OK, response);
+                  break; 
+               } 
+               case PurchaseSearchType.logedInUser: { 
                   
-             }
-             if(searchparameter.searchtype===PurchaseSearchType.DateRangeSearch){
-
-               const begin=searchparameter.supplierSearch.startDate;
-               const end=searchparameter.supplierSearch.endDate;
-               const response =  await this.purchaseOrderRepository
+                  const response =  await this.purchaseOrderRepository
                   .createQueryBuilder("purchase_order")
                   .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
                   .leftJoinAndSelect("orderitem.product", "product")
                   .innerJoinAndSelect("purchase_order.supplier", "supplier")
-                  .where('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
+                  .where('purchase_order.createdby  :userid', { userid: email})
+                  .orderBy('purchase_order.dateCreated', 'DESC')
+                  .take(20)
                   .cache(6000)
                   .getMany();
-              
-              return this.apiResponseService.SuccessResponse(
-                 `${response.length} purcahse info found`,
-                 HttpStatus.OK, response);
-               
-                  
-             }
-             else if(searchparameter.searchtype===PurchaseSearchType.default){
-                
-               const response =  await this.purchaseOrderRepository
-               .createQueryBuilder("purchase_order")
-               .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
-               .leftJoinAndSelect("orderitem.product", "product")
-               .innerJoinAndSelect("purchase_order.supplier", "supplier")
-               .orderBy('purchase_order.dateCreated', 'DESC')
-               .take(20)
-               .cache(6000)
-               .getMany();
+   
+                   this.apiResponseService.SuccessResponse(
+                     `${response.length} purcahse info found`,
+                     HttpStatus.OK, response);
 
-               return this.apiResponseService.SuccessResponse(
-                  `${response.length} purcahse info found`,
-                  HttpStatus.OK, response);
-               
-             }
+                  break; 
+               } 
+               default: { 
+
+                  const response =  await this.purchaseOrderRepository
+                  .createQueryBuilder("purchase_order")
+                  .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
+                  .leftJoinAndSelect("orderitem.product", "product")
+                  .innerJoinAndSelect("purchase_order.supplier", "supplier")
+                  .orderBy('purchase_order.dateCreated', 'DESC')
+                  .take(20)
+                  .cache(6000)
+                  .getMany();
+   
+                   this.apiResponseService.SuccessResponse(
+                     `${response.length} purcahse info found`,
+                     HttpStatus.OK, response);
+
+                  break; 
+               } 
+            }
+            
          
          }
          return await this.payloadService.badRequestErrorMessage(validation);
@@ -234,5 +260,47 @@ export class PurchaseorderService {
             HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
+   async approvePurchaseOrder(model: ApprovePurchaseOrderDto, email: string):Promise<any> 
+   {
+      try{
+         const validation=await this.payloadService.validateConfirmPurchaseOrderAsync(model);
+         if(validation.IsValid){
 
+            const purchase=await this.purchaseOrderRepository.findOne({where:{id:model.purchaseorderId,transactionstatus:TransactionStatusEnum.Created}});
+            if(purchase){
+               
+               if(model.status){
+                  var type: TransactionStatusEnum =  TransactionStatusEnum.Approved;
+                  purchase.transactionstatus=TransactionStatusEnum[type]
+                  purchase.transactionstatusId=TransactionStatusEnum.Approved;
+               }
+               else{
+                  var type: TransactionStatusEnum =  TransactionStatusEnum.Rejected;
+                  purchase.transactionstatus=TransactionStatusEnum[type]
+                  purchase.transactionstatusId=TransactionStatusEnum.Rejected;
+               }
+               purchase.comments=model.comment;
+               purchase.updatedby=email;
+               await this.purchaseOrderRepository.save(purchase);
+               return this.apiResponseService.SuccessResponse(
+                  `Purshase order status has been changed`,
+                  HttpStatus.OK, purchase);
+            }
+            return this.apiResponseService.FailedBadRequestResponse(
+               `invalid purchase order id or purchase order status has changed`,
+               HttpStatus.BAD_REQUEST, '');
+
+         }
+         return await this.payloadService.badRequestErrorMessage(validation);
+      }
+      catch (error) {
+         console.error('getpurchaseorders Error:',error.message);
+         Logger.error(error);
+         return new HttpException({
+            message: 'Process error while executing operation:',
+            code: 500, status: false
+         },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
 }

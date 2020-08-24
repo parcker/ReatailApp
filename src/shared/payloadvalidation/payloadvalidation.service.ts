@@ -8,7 +8,7 @@ import { promises } from 'dns';
 import { CreatCategoryDto, CreatSubCategoryDto } from '../../app-Dto/merchant/category.dto';
 import { CreatProductDto, UpdateProductDto } from '../../app-Dto/merchant/product.dto';
 import { CreatCustomerDto, UpdateCustomerDto, CreatSupplierDto } from '../../app-Dto/merchant/partner.dto';
-import { CreatePurchaseOrderDto, PurchaseOrderItemDto } from '../../app-Dto/merchant/purcahseorder.dto';
+import { CreatePurchaseOrderDto, PurchaseOrderItemDto, ApprovePurchaseOrderDto } from '../../app-Dto/merchant/purcahseorder.dto';
 import { CreateUserDto } from '../../app-Dto/usermgr/user.dto';
 import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/warehouse.dto';
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
@@ -327,12 +327,22 @@ export class PayloadvalidationService {
       
         .If(m => m.searchtype===PurchaseSearchType.DateRangeSearch, validator => validator
             .NotNull(m => m.daterangeSearch.endDate, "Should not be null", "SearchParametersDto.endDate.Null")
-            .IsDateOnOrAfter(m => m.daterangeSearch.endDate, new Date(), "Should be on or after today's date", "SearchParametersDto.endDate.Invalid")
+           // .IsDateOnOrAfter(m => m.daterangeSearch.endDate, new Date(), "Should be on or after today's date", "SearchParametersDto.endDate.Invalid")
             .NotNull(m => m.daterangeSearch.startDate, "Should not be null", "SearchParametersDto.startDate.Null")
-            .IsDateOnOrAfter(m => m.daterangeSearch.startDate, new Date(), "Should be on or after today's date", "SearchParametersDto.startDate.Invalid")
+            //.IsDateOnOrAfter(m => m.daterangeSearch.startDate, new Date(), "Should be on or after today's date", "SearchParametersDto.startDate.Invalid")
         .ToResult())
 
 
+        .ToResult();
+
+    };
+    async validateConfirmPurchaseOrderAsync(model: ApprovePurchaseOrderDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateConfirmPurchaseOrderRules);
+
+    };
+    validateConfirmPurchaseOrderRules = (validator: IValidator<ApprovePurchaseOrderDto>): ValidationResult => {
+        return validator
+           .IsNumberGreaterThan(m => m.purchaseorderId,0,"Invalid Purcchase id","ApprovePurchaseOrderDto.purchaseorderId.Invalid")
         .ToResult();
 
     };
