@@ -62,13 +62,10 @@ export enum ApplicationBundles
 export enum TransactionStatusEnum
 {
     Created = 1,
-    OnHold = 2,
-    Open = 3,
+    Approved = 2,
+    Rejected = 3,
     Closed = 4,
-    PartialInvoice = 5,
-    Unpaid = 6,
-    PartialPayment = 7,
-    PartialTransferIn = 7
+   
 
 }
 export enum DocType

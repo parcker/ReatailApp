@@ -1,5 +1,6 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
+import { TransactionStatusEnum } from "../../enums/settings.enum";
 
 export class PurchaseOrderItemDto{
 
@@ -48,4 +49,17 @@ export class CreatePurchaseOrderDto{
     @ApiModelProperty({ type: [PurchaseOrderItemDto] })
     @Type(() => PurchaseOrderItemDto)
     purchaseItems:PurchaseOrderItemDto[]
+}
+export class ApprovePurchaseOrderDto{
+
+    @ApiModelProperty({ required: true})
+    public purchaseorderId: number;
+
+    @ApiModelProperty()
+    status: boolean;
+
+    @ApiModelProperty()
+    comment?: string;
+   
+  
 }

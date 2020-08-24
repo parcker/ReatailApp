@@ -27,6 +27,12 @@ export class PurchaseOrder extends BaseEntityClass {
     @Column()
     transactionstatusId: number;
 
+    @Column({ nullable: true})
+    transactionstatus: string;
+
+    @Column({ nullable: true})
+    comments?: string;
+
     @Column()
     doctypeId: number;
 

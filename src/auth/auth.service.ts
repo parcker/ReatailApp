@@ -106,7 +106,7 @@ export class AuthService {
     private async createToken(user: User) {
       
         var type: UserType = user.userType;
-        console.log(UserType[type]); //Edit
+       
         const data = {
             email: user.email,
             firstName: user.firstName,
