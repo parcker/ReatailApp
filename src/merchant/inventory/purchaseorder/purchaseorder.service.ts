@@ -93,6 +93,7 @@ export class PurchaseorderService {
             if(response){
               
                const itemResponse=this.postpurchaseitem(model,createdby,purchaseorder);
+            
                return this.apiResponseService.SuccessResponse(
                   `Purshase order has been created and activated`,
                   HttpStatus.OK, response);
@@ -114,20 +115,18 @@ export class PurchaseorderService {
    async postpurchaseitem(model:CreatePurchaseOrderDto,createdby:string , purchaseOrder:PurchaseOrder):Promise<any>{
    try{
             
+             
              let totalcost=0;
              let saveitem=[];
-             
+             purchaseOrder.orderitem=[];
              for (let index = 0; index < model.purchaseItems.length; index++) 
              {
-                 
+                
                  const item = model.purchaseItems[index];
                  const product= await this.productRepository.findOne({where:{id:item.productId,isDisabled:false}});
-                 if(!product){
-                    continue;
-                 }
                  let itemp=new OrderItem();
                  itemp.product=product;
-                 itemp.ctnqty=item.ctnquanity;
+                 itemp.ctnqty=item.ctnquantity;
                  itemp.unitqty=item.unitquantity;
                  itemp.retailcost=item.retailcost;
                  itemp.wholesalecost=item.wholesalecost;
@@ -136,12 +135,12 @@ export class PurchaseorderService {
                  itemp.createdby=createdby;
                  itemp.purchaseorder=purchaseOrder;
                  itemp.isDisabled=false;
-            
-                 itemp.updatedby=''
-                 const response= await this.purchaseitemRepository.save(itemp);
-                 saveitem.push({response})
+                 itemp.updatedby =''
+                 purchaseOrder.orderitem.push(itemp);
 
              }
+            
+             const response= await this.purchaseitemRepository.save(purchaseOrder.orderitem);
              purchaseOrder.totalcostprice=totalcost;
              await this.purchaseOrderRepository.save(purchaseOrder);
              return this.apiResponseService.SuccessResponse(
@@ -228,7 +227,6 @@ export class PurchaseorderService {
                .innerJoinAndSelect("purchase_order.supplier", "supplier")
                .where('purchase_order.createdby  :userid', { userid: email})
                .orderBy('purchase_order.dateCreated', 'DESC')
-               .take(20)
                .cache(6000)
                .getMany();
 

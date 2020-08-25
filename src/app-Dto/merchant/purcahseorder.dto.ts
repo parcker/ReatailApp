@@ -11,7 +11,7 @@ export class PurchaseOrderItemDto{
     public unitquantity: number;
 
     @ApiModelProperty({ required: true})
-    public ctnquanity: number;
+    public ctnquantity: number;
 
     @ApiModelProperty({ required: true})
     public retailcost: number;
