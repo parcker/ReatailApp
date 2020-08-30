@@ -62,7 +62,7 @@ export class PurchaseorderService {
 
             if(model.invoiceNumber.length>0){
 
-               console.log('Checking invoice');
+               
                const duplicatecheck=await this.purchaseOrderRepository.findOne({where:{inputedinvoiceNumber:model.invoiceNumber}});
                if(duplicatecheck){
 
@@ -172,9 +172,12 @@ export class PurchaseorderService {
                   .createQueryBuilder("purchase_order")
                   .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
                   .leftJoinAndSelect("orderitem.product", "product")
-                  .innerJoinAndSelect("purchase_order.supplier", "supplier")
+                  .leftJoinAndSelect("purchase_order.supplier", "supplier")
+                  .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
+                  .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                   .where('purchase_order.supplier.id = :id', { id: searchparameter.supplierSearch.supplierId})
                   .andWhere('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
+                  .andWhere('purchase_order.orderitem.isDisabled :status', { status:false})
                   .orderBy('purchase_order.dateCreated', 'DESC')
                   .cache(6000)
                   .getMany();
@@ -190,7 +193,10 @@ export class PurchaseorderService {
                .createQueryBuilder("purchase_order")
                .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
                .leftJoinAndSelect("orderitem.product", "product")
-               .innerJoinAndSelect("purchase_order.supplier", "supplier")
+               .leftJoinAndSelect("purchase_order.supplier", "supplier")
+               .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
+               .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
+               .where('purchase_order.orderitem.isDisabled :status', { status:false})
                .orderBy('purchase_order.dateCreated', 'DESC')
                .take(20)
                .cache(6000)
@@ -208,8 +214,11 @@ export class PurchaseorderService {
                   .createQueryBuilder("purchase_order")
                   .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
                   .leftJoinAndSelect("orderitem.product", "product")
-                  .innerJoinAndSelect("purchase_order.supplier", "supplier")
+                  .leftJoinAndSelect("purchase_order.supplier", "supplier")
+                  .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
+                  .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                   .where('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
+                  .andWhere('purchase_order.orderitem.isDisabled :status', { status:false})
                   .orderBy('purchase_order.dateCreated', 'DESC')
                   .cache(6000)
                   .getMany();
@@ -224,8 +233,11 @@ export class PurchaseorderService {
                .createQueryBuilder("purchase_order")
                .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
                .leftJoinAndSelect("orderitem.product", "product")
-               .innerJoinAndSelect("purchase_order.supplier", "supplier")
+               .leftJoinAndSelect("purchase_order.supplier", "supplier")
+               .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
+               .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                .where('purchase_order.createdby  :userid', { userid: email})
+               .andWhere('purchase_order.orderitem.isDisabled :status', { status:false})
                .orderBy('purchase_order.dateCreated', 'DESC')
                .cache(6000)
                .getMany();
@@ -293,4 +305,109 @@ export class PurchaseorderService {
             HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
+   
+   async updatePurchaseOrder(model: CreatePurchaseOrderDto,purshaseId:number,updatedby:string,business: Business):Promise<any>{
+
+      try{
+  
+         let validationResult = await this.payloadService.validatePurchaseOrderHeaderAsync(model);
+         if (validationResult.IsValid) {
+
+            const purchaseorder=await this.purchaseOrderRepository.findOne({where:{id:purshaseId,business:business}});
+            if (!purchaseorder) {
+   
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `invalid or Purchase order Id , no purchase order  data found`,
+                  HttpStatus.BAD_REQUEST, '');
+            }
+            if(purchaseorder.transactionstatusId!==TransactionStatusEnum.Created){
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `Purcahse order status has changed , update is not allowed`,
+                  HttpStatus.BAD_REQUEST, '');
+            }
+            let warehouse = await this.warehouseRepository.findOne({ where:{id: model.warehouseId,isDisabled:false}});
+            if (!warehouse) {
+ 
+               return this.apiResponseService.FailedBadRequestResponse(
+                  `invalid warehouse Id , no warehouse data found`,
+                  HttpStatus.BAD_REQUEST, '');
+            }
+            if(purchaseorder.warehouse.id!==model.warehouseId){
+ 
+                let warehouse = await this.warehouseRepository.findOne({ where:{id: model.warehouseId,isDisabled:false}});
+                if (!warehouse) {
+ 
+                   return this.apiResponseService.FailedBadRequestResponse(
+                      `invalid warehouse Id , no warehouse data found`,
+                      HttpStatus.BAD_REQUEST, '');
+                }
+                purchaseorder.warehouse=warehouse;
+            }
+            if(purchaseorder.supplier.id!==model.supplierId){
+ 
+                let supplierinfo = await this.supplierRepository.findOne({ where: { id: model.supplierId, business: business, isDisabled: false } });
+                if (!supplierinfo) {
+ 
+                   return this.apiResponseService.FailedBadRequestResponse(
+                      `invalid or supplier Id , no supplier data found`,
+                      HttpStatus.BAD_REQUEST, '');
+                }
+                purchaseorder.supplier=supplierinfo;
+            }
+            purchaseorder.dueDate = model.duedate;
+            const purchaseitems=await this.purchaseitemRepository.find({where:{purchaseorder:purchaseorder}});
+            if(purchaseitems){
+ 
+ 
+                for (let index = 0; index < purchaseitems.length; index++) 
+                {
+                     
+                     const matchproduct = model.purchaseItems.find(a=>a.productId===purchaseitems[index].id);
+                     if(matchproduct){
+                         
+                         purchaseitems[index].ctnqty=matchproduct.ctnquantity;
+                         purchaseitems[index].unitqty=matchproduct.unitquantity;
+                         purchaseitems[index].retailcost=matchproduct.retailcost;
+                         purchaseitems[index].wholesalecost=matchproduct.wholesalecost;
+                         purchaseitems[index].linetotalretailCost=(matchproduct.retailcost*purchaseitems[index].unitqty);
+                         purchaseitems[index].linetotalwholesaleCost=(matchproduct.wholesalecost*purchaseitems[index].ctnqty);
+                         purchaseitems[index].updatedby =updatedby;
+                        
+                     }
+                     else{
+ 
+                      purchaseitems[index].isDisabled;
+                       
+                     }
+                   
+                }
+                await this.purchaseitemRepository.save(purchaseitems);
+                const response = await this.purchaseOrderRepository.save(purchaseorder);
+                return this.apiResponseService.SuccessResponse(
+                  `Purshase order has been updated`,
+                  HttpStatus.OK, response);
+            }
+            return this.apiResponseService.SuccessResponse(
+               ` Error occured while trying to update purshase order!!`,
+               HttpStatus.INTERNAL_SERVER_ERROR, '');
+           
+         }
+         return await this.payloadService.badRequestErrorMessage(validationResult);
+          
+        }
+        catch (error) {
+           console.error('updatePurchaseOrder Error:',error.message);
+           Logger.error(error);
+           return new HttpException({
+              message: 'Process error while executing operation:',
+              code: 500, status: false
+           },
+              HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+       
+   }
+  
+  
+
 }
+
