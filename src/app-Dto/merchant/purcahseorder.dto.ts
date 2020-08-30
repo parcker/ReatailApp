@@ -50,6 +50,9 @@ export class CreatePurchaseOrderDto{
     @Type(() => PurchaseOrderItemDto)
     purchaseItems:PurchaseOrderItemDto[]
 }
+
+
+
 export class ApprovePurchaseOrderDto{
 
     @ApiModelProperty({ required: true})
