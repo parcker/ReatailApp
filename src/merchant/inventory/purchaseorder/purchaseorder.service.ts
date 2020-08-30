@@ -177,7 +177,7 @@ export class PurchaseorderService {
                   .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                   .where('purchase_order.supplier.id = :id', { id: searchparameter.supplierSearch.supplierId})
                   .andWhere('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
-                  .andWhere('purchase_order.orderitem.isDisabled :status', { status:false})
+                  .andWhere('orderitem.isDisabled = :status', { status:false})
                   .orderBy('purchase_order.dateCreated', 'DESC')
                   .cache(6000)
                   .getMany();
@@ -196,7 +196,7 @@ export class PurchaseorderService {
                .leftJoinAndSelect("purchase_order.supplier", "supplier")
                .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
-               .where('purchase_order.orderitem.isDisabled :status', { status:false})
+               .where('orderitem.isDisabled = :status', { status:false})
                .orderBy('purchase_order.dateCreated', 'DESC')
                .take(20)
                .cache(6000)
@@ -218,7 +218,7 @@ export class PurchaseorderService {
                   .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                   .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                   .where('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
-                  .andWhere('purchase_order.orderitem.isDisabled :status', { status:false})
+                  .andWhere('orderitem.isDisabled = :status', { status:false})
                   .orderBy('purchase_order.dateCreated', 'DESC')
                   .cache(6000)
                   .getMany();
@@ -237,7 +237,7 @@ export class PurchaseorderService {
                .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                .where('purchase_order.createdby  :userid', { userid: email})
-               .andWhere('purchase_order.orderitem.isDisabled :status', { status:false})
+               .andWhere('orderitem.isDisabled = :status', { status:false})
                .orderBy('purchase_order.dateCreated', 'DESC')
                .cache(6000)
                .getMany();
