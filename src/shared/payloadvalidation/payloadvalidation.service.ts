@@ -331,22 +331,8 @@ export class PayloadvalidationService {
             .NotNull(m => m.daterangeSearch.startDate, "Should not be null", "SearchParametersDto.startDate.Null")
             //.IsDateOnOrAfter(m => m.daterangeSearch.startDate, new Date(), "Should be on or after today's date", "SearchParametersDto.startDate.Invalid")
         .ToResult())
-
-
-        .ToResult();
+    .ToResult();
 
     };
-    async validateConfirmPurchaseOrderAsync(model: ApprovePurchaseOrderDto): Promise<ValidationResult> {
-        return await new Validator(model).ValidateAsync(this.validateConfirmPurchaseOrderRules);
-
-    };
-    validateConfirmPurchaseOrderRules = (validator: IValidator<ApprovePurchaseOrderDto>): ValidationResult => {
-        return validator
-           .IsNumberGreaterThan(m => m.purchaseorderId,0,"Invalid Purcchase id","ApprovePurchaseOrderDto.purchaseorderId.Invalid")
-        .ToResult();
-
-    };
-
-
 
 }
