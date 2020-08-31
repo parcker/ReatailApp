@@ -265,35 +265,29 @@ export class PurchaseorderService {
    async approvePurchaseOrder(model: ApprovePurchaseOrderDto, email: string):Promise<any> 
    {
       try{
-         const validation=await this.payloadService.validateConfirmPurchaseOrderAsync(model);
-         if(validation.IsValid){
-
-            const purchase=await this.purchaseOrderRepository.findOne({where:{id:model.purchaseorderId,transactionstatus:TransactionStatusEnum.Created}});
-            if(purchase){
-               
-               if(model.status){
-                  var type: TransactionStatusEnum =  TransactionStatusEnum.Approved;
-                  purchase.transactionstatus=TransactionStatusEnum[type]
-                  purchase.transactionstatusId=TransactionStatusEnum.Approved;
-               }
-               else{
-                  var type: TransactionStatusEnum =  TransactionStatusEnum.Rejected;
-                  purchase.transactionstatus=TransactionStatusEnum[type]
-                  purchase.transactionstatusId=TransactionStatusEnum.Rejected;
-               }
-               purchase.comments=model.comment;
-               purchase.updatedby=email;
-               await this.purchaseOrderRepository.save(purchase);
-               return this.apiResponseService.SuccessResponse(
-                  `Purshase order status has been changed`,
-                  HttpStatus.OK, purchase);
+         const purchase=await this.purchaseOrderRepository.findOne({where:{id:model.purchaseorderId,transactionstatusId:TransactionStatusEnum.Created}});
+         if(purchase){
+            
+            if(model.status){
+               var type: TransactionStatusEnum =  TransactionStatusEnum.Approved;
+               purchase.transactionstatus=TransactionStatusEnum[type]
+               purchase.transactionstatusId=TransactionStatusEnum.Approved;
             }
-            return this.apiResponseService.FailedBadRequestResponse(
-               `invalid purchase order id or purchase order status has changed`,
-               HttpStatus.BAD_REQUEST, '');
-
+            else{
+               var type: TransactionStatusEnum =  TransactionStatusEnum.Rejected;
+               purchase.transactionstatus=TransactionStatusEnum[type]
+               purchase.transactionstatusId=TransactionStatusEnum.Rejected;
+            }
+            purchase.comments=model.comment;
+            purchase.updatedby=email;
+            await this.purchaseOrderRepository.save(purchase);
+            return this.apiResponseService.SuccessResponse(
+               `Purshase order status has been changed`,
+               HttpStatus.OK, purchase);
          }
-         return await this.payloadService.badRequestErrorMessage(validation);
+         return this.apiResponseService.FailedBadRequestResponse(
+            `invalid purchase order id or purchase order status has changed`,
+            HttpStatus.BAD_REQUEST, '');
       }
       catch (error) {
          console.error('getpurchaseorders Error:',error.message);
