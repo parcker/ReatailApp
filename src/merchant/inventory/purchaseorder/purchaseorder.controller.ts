@@ -32,11 +32,11 @@ export class PurchaseorderController {
     @UseGuards(AuthGuard('jwt'))
      async getpurchaseOrders(@Body() model: SearchParametersDto, @Request() req, @Res() res) {
 
-        const response = await this.purchaseorderservice.getpurchaseorders(model,req.user.email);
+        const response = await this.purchaseorderservice.getpurchaseorders(model,req.user.email,req.user.business);
         return res.status(response.code).json(response);
 
     }
-    @Post(':purchaseId/creatpurchaseOrder')
+    @Post(':purchaseId/updatepurchaseOrder')
     @UseGuards(AuthGuard('jwt'))
      async UpdatepurchaseOrder(@Param('purchaseId') purchaseId:number,@Body() model: CreatePurchaseOrderDto, @Request() req, @Res() res) {
 
