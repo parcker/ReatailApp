@@ -177,6 +177,9 @@ export class PayloadvalidationService {
                 .IsGuid(m => m.productId, "Invalid productId id ", "PurchaseOrderItemDto.productId.Invalid")
                 .NotEmpty(m => m.productId, "Should not be empty", "PurchaseOrderItemDto.productId.Empty")
                 .NotNull(m => m.productId, "Should not be null", "PurchaseOrderItemDto.productId.Null")
+               // .IsNumberLessThanOrEqual(m => m.ctnquantity,0, "PurchaseOrderItemDto.ctnquantity.Null")
+                //.IsNumberLessThanOrEqual(m => m.unitquantity, 0, "PurchaseOrderItemDto.unitquantity.Null")
+                
              .ToResult();
          };
     validatePurchaseOrderHeaderRules = (validator: IValidator<CreatePurchaseOrderDto>): ValidationResult => {

@@ -123,6 +123,7 @@ export class PurchaseorderService {
              {
                 
                  const item = model.purchaseItems[index];
+                // console.log('Looping =>',item,index)
                  const product= await this.productRepository.findOne({where:{id:item.productId,isDisabled:false}});
                  let itemp=new OrderItem();
                  itemp.product=product;
@@ -157,7 +158,7 @@ export class PurchaseorderService {
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
    }
-   async getpurchaseorders(searchparameter: SearchParametersDto,email:string):Promise<any> {
+   async getpurchaseorders(searchparameter: SearchParametersDto,email:string,business:Business):Promise<any> {
     try{
 
         
@@ -197,6 +198,7 @@ export class PurchaseorderService {
                .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                .where('orderitem.isDisabled = :status', { status:false})
+               //.andWhere("business.id= :a", { a: business.id})
                .orderBy('purchase_order.dateCreated', 'DESC')
                .take(20)
                .cache(6000)
@@ -303,11 +305,26 @@ export class PurchaseorderService {
    async updatePurchaseOrder(model: CreatePurchaseOrderDto,purshaseId:number,updatedby:string,business: Business):Promise<any>{
 
       try{
-  
+  1
          let validationResult = await this.payloadService.validatePurchaseOrderHeaderAsync(model);
          if (validationResult.IsValid) {
 
-            const purchaseorder=await this.purchaseOrderRepository.findOne({where:{id:purshaseId,business:business}});
+            
+            const purchaseorder =  await this.purchaseOrderRepository
+            .createQueryBuilder("purchase_order")
+            .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
+            .leftJoinAndSelect("orderitem.product", "product")
+            .leftJoinAndSelect("purchase_order.supplier", "supplier")
+            .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
+            .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
+            .leftJoin("purchase_order.business", "business")
+            .where("purchase_order.id= :id", { id: purshaseId})
+            .andWhere("business.id= :a", { a: business.id})
+            //.andWhere("orderitem.purchaseorder.id= :b", { b: purshaseId})
+            .orderBy('purchase_order.dateCreated', 'DESC')
+            .getOne();
+
+           
             if (!purchaseorder) {
    
                return this.apiResponseService.FailedBadRequestResponse(
@@ -316,16 +333,11 @@ export class PurchaseorderService {
             }
             if(purchaseorder.transactionstatusId!==TransactionStatusEnum.Created){
                return this.apiResponseService.FailedBadRequestResponse(
-                  `Purcahse order status has changed , update is not allowed`,
+                  `This Purcahse order can not be updated , status is ${purchaseorder.transactionstatus}`,
                   HttpStatus.BAD_REQUEST, '');
             }
-            let warehouse = await this.warehouseRepository.findOne({ where:{id: model.warehouseId,isDisabled:false}});
-            if (!warehouse) {
- 
-               return this.apiResponseService.FailedBadRequestResponse(
-                  `invalid warehouse Id , no warehouse data found`,
-                  HttpStatus.BAD_REQUEST, '');
-            }
+            
+           
             if(purchaseorder.warehouse.id!==model.warehouseId){
  
                 let warehouse = await this.warehouseRepository.findOne({ where:{id: model.warehouseId,isDisabled:false}});
@@ -337,6 +349,7 @@ export class PurchaseorderService {
                 }
                 purchaseorder.warehouse=warehouse;
             }
+            
             if(purchaseorder.supplier.id!==model.supplierId){
  
                 let supplierinfo = await this.supplierRepository.findOne({ where: { id: model.supplierId, business: business, isDisabled: false } });
@@ -349,43 +362,73 @@ export class PurchaseorderService {
                 purchaseorder.supplier=supplierinfo;
             }
             purchaseorder.dueDate = model.duedate;
-            const purchaseitems=await this.purchaseitemRepository.find({where:{purchaseorder:purchaseorder}});
-            if(purchaseitems){
- 
- 
-                for (let index = 0; index < purchaseitems.length; index++) 
-                {
-                     
-                     const matchproduct = model.purchaseItems.find(a=>a.productId===purchaseitems[index].id);
-                     if(matchproduct){
+         
+           // const purchaseitems=await this.purchaseitemRepository.find({where:{purchaseorder:purchaseorder}});
+           // console.error('updatePurchaseOrder ===>:',purchaseorder.orderitem);
+            if(purchaseorder.orderitem.length >0){
+
+
+               for (let index = 0; index < model.purchaseItems.length; index++) {
+
+                     const matchproduct = purchaseorder.orderitem.find(a=>a.product.id===model.purchaseItems[index].productId);
+                     if(!matchproduct){
+                        //Newlly added product
+                        const item = model.purchaseItems[index];
+                        console.error('NEw Product to Add ===>:',item);
+                        const product= await this.productRepository.findOne({where:{id:item.productId,isDisabled:false}});
+                        if(product===undefined){
+                          // console.error('NEw Product undefined ===>:',undefined);
+                           continue;
+                        }
+                       // console.error('NEw Product ===>:',product);
+                        let itemp=new OrderItem();
+                        itemp.product=product;
+                        itemp.ctnqty=item.ctnquantity;
+                        itemp.unitqty=item.unitquantity;
+                        itemp.retailcost=item.retailcost;
+                        itemp.wholesalecost=item.wholesalecost;
+                        itemp.linetotalretailCost=(item.retailcost*itemp.unitqty);
+                        itemp.linetotalwholesaleCost=(item.wholesalecost*itemp.ctnqty);
+                        itemp.createdby=updatedby;
+                        itemp.purchaseorder=purchaseorder;
+                        itemp.isDisabled=false;
+                        itemp.updatedby =''
+                        purchaseorder.orderitem.push(itemp)
+                     }
+
+               }
+      
+               for (let index = 0; index < purchaseorder.orderitem.length; index++){
+                  
+                  const matchproduct = model.purchaseItems.find(a=>a.productId===purchaseorder.orderitem[index].product.id  && purchaseorder.orderitem[index].isDisabled===false);
+                
+                  if(matchproduct){
                          
-                         purchaseitems[index].ctnqty=matchproduct.ctnquantity;
-                         purchaseitems[index].unitqty=matchproduct.unitquantity;
-                         purchaseitems[index].retailcost=matchproduct.retailcost;
-                         purchaseitems[index].wholesalecost=matchproduct.wholesalecost;
-                         purchaseitems[index].linetotalretailCost=(matchproduct.retailcost*purchaseitems[index].unitqty);
-                         purchaseitems[index].linetotalwholesaleCost=(matchproduct.wholesalecost*purchaseitems[index].ctnqty);
-                         purchaseitems[index].updatedby =updatedby;
-                        
-                     }
-                     else{
- 
-                      purchaseitems[index].isDisabled;
-                       
-                     }
+                     purchaseorder.orderitem[index].ctnqty=matchproduct.ctnquantity;
+                     purchaseorder.orderitem[index].unitqty=matchproduct.unitquantity;
+                     purchaseorder.orderitem[index].retailcost=matchproduct.retailcost;
+                     purchaseorder.orderitem[index].wholesalecost=matchproduct.wholesalecost;
+                     purchaseorder.orderitem[index].linetotalretailCost=(matchproduct.retailcost*purchaseorder.orderitem[index].unitqty);
+                     purchaseorder.orderitem[index].linetotalwholesaleCost=(matchproduct.wholesalecost*purchaseorder.orderitem[index].ctnqty);
+                     purchaseorder.orderitem[index].updatedby =updatedby;
+                    
+                 }
+                 else{
+                     console.error('Not In list ===>:',purchaseorder.orderitem[index].product); 
+                     purchaseorder.orderitem[index].isDisabled=true;
                    
-                }
-                await this.purchaseitemRepository.save(purchaseitems);
-                const response = await this.purchaseOrderRepository.save(purchaseorder);
-                return this.apiResponseService.SuccessResponse(
-                  `Purshase order has been updated`,
-                  HttpStatus.OK, response);
+                 }
+               }
+               await this.purchaseitemRepository.save(purchaseorder.orderitem);
+               await this.purchaseOrderRepository.save(purchaseorder);
+               return this.apiResponseService.SuccessResponse(
+               `Purshase order has been updated`,
+               HttpStatus.OK, '');
             }
-            return this.apiResponseService.SuccessResponse(
-               ` Error occured while trying to update purshase order!!`,
-               HttpStatus.INTERNAL_SERVER_ERROR, '');
-           
-         }
+            return this.apiResponseService.FailedBadRequestResponse(
+            `Purshase order errors `,
+            HttpStatus.INTERNAL_SERVER_ERROR, '');
+        }
          return await this.payloadService.badRequestErrorMessage(validationResult);
           
         }
