@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Body, Request, HttpStatus, Res, Param } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Request, HttpStatus, Res, Param, Put } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatePurchaseOrderDto, ApprovePurchaseOrderDto } from '../../../app-Dto/merchant/purcahseorder.dto';
 import { PurchaseorderService } from './purchaseorder.service';
@@ -27,11 +27,11 @@ export class PurchaseorderController {
 
 
     }
-    @Post('/convert')
+    @Put(':purchaseorderId/convert')
     @UseGuards(AuthGuard('jwt'))
-     async convert(@Param() purshaseorderId:number, @Request() req, @Res() res) {
+     async convert(@Param('purchaseorderId') purchaseorderId:number, @Request() req, @Res() res) {
 
-        const response = await this.purchaseorderservice.convertToGoodsRecievedNote(purshaseorderId, req.user.email,req.user.business);
+        const response = await this.purchaseorderservice.convertToGoodsRecievedNote(purchaseorderId, req.user.email,req.user.business);
         return res.status(response.code).json(response);
 
 
