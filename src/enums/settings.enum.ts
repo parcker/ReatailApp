@@ -75,6 +75,7 @@ export enum DocType
     SalesOrder = 3,
     CashSalesInvoice = 4,
     CreditSaleInvoice = 5,
+    GoodsRecieveNote = 6,
 
 }
 export enum PurchaseSearchType

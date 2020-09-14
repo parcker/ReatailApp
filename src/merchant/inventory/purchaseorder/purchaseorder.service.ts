@@ -301,6 +301,34 @@ export class PurchaseorderService {
             HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
+
+   async convertToGoodsRecievedNote(purchaseorderId: number, email: string,business:Business):Promise<any> 
+   {
+      try{
+         const purchase=await this.purchaseOrderRepository.findOne({where:{id:purchaseorderId,transactionstatusId:TransactionStatusEnum.Approved,business:business}});
+         if(purchase){
+            
+            purchase.doctypeId=DocType.GoodsRecieveNote;
+            purchase.updatedby=email;
+            await this.purchaseOrderRepository.save(purchase);
+            return this.apiResponseService.SuccessResponse(
+               `Purshase order  has been converted`,
+               HttpStatus.OK, purchase);
+         }
+         return this.apiResponseService.FailedBadRequestResponse(
+            `invalid purchase order id or purchase order status has changed`,
+            HttpStatus.BAD_REQUEST, '');
+      }
+      catch (error) {
+         console.error('convertToGoodsRecievedNote Error:',error.message);
+         Logger.error(error);
+         return new HttpException({
+            message: 'Process error while executing operation:',
+            code: 500, status: false
+         },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
    
    async updatePurchaseOrder(model: CreatePurchaseOrderDto,purshaseId:number,updatedby:string,business: Business):Promise<any>{
 
@@ -443,7 +471,21 @@ export class PurchaseorderService {
         }
        
    }
-  
+   
+   async emailpurchaseOrder(purchaseOrderId:number,emailcontent:string):Promise<any>{
+      try{
+
+      }
+      catch (error) {
+      console.error('emailpurchaseOrder Error:',error.message);
+      Logger.error(error);
+      return new HttpException({
+         message: 'Process error while executing operation:',
+         code: 500, status: false
+      },
+         HttpStatus.INTERNAL_SERVER_ERROR);
+   }
+   }
   
 
 }
