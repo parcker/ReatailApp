@@ -29,7 +29,7 @@ export class PurchaseorderController {
     }
     @Put(':purchaseorderId/convert')
     @UseGuards(AuthGuard('jwt'))
-     async convert(@Param('purchaseorderId') purchaseorderId:number, @Request() req, @Res() res) {
+     async convertTogrn(@Param('purchaseorderId') purchaseorderId:number, @Request() req, @Res() res) {
 
         const response = await this.purchaseorderservice.convertToGoodsRecievedNote(purchaseorderId, req.user.email,req.user.business);
         return res.status(response.code).json(response);
