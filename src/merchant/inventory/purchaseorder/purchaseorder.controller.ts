@@ -27,6 +27,16 @@ export class PurchaseorderController {
 
 
     }
+    @Post('/convert')
+    @UseGuards(AuthGuard('jwt'))
+     async convert(@Param() purshaseorderId:number, @Request() req, @Res() res) {
+
+        const response = await this.purchaseorderservice.convertToGoodsRecievedNote(purshaseorderId, req.user.email,req.user.business);
+        return res.status(response.code).json(response);
+
+
+    }
+   
    
     @Post('/getpurchaseinfo')
     @UseGuards(AuthGuard('jwt'))
