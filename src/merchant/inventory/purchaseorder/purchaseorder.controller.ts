@@ -27,7 +27,7 @@ export class PurchaseorderController {
 
 
     }
-    @Put(':purchaseorderId/convertTogrn')
+    @Post(':purchaseorderId/convertTogrn')
     @UseGuards(AuthGuard('jwt'))
      async convertTogrn(@Param('purchaseorderId') purchaseorderId:number, @Request() req, @Res() res) {
 
@@ -36,7 +36,7 @@ export class PurchaseorderController {
 
 
     }
-    @Put(':purchaseorderId/sendPurchaseOrderAsEmail')
+    @Post(':purchaseorderId/sendPurchaseOrderAsEmail')
     @UseGuards(AuthGuard('jwt'))
      async sendPurchaseOrderAsEmail(@Param('purchaseorderId') purchaseorderId:number, @Request() req, @Res() res) {
 
