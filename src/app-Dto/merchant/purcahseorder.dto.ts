@@ -16,7 +16,7 @@ export class PurchaseOrderItemDto{
     @ApiModelProperty({ required: true})
     public retailcost: number;
 
-    @ApiModelProperty({ required: true})
+    @ApiModelProperty({ required: true}) 
     public wholesalecost: number;
     
     @ApiModelProperty({ required: true})

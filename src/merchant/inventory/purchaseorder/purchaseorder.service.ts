@@ -405,10 +405,10 @@ export class PurchaseorderService {
                         console.error('NEw Product to Add ===>:',item);
                         const product= await this.productRepository.findOne({where:{id:item.productId,isDisabled:false}});
                         if(product===undefined){
-                          // console.error('NEw Product undefined ===>:',undefined);
+                           console.error('NEw Product undefined ===>:',undefined);
                            continue;
                         }
-                       // console.error('NEw Product ===>:',product);
+                         console.error('NEw Product ===>:',product);
                         let itemp=new OrderItem();
                         itemp.product=product;
                         itemp.ctnqty=item.ctnquantity;
