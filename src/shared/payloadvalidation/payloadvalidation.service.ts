@@ -8,7 +8,7 @@ import { promises } from 'dns';
 import { CreatCategoryDto, CreatSubCategoryDto } from '../../app-Dto/merchant/category.dto';
 import { CreatProductDto, UpdateProductDto } from '../../app-Dto/merchant/product.dto';
 import { CreatCustomerDto, UpdateCustomerDto, CreatSupplierDto } from '../../app-Dto/merchant/partner.dto';
-import { CreatePurchaseOrderDto, PurchaseOrderItemDto, ApprovePurchaseOrderDto } from '../../app-Dto/merchant/purcahseorder.dto';
+import { CreatePurchaseOrderDto, PurchaseOrderItemDto, ApprovePurchaseOrderDto, GrnItemsDto, GrnSummaryDto } from '../../app-Dto/merchant/purcahseorder.dto';
 import { CreateUserDto } from '../../app-Dto/usermgr/user.dto';
 import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/warehouse.dto';
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
@@ -335,6 +335,31 @@ export class PayloadvalidationService {
             //.IsDateOnOrAfter(m => m.daterangeSearch.startDate, new Date(), "Should be on or after today's date", "SearchParametersDto.startDate.Invalid")
         .ToResult())
     .ToResult();
+
+    };
+
+    validateGrnRules =  (validator: IValidator<GrnItemsDto>) : ValidationResult => {  
+        return validator
+                .IsGuid(m => m.productid, "Invalid productId id ", "GrnItemsDto.productid.Invalid")
+                
+             .ToResult();
+    };
+    
+    validatePostGrnRules = (validator: IValidator<GrnSummaryDto>): ValidationResult => {
+            return validator
+               
+                .NotNull(m => m.purchaseorderid, "Should not be null", "GrnSummaryDto.purchaseorderid.Null")
+                //.IsNumberLessThan(m => m.purchaseorderid,0, "Invalid purchaseorderid ", "GrnSummaryDto.purchaseorderid.Invalid")
+                .If(m => m.purchaseItems != null && m.purchaseItems.length > 0, 
+                    validator => validator
+                                  .ForEach(m => m.purchaseItems, this.validateGrnRules)
+                          .ToResult())
+    
+                .ToResult();
+    
+    };
+    async validatePostGrnAsync(model: GrnSummaryDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validatePostGrnRules);
 
     };
 

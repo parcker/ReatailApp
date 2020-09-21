@@ -80,6 +80,12 @@ export class OrderItem extends BaseEntityClass {
     @Column()
     ctnqty: number;
 
+    @Column({default:0})
+    suppliedctnqty: number;
+
+    @Column({default:0})
+    parkinginfo: number;
+
     @Column()
     unitqty: number;
 

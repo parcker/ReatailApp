@@ -66,3 +66,26 @@ export class ApprovePurchaseOrderDto{
    
   
 }
+export class GrnItemsDto{
+
+    @ApiModelProperty({ required: true})
+    public productid: string;
+
+    @ApiModelProperty()
+    suppliedqty: number;
+  
+}
+export class GrnSummaryDto{
+
+    
+    @ApiModelProperty({ required: true})
+    public purchaseorderid: number;
+
+    @ApiModelProperty()
+    comment?: string;
+
+    @ApiModelProperty({ type: [GrnItemsDto] })
+    @Type(() => GrnItemsDto)
+    purchaseItems:GrnItemsDto[]
+  
+}

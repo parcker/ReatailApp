@@ -20,7 +20,9 @@ export class ProductConfiguration extends BaseEntityClass {
     public canbepurchased: boolean;
     @Column()
     public anypromo: boolean;
+
     @Index()
+   
     @ManyToOne(() => Tax)
     @JoinColumn()
     salestax?: Tax;

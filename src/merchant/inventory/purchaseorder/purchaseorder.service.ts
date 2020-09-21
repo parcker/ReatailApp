@@ -1,5 +1,5 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import {CreatePurchaseOrderDto, ApprovePurchaseOrderDto } from '../../../app-Dto/merchant/purcahseorder.dto';
+import {CreatePurchaseOrderDto, ApprovePurchaseOrderDto, GrnSummaryDto } from '../../../app-Dto/merchant/purcahseorder.dto';
 import { Business, BusinessLocation } from '../../../entities/business.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
@@ -14,6 +14,7 @@ import {TransactionStatusEnum, DocType, PurchaseSearchType } from '../../../enum
 import { Product } from '../../../entities/product.entity';
 import { SearchParametersDto } from '../../../app-Dto/merchant/searchparameters.dto';
 import { Warehouse } from '../../../entities/warehouse.entity';
+import { ProductConfiguration } from '../../../entities/productconfiguration.entity';
 
 @Injectable()
 export class PurchaseorderService {
@@ -124,11 +125,12 @@ export class PurchaseorderService {
                 
                  const item = model.purchaseItems[index];
                 // console.log('Looping =>',item,index)
-                 const product= await this.productRepository.findOne({where:{id:item.productId,isDisabled:false}});
+                 const product= await this.productRepository.findOne({where:{id:item.productId,isDisabled:false},relations:['product_configuration']});
                  let itemp=new OrderItem();
                  itemp.product=product;
                  itemp.ctnqty=item.ctnquantity;
                  itemp.unitqty=item.unitquantity;
+                 itemp.parkinginfo=product.productconfiguration.pack,
                  itemp.retailcost=item.retailcost;
                  itemp.wholesalecost=item.wholesalecost;
                  itemp.linetotalretailCost=(item.retailcost*itemp.unitqty);
@@ -280,7 +282,8 @@ export class PurchaseorderService {
                purchase.transactionstatus=TransactionStatusEnum[type]
                purchase.transactionstatusId=TransactionStatusEnum.Rejected;
             }
-            purchase.comments=model.comment;
+            purchase.comments =`{message:${model.comment},type:purchaseordercomment};`
+           // purchase.comments=model.comment;
             purchase.updatedby=email;
             await this.purchaseOrderRepository.save(purchase);
             return this.apiResponseService.SuccessResponse(
@@ -333,7 +336,7 @@ export class PurchaseorderService {
    async updatePurchaseOrder(model: CreatePurchaseOrderDto,purshaseId:number,updatedby:string,business: Business):Promise<any>{
 
       try{
-  1
+  
          let validationResult = await this.payloadService.validatePurchaseOrderHeaderAsync(model);
          if (validationResult.IsValid) {
 
@@ -477,14 +480,68 @@ export class PurchaseorderService {
 
       }
       catch (error) {
-      console.error('emailpurchaseOrder Error:',error.message);
-      Logger.error(error);
-      return new HttpException({
-         message: 'Process error while executing operation:',
-         code: 500, status: false
-      },
-         HttpStatus.INTERNAL_SERVER_ERROR);
+         console.error('emailpurchaseOrder Error:',error.message);
+         Logger.error(error);
+         return new HttpException({
+            message: 'Process error while executing operation:',
+            code: 500, status: false
+         },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+       }
    }
+
+   async recievesupplies(model:GrnSummaryDto,email: string):Promise<any>{
+      try{
+
+         let validationResult = await this.payloadService.validatePostGrnAsync(model);
+         if(validationResult.IsValid){
+
+            const getpurchaseItem=await this.purchaseitemRepository
+            .createQueryBuilder("order_item")
+            .leftJoinAndSelect("order_item.purchaseorder", "purchaseorder")
+            .leftJoinAndSelect("order_item.product", "product")
+            .where('purchaseorder.id =:id', { id: model.purchaseorderid})
+            .andWhere('purchaseorder.doctypeId = :doctypeId', { doctypeId:DocType.GoodsRecieveNote})
+            .getMany();
+            if(!getpurchaseItem){
+
+               return this.apiResponseService.SuccessResponse(
+                  `${getpurchaseItem.length} purchase order item not found`,
+                  HttpStatus.OK, getpurchaseItem);
+            }
+          
+            for (let index = 0; index < model.purchaseItems.length; index++) {
+              
+               const matchproduct = getpurchaseItem.find(a=>a.product.id===model.purchaseItems[index].productid);
+               matchproduct.suppliedctnqty=model.purchaseItems[index].suppliedqty;
+               matchproduct.updatedby=email;
+               
+               
+            }
+            if(model.comment.length>0){
+               getpurchaseItem[0].purchaseorder.comments +=`{message:${model.comment},type:grn}`
+            }
+            var type: TransactionStatusEnum =  TransactionStatusEnum.Closed;
+            getpurchaseItem[0].purchaseorder.transactionstatusId=TransactionStatusEnum.Closed;
+            getpurchaseItem[0].purchaseorder.transactionstatus=TransactionStatusEnum[type];
+            await this.purchaseitemRepository.save(getpurchaseItem);
+            await this.purchaseOrderRepository.save(getpurchaseItem[0].purchaseorder);
+            return this.apiResponseService.SuccessResponse(
+               `${model.purchaseItems.length} successfully recieved supplied quantity`,
+               HttpStatus.OK, '');
+         }
+         return await this.payloadService.badRequestErrorMessage(validationResult);
+      }
+      catch (error) {
+         console.error('recievesupplies Error:',error.message);
+         Logger.error(error);
+         return new HttpException({
+            message: 'Process error while executing operation:',
+            code: 500, status: false
+         },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+       }
+
    }
   
 
