@@ -1,6 +1,6 @@
 import { Controller, Post, UseGuards, Body, Request, HttpStatus, Res, Param, Put } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CreatePurchaseOrderDto, ApprovePurchaseOrderDto } from '../../../app-Dto/merchant/purcahseorder.dto';
+import { CreatePurchaseOrderDto, ApprovePurchaseOrderDto, GrnSummaryDto } from '../../../app-Dto/merchant/purcahseorder.dto';
 import { PurchaseorderService } from './purchaseorder.service';
 import { SearchParametersDto } from '../../../app-Dto/merchant/searchparameters.dto';
 
@@ -61,6 +61,15 @@ export class PurchaseorderController {
      async UpdatepurchaseOrder(@Param('purchaseId') purchaseId:number,@Body() model: CreatePurchaseOrderDto, @Request() req, @Res() res) {
 
         const response = await this.purchaseorderservice.updatePurchaseOrder(model,purchaseId ,req.user.email,req.user.business);
+        return res.status(response.code).json(response);
+
+
+    }
+    @Post('/postgrn')
+    @UseGuards(AuthGuard('jwt'))
+     async Postgrn(@Param('purchaseId') purchaseId:number,@Body() model: GrnSummaryDto, @Request() req, @Res() res) {
+
+        const response = await this.purchaseorderservice.recievesupplies(model,req.user.email);
         return res.status(response.code).json(response);
 
 

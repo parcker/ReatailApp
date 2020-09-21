@@ -158,18 +158,22 @@ export class ProductService {
    async getProduct(page: number = 1, businessId: string): Promise<any> {
       try {
 
-         const productinfo = await this.productRepository.find({
-            where: { business: { id: businessId } },
-            relations: ['category', 'productconfiguration', 'subcategory'],
-            take: 50,
-            skip: 50 * (page - 1),
-         });
-         // let productinfo = await this.productRepository.createQueryBuilder("product")
-         //    .leftJoinAndSelect("product.business", "business", "business.id = :id", { id: businessId })
-         //    .leftJoinAndSelect("product.productconfiguration", "productconfiguration")
-         //    .where('product.isDisabled = :isDisabled', { isDisabled: false })
-         //    .select(["product.id", "product.name", "product.itemcode", "product.packingtype", "business.id"]).getMany();
-
+         // const productinfo = await this.productRepository.find({
+         //    where: { business: { id: businessId } },
+         //    relations: ['category', 'product_configuration', 'sub_category','product_configuration.tax'],
+         //    take: 50,
+         //    skip: 50 * (page - 1),
+         // });
+         let productinfo = await this.productRepository.createQueryBuilder("product")
+            .leftJoin("product.business", "business")
+            .leftJoinAndSelect("product.product_configuration", "product_configuration")
+            .leftJoinAndSelect("product_configuration.salestaxId", "tax")
+            .leftJoinAndSelect("product.sub_category", "sub_category")
+            .leftJoinAndSelect("product.category", "category")
+            .where('product.isDisabled = :isDisabled', { isDisabled: false })
+            .andWhere('business.id = :id', { id: businessId })
+            .getMany();
+         
          return this.apiResponseService.SuccessResponse(
             `${productinfo.length} records found`,
             HttpStatus.OK, productinfo);
