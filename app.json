@@ -8,7 +8,7 @@
     "nodejs",
     "api"
   ],
-  "repository": "https://github.com/jsanguinetti/nestjs-boilerplate-heroku",
+  "repository": "https://github.com/parcker/ReatailApp.git",
   "env": {
     "SECRET": {
       "description": "A secret key for verifying the integrity of signed JWT.",
