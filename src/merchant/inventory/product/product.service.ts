@@ -158,21 +158,21 @@ export class ProductService {
    async getProduct(page: number = 1, businessId: string): Promise<any> {
       try {
 
-         // const productinfo = await this.productRepository.find({
-         //    where: { business: { id: businessId } },
-         //    relations: ['category', 'product_configuration', 'sub_category','product_configuration.tax'],
-         //    take: 50,
-         //    skip: 50 * (page - 1),
-         // });
-         let productinfo = await this.productRepository.createQueryBuilder("product")
-            .leftJoin("product.business", "business")
-            .leftJoinAndSelect("product.product_configuration", "product_configuration")
-            .leftJoinAndSelect("product_configuration.salestaxId", "tax")
-            .leftJoinAndSelect("product.sub_category", "sub_category")
-            .leftJoinAndSelect("product.category", "category")
-            .where('product.isDisabled = :isDisabled', { isDisabled: false })
-            .andWhere('business.id = :id', { id: businessId })
-            .getMany();
+         let productinfo = await this.productRepository.find({
+            where: {
+              isDisabled: false,business: { id: businessId }
+            },
+            join: {
+              alias: "product",
+              leftJoinAndSelect: {
+                "productconfiguration": "product.productconfiguration",
+                "category": "product.category",
+                "subCategory": "product.subCategory",
+                "tax": "productconfiguration.salestax"
+              }
+            },cache:true
+          });
+          
          
          return this.apiResponseService.SuccessResponse(
             `${productinfo.length} records found`,
@@ -267,14 +267,28 @@ export class ProductService {
    async getProductwithfulldetails(page: number = 1, businessId: string): Promise<any> {
       try {
 
-         const productinfo = await this.productRepository.find({
-            where: { business: { id: businessId } },
-            relations: ['category', 'productconfiguration', 'subCategory'],
-            take: 50,
-            skip: 50 * (page - 1),
+         // const productinfo = await this.productRepository.find({
+         //    where: { business: { id: businessId } },
+         //    relations: ['category', 'productconfiguration', 'subCategory','productconfiguration.tax'],
+         //    take: 50,
+         //    skip: 50 * (page - 1),
 
-         });
-
+         // });
+         let productinfo = await this.productRepository.find({
+            where: {
+              isDisabled: false,business: { id: businessId }
+            },
+            join: {
+              alias: "product",
+              leftJoinAndSelect: {
+                "productconfiguration": "product.productconfiguration",
+                "category": "product.category",
+                "subCategory": "product.subCategory",
+                "tax": "productconfiguration.salestax"
+              }
+            },cache:true
+          });
+          
 
          return this.apiResponseService.SuccessResponse(
             `${productinfo.length} records found`,
