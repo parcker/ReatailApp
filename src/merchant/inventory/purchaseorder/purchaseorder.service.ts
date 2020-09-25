@@ -113,6 +113,7 @@ export class PurchaseorderService {
             HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
+
    async postpurchaseitem(model:CreatePurchaseOrderDto,createdby:string , purchaseOrder:PurchaseOrder):Promise<any>{
    try{
             
@@ -160,6 +161,7 @@ export class PurchaseorderService {
                HttpStatus.INTERNAL_SERVER_ERROR);
          }
    }
+
    async getpurchaseorders(searchparameter: SearchParametersDto,email:string,business:Business):Promise<any> {
     try{
          
@@ -285,12 +287,32 @@ export class PurchaseorderService {
             HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   async getgoodsRecieved():Promise<any>{
 
+   async getgoodsRecieved():Promise<any>{
+     
+       try
+       {
+
+          
+
+       }
+       catch (error) {
+         console.error('getgoodsRecieved Error:',error.message);
+         Logger.error(error);
+         return new HttpException({
+            message: 'Process error while executing operation:',
+            code: 500, status: false
+         },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+       
    }
+
    async approvePurchaseOrder(model: ApprovePurchaseOrderDto, email: string):Promise<any> 
    {
       try{
+
+
          const purchase=await this.purchaseOrderRepository.findOne({where:{id:model.purchaseorderId,transactionstatusId:TransactionStatusEnum.Created}});
          if(purchase){
             
