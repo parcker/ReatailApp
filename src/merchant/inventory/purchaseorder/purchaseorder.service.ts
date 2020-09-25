@@ -162,15 +162,16 @@ export class PurchaseorderService {
    }
    async getpurchaseorders(searchparameter: SearchParametersDto,email:string,business:Business):Promise<any> {
     try{
-
-        
+         
          const validation=await this.payloadService.validateGetPurchaseParametersAsync(searchparameter);
          if(validation.IsValid){
 
+          
             if(searchparameter.searchtype==PurchaseSearchType.SupplierSearch){
 
                const begin=searchparameter.supplierSearch.startDate;
                const end=searchparameter.supplierSearch.endDate;
+
                const response =  await this.purchaseOrderRepository
                   .createQueryBuilder("purchase_order")
                   .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
@@ -181,16 +182,17 @@ export class PurchaseorderService {
                   .where('purchase_order.supplier.id = :id', { id: searchparameter.supplierSearch.supplierId})
                   .andWhere('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
                   .andWhere('orderitem.isDisabled = :status', { status:false})
+                  .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
                   .orderBy('purchase_order.dateCreated', 'DESC')
-                  .cache(6000)
                   .getMany();
 
+                  console.log('Purcharse Info',PurchaseSearchType.SupplierSearch,response);
                   return this.apiResponseService.SuccessResponse(
                      `${response.length} purcahse info found`,
                      HttpStatus.OK, response);
                
             }
-            if(searchparameter.searchtype==PurchaseSearchType.default){
+            else if (searchparameter.searchtype==PurchaseSearchType.default){
 
                const response =  await this.purchaseOrderRepository
                .createQueryBuilder("purchase_order")
@@ -200,17 +202,16 @@ export class PurchaseorderService {
                .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                .where('orderitem.isDisabled = :status', { status:false})
-               //.andWhere("business.id= :a", { a: business.id})
+               .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
                .orderBy('purchase_order.dateCreated', 'DESC')
-               .take(20)
-               .cache(6000)
+               .take(100)
                .getMany();
-
+               console.log('Purcharse Info',PurchaseSearchType.default,response);
                 return this.apiResponseService.SuccessResponse(
                   `${response.length} purcahse info found`,
                   HttpStatus.OK, response);
             }
-            if(searchparameter.searchtype==PurchaseSearchType.DateRangeSearch){
+            else if (searchparameter.searchtype==PurchaseSearchType.DateRangeSearch){
 
                const begin=searchparameter.supplierSearch.startDate;
                const end=searchparameter.supplierSearch.endDate;
@@ -223,15 +224,15 @@ export class PurchaseorderService {
                   .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                   .where('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
                   .andWhere('orderitem.isDisabled = :status', { status:false})
+                  .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
                   .orderBy('purchase_order.dateCreated', 'DESC')
-                  .cache(6000)
                   .getMany();
-              
+                  console.log('Purcharse Info',PurchaseSearchType.DateRangeSearch,begin,end,response);
                   return this.apiResponseService.SuccessResponse(
                  `${response.length} purcahse info found`,
                  HttpStatus.OK, response);
             }
-            if(searchparameter.searchtype==PurchaseSearchType.logedInUser){
+            else if (searchparameter.searchtype==PurchaseSearchType.logedInUser){
 
                const response =  await this.purchaseOrderRepository
                .createQueryBuilder("purchase_order")
@@ -242,16 +243,34 @@ export class PurchaseorderService {
                .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                .where('purchase_order.createdby  :userid', { userid: email})
                .andWhere('orderitem.isDisabled = :status', { status:false})
+               .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
                .orderBy('purchase_order.dateCreated', 'DESC')
-               .cache(6000)
-               .getMany();
+              .getMany();
+              console.log('Purcharse Info',PurchaseSearchType.logedInUser,response);
+                return this.apiResponseService.SuccessResponse(
+                  `${response.length} purcahse info found`,
+                  HttpStatus.OK, response);
+            }
+            else if (searchparameter.searchtype==PurchaseSearchType.InvoiceSearch){
 
+               const response =  await this.purchaseOrderRepository
+               .createQueryBuilder("purchase_order")
+               .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
+               .leftJoinAndSelect("orderitem.product", "product")
+               .leftJoinAndSelect("purchase_order.supplier", "supplier")
+               .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
+               .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
+               .where('purchase_order.inputedinvoicenumber  :invoicenumber', { invoicenumber: searchparameter.invoiceNumber})
+               .andWhere('orderitem.isDisabled = :status', { status:false})
+               .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
+               .orderBy('purchase_order.dateCreated', 'DESC')
+               .getMany();
+               console.log('Purcharse Info',PurchaseSearchType.InvoiceSearch,response);
                 return this.apiResponseService.SuccessResponse(
                   `${response.length} purcahse info found`,
                   HttpStatus.OK, response);
             }
             
-
           
          }
          return await this.payloadService.badRequestErrorMessage(validation);
@@ -265,6 +284,9 @@ export class PurchaseorderService {
          },
             HttpStatus.INTERNAL_SERVER_ERROR);
       }
+   }
+   async getgoodsRecieved():Promise<any>{
+
    }
    async approvePurchaseOrder(model: ApprovePurchaseOrderDto, email: string):Promise<any> 
    {
