@@ -202,7 +202,7 @@ export class PurchaseorderService {
                .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                .where('orderitem.isDisabled = :status', { status:false})
-               .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
+               .andWhere("purchase_order.transactionstatusId IN (:...names)", { names: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
                .orderBy('purchase_order.dateCreated', 'DESC')
                .take(100)
                .getMany();
