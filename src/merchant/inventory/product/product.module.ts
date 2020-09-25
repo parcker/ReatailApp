@@ -9,7 +9,7 @@ import { PayloadvalidationModule } from '../../../shared/payloadvalidation/paylo
 import { ApiResponseModule } from '../../../shared/response/apiResponse.module';
 import { ProductConfiguration } from '../../../entities/productconfiguration.entity';
 import { StoreProduct } from '../../../entities/storeproduct.entity';
-import { Tax } from '../../../entities/tax.entity';
+import { Tax } from '../../../entities/tax.entity';1
 import { Warehouse } from '../../../entities/warehouse.entity';
 import { StockCard } from '../../../entities/stockcard.entity';
 import { PriceConfiguration } from '../../../entities/priceconfiguration.entity';
