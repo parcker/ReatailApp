@@ -125,13 +125,17 @@ export class PurchaseorderService {
              {
                 
                  const item = model.purchaseItems[index];
-                // console.log('Looping =>',item,index)
-                 const product= await this.productRepository.findOne({where:{id:item.productId,isDisabled:false},relations:['product_configuration']});
+               
+                 const product= await this.productRepository.findOne({where:{id:item.productId,isDisabled:false},relations:['productconfiguration']});
                  let itemp=new OrderItem();
                  itemp.product=product;
                  itemp.ctnqty=item.ctnquantity;
                  itemp.unitqty=item.unitquantity;
-                 itemp.parkinginfo=product.productconfiguration.pack,
+
+                 if(!product.productconfiguration){
+                   itemp.parkinginfo=product.productconfiguration.pack;
+                 }
+                
                  itemp.retailcost=item.retailcost;
                  itemp.wholesalecost=item.wholesalecost;
                  itemp.linetotalretailCost=(item.retailcost*itemp.unitqty);
@@ -141,6 +145,7 @@ export class PurchaseorderService {
                  itemp.isDisabled=false;
                  itemp.updatedby =''
                  purchaseOrder.orderitem.push(itemp);
+                 totalcost+=itemp.linetotalwholesaleCost;
 
              }
             
@@ -203,8 +208,8 @@ export class PurchaseorderService {
                .leftJoinAndSelect("purchase_order.supplier", "supplier")
                .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
-               .where('orderitem.isDisabled = :status', { status:false})
-               .andWhere("purchase_order.transactionstatusId IN (:...names)", { names: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
+               //.where('orderitem.isDisabled = :status', { status:false})
+               .where("purchase_order.transactionstatusId IN (:...names)", { names: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
                .orderBy('purchase_order.dateCreated', 'DESC')
                .take(100)
                .getMany();
