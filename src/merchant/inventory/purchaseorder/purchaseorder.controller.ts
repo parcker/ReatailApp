@@ -56,14 +56,7 @@ export class PurchaseorderController {
         return res.status(response.code).json(response);
 
     }
-    @Post('/getgrns')
-    @UseGuards(AuthGuard('jwt'))
-     async getgrns(@Body() model: SearchParametersDto, @Request() req, @Res() res) {
-
-        const response = await this.purchaseorderservice.getgoodsRecieved(model,req.user.email,req.user.business);
-        return res.status(response.code).json(response);
-
-    }
+   
     @Post(':purchaseId/updatepurchaseOrder')
     @UseGuards(AuthGuard('jwt'))
      async UpdatepurchaseOrder(@Param('purchaseId') purchaseId:number,@Body() model: CreatePurchaseOrderDto, @Request() req, @Res() res) {
