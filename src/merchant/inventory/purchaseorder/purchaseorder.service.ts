@@ -188,8 +188,8 @@ export class PurchaseorderService {
                   .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                   .where('purchase_order.supplier.id = :id', { id: searchparameter.supplierSearch.supplierId})
                   .andWhere('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
-                  .andWhere('orderitem.isDisabled = :status', { status:false})
-                  .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
+                  //.andWhere('orderitem.isDisabled = :status', { status:false})
+                  //.andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected,TransactionStatusEnum.]})
                   .orderBy('purchase_order.dateCreated', 'DESC')
                   .getMany();
 
@@ -209,7 +209,7 @@ export class PurchaseorderService {
                .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                //.where('orderitem.isDisabled = :status', { status:false})
-               .where("purchase_order.transactionstatusId IN (:...names)", { names: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
+               //.where("purchase_order.transactionstatusId IN (:...names)", { names: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
                .orderBy('purchase_order.dateCreated', 'DESC')
                .take(100)
                .getMany();
@@ -230,8 +230,8 @@ export class PurchaseorderService {
                   .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                   .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                   .where('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
-                  .andWhere('orderitem.isDisabled = :status', { status:false})
-                  .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
+                  //.andWhere('orderitem.isDisabled = :status', { status:false})
+                  //.andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
                   .orderBy('purchase_order.dateCreated', 'DESC')
                   .getMany();
                   console.log('Purcharse Info',PurchaseSearchType.DateRangeSearch,begin,end,response);
@@ -249,8 +249,8 @@ export class PurchaseorderService {
                .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                .where('purchase_order.createdby  :userid', { userid: email})
-               .andWhere('orderitem.isDisabled = :status', { status:false})
-               .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
+               //.andWhere('orderitem.isDisabled = :status', { status:false})
+               //.andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
                .orderBy('purchase_order.dateCreated', 'DESC')
               .getMany();
               console.log('Purcharse Info',PurchaseSearchType.logedInUser,response);
@@ -268,8 +268,8 @@ export class PurchaseorderService {
                .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
                .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
                .where('purchase_order.inputedinvoicenumber  :invoicenumber', { invoicenumber: searchparameter.invoiceNumber})
-               .andWhere('orderitem.isDisabled = :status', { status:false})
-               .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
+               //.andWhere('orderitem.isDisabled = :status', { status:false})
+               //.andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Created,TransactionStatusEnum.Rejected]})
                .orderBy('purchase_order.dateCreated', 'DESC')
                .getMany();
                console.log('Purcharse Info',PurchaseSearchType.InvoiceSearch,response);
@@ -293,136 +293,7 @@ export class PurchaseorderService {
       }
    }
 
-   async getgoodsRecieved(searchparameter: SearchParametersDto,email:string,business:Business):Promise<any>{
-     
-       try
-       {
-
-         const validation=await this.payloadService.validateGetPurchaseParametersAsync(searchparameter);
-         if(validation.IsValid){
-
-          
-            if(searchparameter.searchtype==PurchaseSearchType.SupplierSearch){
-
-               const begin=searchparameter.supplierSearch.startDate;
-               const end=searchparameter.supplierSearch.endDate;
-
-               const response =  await this.purchaseOrderRepository
-                  .createQueryBuilder("purchase_order")
-                  .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
-                  .leftJoinAndSelect("orderitem.product", "product")
-                  .leftJoinAndSelect("purchase_order.supplier", "supplier")
-                  .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
-                  .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
-                  .where('purchase_order.supplier.id = :id', { id: searchparameter.supplierSearch.supplierId})
-                  .andWhere('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
-                  .andWhere('orderitem.isDisabled = :status', { status:false})
-                  .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Approved,TransactionStatusEnum.Closed]})
-                  .orderBy('purchase_order.dateCreated', 'DESC')
-                  .getMany();
-
-                  
-                  return this.apiResponseService.SuccessResponse(
-                     `${response.length} purcahse info found`,
-                     HttpStatus.OK, response);
-               
-            }
-            else if (searchparameter.searchtype==PurchaseSearchType.default){
-
-               const response =  await this.purchaseOrderRepository
-               .createQueryBuilder("purchase_order")
-               .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
-               .leftJoinAndSelect("orderitem.product", "product")
-               .leftJoinAndSelect("purchase_order.supplier", "supplier")
-               .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
-               .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
-               //.where('orderitem.isDisabled = :status', { status:false})
-               .where("purchase_order.transactionstatusId IN (:...names)", { names: [TransactionStatusEnum.Approved,TransactionStatusEnum.Closed]})
-               .orderBy('purchase_order.dateCreated', 'DESC')
-               .take(100)
-               .getMany();
-              
-                return this.apiResponseService.SuccessResponse(
-                  `${response.length} purcahse info found`,
-                  HttpStatus.OK, response);
-            }
-            else if (searchparameter.searchtype==PurchaseSearchType.DateRangeSearch){
-
-               const begin=searchparameter.supplierSearch.startDate;
-               const end=searchparameter.supplierSearch.endDate;
-               const response =  await this.purchaseOrderRepository
-                  .createQueryBuilder("purchase_order")
-                  .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
-                  .leftJoinAndSelect("orderitem.product", "product")
-                  .leftJoinAndSelect("purchase_order.supplier", "supplier")
-                  .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
-                  .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
-                  .where('purchase_order.dateCreated BETWEEN :begin AND :end', { begin: begin,end: end})
-                  .andWhere('orderitem.isDisabled = :status', { status:false})
-                  .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Approved,TransactionStatusEnum.Closed]})
-                  .orderBy('purchase_order.dateCreated', 'DESC')
-                  .getMany();
-        
-                  return this.apiResponseService.SuccessResponse(
-                 `${response.length} purcahse info found`,
-                 HttpStatus.OK, response);
-            }
-            else if (searchparameter.searchtype==PurchaseSearchType.logedInUser){
-
-               const response =  await this.purchaseOrderRepository
-               .createQueryBuilder("purchase_order")
-               .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
-               .leftJoinAndSelect("orderitem.product", "product")
-               .leftJoinAndSelect("purchase_order.supplier", "supplier")
-               .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
-               .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
-               .where('purchase_order.createdby  :userid', { userid: email})
-               .andWhere('orderitem.isDisabled = :status', { status:false})
-               .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Approved,TransactionStatusEnum.Closed]})
-               .orderBy('purchase_order.dateCreated', 'DESC')
-              .getMany();
-             
-                return this.apiResponseService.SuccessResponse(
-                  `${response.length} purcahse info found`,
-                  HttpStatus.OK, response);
-            }
-            else if (searchparameter.searchtype==PurchaseSearchType.InvoiceSearch){
-
-               const response =  await this.purchaseOrderRepository
-               .createQueryBuilder("purchase_order")
-               .leftJoinAndSelect("purchase_order.orderitem", "orderitem")
-               .leftJoinAndSelect("orderitem.product", "product")
-               .leftJoinAndSelect("purchase_order.supplier", "supplier")
-               .leftJoinAndSelect("purchase_order.shipbusinesslocation", "business_location")
-               .leftJoinAndSelect("purchase_order.warehouse", "warehouse")
-               .where('purchase_order.inputedinvoicenumber  :invoicenumber', { invoicenumber: searchparameter.invoiceNumber})
-               .andWhere('orderitem.isDisabled = :status', { status:false})
-               .andWhere("purchase_order.transactionstatusId IN :a", { a: [TransactionStatusEnum.Approved,TransactionStatusEnum.Closed]})
-               .orderBy('purchase_order.dateCreated', 'DESC')
-               .getMany();
-              
-                return this.apiResponseService.SuccessResponse(
-                  `${response.length} purcahse info found`,
-                  HttpStatus.OK, response);
-            }
-            
-          
-         }
-         return await this.payloadService.badRequestErrorMessage(validation);
-
-       }
-       catch (error) {
-         console.error('getgoodsRecieved Error:',error.message);
-         Logger.error(error);
-         return new HttpException({
-            message: 'Process error while executing operation:',
-            code: 500, status: false
-         },
-            HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-       
-   }
-
+  
    async approvePurchaseOrder(model: ApprovePurchaseOrderDto, email: string):Promise<any> 
    {
       try{
