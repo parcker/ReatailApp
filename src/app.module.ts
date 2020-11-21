@@ -44,8 +44,10 @@ import { WholesaleModule } from './merchant/inventory/wholesale/wholesale.module
 
 
 @Module({
+  
     imports: [
-        TypeOrmModule.forRoot(),
+
+      TypeOrmModule.forRoot(),
         
         AuthModule,
         RolesModule,
@@ -83,10 +85,10 @@ import { WholesaleModule } from './merchant/inventory/wholesale/wholesale.module
         SettingsModule,
         WarehouseModule,
         WholesaleModule
-    
+      
        
     ],
-    controllers: [AppController, CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,PurchaseorderController,WarehouseController,WholesaleController],
+    controllers: [AppController,CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,PurchaseorderController,WarehouseController,WholesaleController],
     providers: []//{provide: APP_PIPE, useClass: ValidationPipe }
 })
 

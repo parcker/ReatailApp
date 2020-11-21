@@ -15,6 +15,7 @@ module.exports = {
   password:process.env.TYPEORM_PASSWORD,
   database:process.env.TYPEORM_DATABASE,
   synchronize:false,
+  ssl:true,
   logging:true,
   migrations: [migrationsDir],
   cli: {

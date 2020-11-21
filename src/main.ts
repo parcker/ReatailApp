@@ -33,6 +33,7 @@ async function bootstrap() {
     });
     //app.useGlobalPipes(new ValidationPipe());
     await app.listen(parseInt(process.env.PORT) || 8003);
+    
 }
 
 bootstrap();
