@@ -2,7 +2,9 @@ import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, HttpExcept
 import { PartnersService } from './partners.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatCustomerDto, CreatSupplierDto, UpdateCustomerDto } from '../../app-Dto/merchant/partner.dto';
+import {ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('customer')
 @Controller('/api/customer')
 export class CustomerController {
 

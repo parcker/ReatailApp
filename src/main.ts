@@ -12,6 +12,7 @@ import { ApplicationModule } from './app.module';
 import { initDocumentation } from './documentation';
 import { EntitiesExceptionFilter } from './http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 //@nestjs/common
 
@@ -25,12 +26,25 @@ async function bootstrap() {
 
     app.useGlobalFilters(new EntitiesExceptionFilter());
 
-    initDocumentation(app, {
-        version: '0.0.1',
-        description: 'Nest boilerplate description.',
-        title: 'Nest boilerplate',
-        endpoint: '/docs'
-    });
+    const options = new DocumentBuilder()
+    .setTitle('Cats example')
+    .setDescription('The cats API description')
+    .setVersion('1.0')
+    .addTag('categorys')
+    .addTag('product')
+    .addTag('purchaseorder')
+    .addTag('warehouse')
+    .addTag('wholesale')
+    .addTag('supplier')
+    .addTag('customer')
+    .addTag('settings')
+    .addTag('merchantuseraccount')
+    .addTag('account')
+    .build();
+     const document = SwaggerModule.createDocument(app, options);
+     SwaggerModule.setup('api', app, document);
+  
+ 
     //app.useGlobalPipes(new ValidationPipe());
     await app.listen(parseInt(process.env.PORT) || 8003);
     

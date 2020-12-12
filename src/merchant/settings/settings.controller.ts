@@ -4,7 +4,9 @@ import { CreatProductDto, UpdateProductDto } from '../../app-Dto/merchant/produc
 import {SettingsService} from '../settings/settings.service';
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
 import { CreatePaymentTermDto } from '../../app-Dto/merchant/paymentterm.dto';
+import {ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('settings')
 @Controller('api/settings')
 export class SettingsController {
 

@@ -4,7 +4,9 @@ import { MerchantuseraccountService } from './merchantuseraccount.service';
 import { MerchantUserDto } from '../../app-Dto/usermgr/signup.dto';
 import { SignUpMagicDto } from '../../app-Dto/usermgr/signupmagiclink.dto';
 import { AuthGuard } from '@nestjs/passport';
+import {ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('merchantuseraccount')
 @Controller('/api/merchantuseraccount')
 export class MerchantuseraccountController {
 

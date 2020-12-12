@@ -3,7 +3,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreatePurchaseOrderDto, ApprovePurchaseOrderDto, GrnSummaryDto } from '../../../app-Dto/merchant/purcahseorder.dto';
 import { PurchaseorderService } from './purchaseorder.service';
 import { SearchParametersDto } from '../../../app-Dto/merchant/searchparameters.dto';
+import {ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('purchaseorder')
 @Controller('/api/purchaseorder')
 export class PurchaseorderController {
 

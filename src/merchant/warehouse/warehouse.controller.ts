@@ -1,10 +1,10 @@
 import { Controller, Post, UseGuards, Res, Body,Request, HttpStatus, Get, Param, Delete, Patch } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
 import { AuthGuard } from '@nestjs/passport';
-import { CreateRoleDto } from '../../app-Dto/usermgr/role/role.dto';
 import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/warehouse.dto';
-import { UpdateProductDto } from '../../app-Dto/merchant/product.dto';
+import {ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('warehouse')
 @Controller('/api/warehouse')
 export class WarehouseController {
 
@@ -34,7 +34,7 @@ export class WarehouseController {
     }
     @Get('/getwarehousebybusinesslocationId/:businesslocationId')
     @UseGuards(AuthGuard('jwt'))
-    async getwarehousebybusinesslocationId(@Param('businesslocationId') businesslocationId:string,@Request() req, @Res() res) {
+    async getwarehousebybusinesslocationId(@Param('businesslocationId') businesslocationId:string,@Res() res) {
 
         const response = await this.warehouseService.getWarehouseByBusinesslocationId(businesslocationId);
         if (response.status === false) {
@@ -46,7 +46,7 @@ export class WarehouseController {
 
     @Delete('/deletewarehouse/:warehouseId')
     @UseGuards(AuthGuard('jwt'))
-    async deletewarehouse(@Param('warehouseId') warehouseId:string,@Request() req, @Res() res): Promise<any> {
+    async deletewarehouse(@Param('warehouseId') warehouseId:string,@Res() res): Promise<any> {
 
         const response = await this.warehouseService.deleteWarehouse(warehouseId);
         if (response.status === false) {

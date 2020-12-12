@@ -4,7 +4,9 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { CreatProductDto, ProductStatusDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/merchant/product.dto';
 import { SeedProductDto } from '../../../app-Dto/merchant/seedstock.dto';
+import {ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('product')
 @Controller('/api/product')
 export class ProductController {
 

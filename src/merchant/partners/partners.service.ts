@@ -175,9 +175,8 @@ export class PartnersService {
       try {
 
          const [customerresponse, count] = await this.customerRepository.findAndCount({
-            where: {business:{id:business.id}},
-            take: 50,
-            skip: 50 * (page - 1),
+            where: {business:business},
+           
           });
        
          return this.apiResponseService.SuccessResponse(
@@ -201,12 +200,10 @@ export class PartnersService {
       try {
 
          const [supplierresponse, count] = await this.supplierRepository.findAndCount({
-            where: {business:{id:business.id}},
-            //relations: ['category','productconfiguration','subcategory'],
-            take: 50,
-            skip: 50 * (page - 1),
+            where: {business:business}
+          
           });
-       
+      
          return this.apiResponseService.SuccessResponse(
             `Total of ${count} supplier found `,
             HttpStatus.OK, supplierresponse);

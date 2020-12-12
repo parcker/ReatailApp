@@ -10,13 +10,14 @@ import { SettingsModule } from '../../settings/settings.module';
 import { BusinessLocation } from '../../../entities/business.entity';
 import { Product } from '../../../entities/product.entity';
 import { Warehouse } from '../../../entities/warehouse.entity';
+import { StoreProduct } from '../../../entities/storeproduct.entity';
 
 
 @Module({
     imports: [
-      TypeOrmModule.forFeature([PurchaseOrder,Supplier,BusinessLocation,Product,OrderItem,Warehouse]),//
+      TypeOrmModule.forFeature([PurchaseOrder,Supplier,BusinessLocation,Product,OrderItem,Warehouse,StoreProduct]),//
       PayloadvalidationModule,ApiResponseModule,
-     SettingsModule
+      SettingsModule
   ],
     providers: [PurchaseorderService],
     controllers: [PurchaseorderController],

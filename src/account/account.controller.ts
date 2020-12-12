@@ -3,10 +3,11 @@ import { SigupDto } from '../app-Dto/usermgr/signup.dto';
 import { AccountService } from './account.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto } from '../app-Dto/usermgr/user.dto';
+import {ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('account')
 
 @Controller('api/account')
-
 export class AccountController {
 
     constructor(  private readonly accountService: AccountService) {}

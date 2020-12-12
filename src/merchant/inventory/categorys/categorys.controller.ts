@@ -1,8 +1,10 @@
-import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body,Request, HttpException, HttpStatus, Get, Put, Param, Delete, Patch, Res } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body,Request, HttpStatus, Get, Param, Delete, Patch, Res } from '@nestjs/common';
 import { CategorysService } from './categorys.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatCategoryDto, CreatSubCategoryDto, UpdateCategoryDto, UpdateSubCategoryDto } from '../../../app-Dto/merchant/category.dto';
+import {ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('categorys')
 @Controller('/api/categorys')
 export class CategorysController {
     constructor(  private readonly categoryService: CategorysService) {}

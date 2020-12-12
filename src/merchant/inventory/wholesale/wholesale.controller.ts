@@ -3,7 +3,9 @@ import { WholesaleService } from './wholesale.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatProductDto } from '../../../app-Dto/merchant/product.dto';
 import { SaleOrderDto } from '../../../app-Dto/merchant/saleorder.dto';
+import {ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('wholesale')
 @Controller('/api/wholesale')
 export class WholesaleController {
 constructor(private readonly  wholesaleService:WholesaleService) {}
