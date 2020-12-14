@@ -30,7 +30,7 @@ export class AuthService {
 
         return !!foundUser;
     }
-
+   
     public async login(model:LoginDto):Promise<any> {
 
         try{
@@ -116,7 +116,8 @@ export class AuthService {
             business:null,
             businesslocationId:'',
             businesslocation:null,
-            userType:UserType[type]
+            userType:UserType[type],
+            userType_id:user.userType
            
         };
         
@@ -132,7 +133,7 @@ export class AuthService {
             data.businesslocation=user.businesslocation;
 
         }
-        console.log('passed all authorization',data);
+        
         const token = jwt.sign(data, process.env.SECRET, { expiresIn: this.tokenExp });
 
         return {

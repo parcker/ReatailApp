@@ -5,6 +5,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreatProductDto, ProductStatusDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/merchant/product.dto';
 import { SeedProductDto } from '../../../app-Dto/merchant/seedstock.dto';
 import {ApiUseTags } from '@nestjs/swagger';
+import { UserTypes } from '../../../auth/auth.guard';
+import { UserType } from '../../../enums/settings.enum';
 
 @ApiUseTags('product')
 @Controller('/api/product')
@@ -90,14 +92,12 @@ export class ProductController {
 
     }
     @Get('/getmyproducts')
+    @UserTypes(UserType.merchantuser)
     @UseGuards(AuthGuard('jwt'))
     async getmyproducts(@Query('page') page: number,@Request() req, @Res() res): Promise<any> {
 
         const response = await this.productService.getProductwithfulldetails(page,req.user.businessId);
-        if (response.status === false) {
-            return res.status(response.code).json(response);
-        }
-        return res.status(HttpStatus.OK).json(response);
+        return res.status(response.code).json(response);
 
     }
 

@@ -3,6 +3,13 @@ export enum urlType {
     api=2,
     
 }
+export enum Action {
+    Manage = 'manage',
+    Create = 'create',
+    Read = 'read',
+    Update = 'update',
+    Delete = 'delete',
+  }
 export enum UserType {
     admin = 1,
     merchant=2,

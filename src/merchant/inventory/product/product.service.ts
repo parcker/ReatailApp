@@ -267,13 +267,7 @@ export class ProductService {
    async getProductwithfulldetails(page: number = 1, businessId: string): Promise<any> {
       try {
 
-         // const productinfo = await this.productRepository.find({
-         //    where: { business: { id: businessId } },
-         //    relations: ['category', 'productconfiguration', 'subCategory','productconfiguration.tax'],
-         //    take: 50,
-         //    skip: 50 * (page - 1),
-
-         // });
+         
          let productinfo = await this.productRepository.find({
             where: {
               isDisabled: false,business: { id: businessId }
@@ -287,6 +281,7 @@ export class ProductService {
                 "tax": "productconfiguration.salestax"
               }
             },cache:true
+            
           });
           
 

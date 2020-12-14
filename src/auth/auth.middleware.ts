@@ -13,14 +13,15 @@ export class IsAuthenticated implements NestMiddleware {
         if (process.env.AUTHENTICATION === 'passport') {
             return passport.authenticate('jwt', { session: false })(req, res, next);
         } else {
-            if (req.headers.authorization && (req.headers.authorization as string).split(' ')[0] === 'Bearer') {
+            if (req.headers.authorization && (req.headers.authorization as string).split(' ')[0] === 'Bearer') 
+            {
                 const token = (req.headers.authorization as string).split(' ')[1];
                 let decoded: any;
                 try {
 
                     
                     decoded = jwt.verify(token, process.env.SECRET);
-                    console.log('IsAuthenticate',decoded);
+                   
                 } catch (e) {
                     if (e.name === 'TokenExpiredError') throw new HttpException('Expired token', HttpStatus.UNAUTHORIZED);
                     throw new HttpException('Authentication Error', HttpStatus.UNAUTHORIZED);

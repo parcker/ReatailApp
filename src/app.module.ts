@@ -39,6 +39,8 @@ import { WarehouseController } from './merchant/warehouse/warehouse.controller';
 import { WarehouseModule } from './merchant/warehouse/warehouse.module';
 import { WholesaleController } from './merchant/inventory/wholesale/wholesale.controller';
 import { WholesaleModule } from './merchant/inventory/wholesale/wholesale.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './auth/auth.guard';
 
 
 
@@ -89,7 +91,7 @@ import { WholesaleModule } from './merchant/inventory/wholesale/wholesale.module
        
     ],
     controllers: [AppController,CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,PurchaseorderController,WarehouseController,WholesaleController],
-    providers: []//{provide: APP_PIPE, useClass: ValidationPipe }
+    providers: [{provide: APP_GUARD, useClass: RolesGuard }]
 })
 
 export class ApplicationModule {
