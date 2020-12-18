@@ -10,13 +10,13 @@ export class StoreProduct  {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
+    @Column({default:0})
     public instockqty: number;
-    @Column()
+    @Column({default:0})
     public committedqty: number;
-    @Column()
+    @Column({default:0})
     public orderedqty: number;
-    @Column()
+    @Column({default:0})
     public availableqty: number;
 
     @Index()

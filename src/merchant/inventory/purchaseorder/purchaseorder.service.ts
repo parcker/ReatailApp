@@ -528,6 +528,7 @@ export class PurchaseorderService {
                .createQueryBuilder("order_item")
                .leftJoinAndSelect("order_item.purchaseorder", "purchaseorder")
                .leftJoinAndSelect("order_item.product", "product")
+               .leftJoinAndSelect("purchaseorder.warehouse", "warehouse")
                .where('purchaseorder.id =:id', { id: model.purchaseorderid })
                .andWhere('purchaseorder.doctypeId = :doctypeId', { doctypeId: DocType.GoodsRecieveNote })
                .getMany();
@@ -536,6 +537,11 @@ export class PurchaseorderService {
                return this.apiResponseService.SuccessResponse(
                   `${getpurchaseItem.length} purchase order item not found`,
                   HttpStatus.OK, getpurchaseItem);
+            }
+            if(getpurchaseItem[0].purchaseorder.transactionstatusId===TransactionStatusEnum.Closed){
+               return this.apiResponseService.SuccessResponse(
+                  `purchase order has already been closed, please try another order`,
+                  HttpStatus.OK, '');
             }
 
             for (let index = 0; index < model.purchaseItems.length; index++) {
@@ -552,7 +558,7 @@ export class PurchaseorderService {
             var type: TransactionStatusEnum = TransactionStatusEnum.Closed;
             getpurchaseItem[0].purchaseorder.transactionstatusId = TransactionStatusEnum.Closed;
             getpurchaseItem[0].purchaseorder.transactionstatus = TransactionStatusEnum[type];
-
+            
             await this.saveToStoreProduct(getpurchaseItem, getpurchaseItem[0].purchaseorder.warehouse);
 
             await this.purchaseitemRepository.save(getpurchaseItem);
@@ -579,14 +585,32 @@ export class PurchaseorderService {
 
       try {
 
-         let businessstorestock: StoreProduct[];
-         for (let index = 0; index < purhaseItem.length; index++) {
+         console.log('saveToStoreProduct Process just started:',  Date.now.toString());
+         let businessstorestock: StoreProduct[]=[];;
+         for (let index = 0; index < purhaseItem.length; index++) 
+         {
+            
             const storeproductInfo = await this.storeProductRepository.findOne({ where: { product: purhaseItem[index].product } });
-            console.log('Store Info :', storeproductInfo);
+            if(typeof storeproductInfo === 'undefined'){
+
+               let storeproduct = new StoreProduct();
+               storeproduct.warehouse = warehouseInfo;
+               storeproduct.product = purhaseItem[index].product;
+               storeproduct.instockqty = purhaseItem[index].suppliedctnqty;
+               businessstorestock.push(storeproduct);
+             
+            }
+            else if(typeof storeproductInfo !== 'undefined'|| storeproductInfo!=null)
+            {
+               storeproductInfo.instockqty += purhaseItem[index].suppliedctnqty;
+               businessstorestock.push(storeproductInfo);
+              
+            }
            
 
          }
-         await this.storeProductRepository.save(businessstorestock);
+      
+        await this.storeProductRepository.save(businessstorestock);
          return this.apiResponseService.SuccessResponse(
             `${purhaseItem.length} successfully pushed supply to warehouse`,
             HttpStatus.OK, '');

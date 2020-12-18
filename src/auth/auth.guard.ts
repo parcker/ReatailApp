@@ -27,7 +27,7 @@ export class RolesGuard implements CanActivate {
 
                     
         decoded = jwt.verify(token, process.env.SECRET);
-        console.log('Application UserType Authentitcated Decoded',decoded);
+       
        
     } 
     catch (e) {
@@ -35,6 +35,7 @@ export class RolesGuard implements CanActivate {
         console.log('RolesGuard Error',e.name);
         throw new HttpException('Authentication Error', HttpStatus.UNAUTHORIZED);
     }
+    console.log('Application UserType Information',decoded.userType_id,requiredUserTypes);
     return requiredUserTypes===decoded.userType_id?  true: false
 
   }
