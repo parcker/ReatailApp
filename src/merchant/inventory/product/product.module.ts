@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product} from '../../../entities/product.entity';
 import { Category, SubCategory } from '../../../entities/category.entity';
-import { Business } from '../../../entities/business.entity';
+import { Business, BusinessLocation } from '../../../entities/business.entity';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { PayloadvalidationModule } from '../../../shared/payloadvalidation/payloadvalidation.module';
@@ -17,7 +17,7 @@ import { PriceConfiguration } from '../../../entities/priceconfiguration.entity'
 @Module({
 
     imports: [
-        TypeOrmModule.forFeature([Product,Category,SubCategory,Business,ProductConfiguration,PriceConfiguration,StoreProduct,Tax,Warehouse,StoreProduct,StockCard]),
+        TypeOrmModule.forFeature([Product,Category,SubCategory,Business,BusinessLocation,ProductConfiguration,PriceConfiguration,StoreProduct,Tax,Warehouse,StoreProduct,StockCard]),
         PayloadvalidationModule,ApiResponseModule
     ],
     providers: [ProductService],

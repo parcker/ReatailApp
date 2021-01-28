@@ -7,12 +7,19 @@ import { SeedProductDto } from '../../../app-Dto/merchant/seedstock.dto';
 import {ApiUseTags } from '@nestjs/swagger';
 import { UserTypes } from '../../../auth/auth.guard';
 import { UserType } from '../../../enums/settings.enum';
+import {
+    paginate,
+    Pagination,
+    IPaginationOptions,
+  } from 'nestjs-typeorm-paginate';
+import { Product } from '../../../entities/product.entity';
+import { ApiResponseService } from '../../../shared/response/apiResponse.service';
 
 @ApiUseTags('product')
 @Controller('/api/product')
 export class ProductController {
 
-    constructor(private readonly productService: ProductService) { }
+    constructor(private readonly productService: ProductService,private readonly apiResponseService: ApiResponseService) { }
 
     @Post('/create')
     @UseGuards(AuthGuard('jwt'))
@@ -114,19 +121,17 @@ export class ProductController {
 
 
     }
-
     @Get('/getProductForSale')
     @UseGuards(AuthGuard('jwt'))
-    async getProductForSale(@Request() req, @Res() res): Promise<any> {
+    async getProductForSale(@Query('page')page: number, @Request() req, @Res() res): Promise<any> {
 
-        const response = await this.productService.getProductForSale(req.user.businesslocationId,req.user.businessId);
+        const response = await this.productService.getProductForSale(page,req.user.businesslocationId,req.user.business);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
         return res.status(HttpStatus.OK).json(response);
 
     }
-
     @Get('/getProductForPurchase')
     @UseGuards(AuthGuard('jwt'))
     async getProductForPurchase(@Request() req, @Res() res): Promise<any> {

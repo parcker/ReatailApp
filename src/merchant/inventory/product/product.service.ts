@@ -1,11 +1,10 @@
 import { Injectable, HttpStatus, Logger, HttpException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Product } from '../../../entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category, SubCategory } from '../../../entities/category.entity';
 import { CreatProductDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/merchant/product.dto';
 import { Business, BusinessLocation } from '../../../entities/business.entity';
-import { ResponseObj } from '../../../shared/generic.response';
 import { PayloadvalidationService } from '../../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
 import { ProductConfiguration } from '../../../entities/productconfiguration.entity';
@@ -15,6 +14,8 @@ import { Warehouse } from '../../../entities/warehouse.entity';
 import { StockCard } from '../../../entities/stockcard.entity';
 import { PriceConfiguration } from '../../../entities/priceconfiguration.entity';
 import { PriceConfigurationDto } from '../../../app-Dto/merchant/priceconfiguration.dto';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProductService {
@@ -24,6 +25,7 @@ export class ProductService {
       @InjectRepository(Category) private readonly categoryRepository: Repository<Category>,
       @InjectRepository(SubCategory) private readonly subcategoryRepository: Repository<SubCategory>,
       @InjectRepository(Business) private readonly businessRepository: Repository<Business>,
+      @InjectRepository(BusinessLocation) private readonly businesslocationRepository: Repository<BusinessLocation>,
       @InjectRepository(Warehouse) private readonly warehouseRepository: Repository<Warehouse>,
       @InjectRepository(StoreProduct) private readonly storeproductRepository: Repository<StoreProduct>,
       @InjectRepository(StockCard) private readonly stockcardRepository: Repository<StockCard>,
@@ -412,31 +414,44 @@ export class ProductService {
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-
-   async getProductForSale(businesslocationId:string,business: Business) : Promise<any>{
-
+   
+  
+   async getProductForSale(page:number=1,businesslocationId:string,business: Business) : Promise<any>{
 
       try{
 
-           const data =  await this.storeproductRepository.createQueryBuilder("store_product")
-           
-           .innerJoinAndSelect("store_product.product","product")
-           .innerJoinAndSelect("product.productconfiguration","product_configuration")
-           .innerJoinAndSelect("store_product.warehouse","warehouse")
-           .leftJoinAndSelect("product.priceconfiguration","price_configuration")
-           .where("warehouse.businesslocation.id = :id", { id:businesslocationId})
-           .andWhere("price_configuration.Active = :active", { active:true})
-           .cache(60000)
-           .getMany();
-           return this.apiResponseService.SuccessResponse(
-            `${data.length} product data found`,
-            HttpStatus.OK, data);
+           const warehouse= await this.warehouseRepository.find(
+              {where:{businesslocation:{id:businesslocationId}}
+              
+            });
+        
+           if(!warehouse)
+           {
+
+            return this.apiResponseService.SuccessResponse(
+               `0 product data found`,
+               HttpStatus.OK, '');
+            }
+            const result=  await this.productRepository.createQueryBuilder("p")
+            .where("w.id IN (:...ids)",{ids:warehouse.map(c=>c.id)})
+            .leftJoin("p.storeproduct","s")
+            .leftJoin("p.priceconfiguration", "priceconfiguration")
+            .leftJoin("p.productconfiguration", "productconfiguration")
+            .select(['p.name','p.itemcode','p.id', 's.instockqty','w.name','priceconfiguration.wholesalesellingprice',
+            'priceconfiguration.retailsellingprice','productconfiguration.pack','productconfiguration.canbesold',
+            'productconfiguration.anypromo'])
+            .leftJoin("s.warehouse","w")
+            //.skip(50 *(page -1))
+            //.take(page)
+            .getMany();
+            
+           return this.apiResponseService.SuccessResponse( `${result.length} product data found`,HttpStatus.OK, result);
        
 
       }
       catch (error) {
 
-         console.error('getstockforbusinesslocation Error:',error.message);
+         console.error('getProductForSale Error:',error.message);
          Logger.error(error);
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
