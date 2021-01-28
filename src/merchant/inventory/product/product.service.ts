@@ -441,6 +441,7 @@ export class ProductService {
             'priceconfiguration.retailsellingprice','productconfiguration.pack','productconfiguration.canbesold',
             'productconfiguration.anypromo'])
             .leftJoin("s.warehouse","w")
+            .orderBy('p.name')
             //.skip(50 *(page -1))
             //.take(page)
             .getMany();
