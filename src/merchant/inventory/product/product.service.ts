@@ -3,7 +3,7 @@ import { In, Repository } from 'typeorm';
 import { Product } from '../../../entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category, SubCategory } from '../../../entities/category.entity';
-import { CreatProductDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/merchant/product.dto';
+import { CreatProductDto, UpdateProductDto, ProductConfigurationDto, PaginationDto } from '../../../app-Dto/merchant/product.dto';
 import { Business, BusinessLocation } from '../../../entities/business.entity';
 import { PayloadvalidationService } from '../../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
@@ -416,10 +416,11 @@ export class ProductService {
    }
    
   
-   async getProductForSale(page:number=1,businesslocationId:string,business: Business) : Promise<any>{
+   async getProductForSale(paginationDto: PaginationDto,businesslocationId:string) : Promise<any>{
 
       try{
-
+         
+           const skippedItems = (paginationDto.page - 1) * paginationDto.limit;
            const warehouse= await this.warehouseRepository.find(
               {where:{businesslocation:{id:businesslocationId}}
               
@@ -432,7 +433,7 @@ export class ProductService {
                `0 product data found`,
                HttpStatus.OK, '');
             }
-            const result=  await this.productRepository.createQueryBuilder("p")
+            const [result,count]=  await this.productRepository.createQueryBuilder("p")
             .where("w.id IN (:...ids)",{ids:warehouse.map(c=>c.id)})
             .leftJoin("p.storeproduct","s")
             .leftJoin("p.priceconfiguration", "priceconfiguration")
@@ -441,12 +442,11 @@ export class ProductService {
             'priceconfiguration.retailsellingprice','productconfiguration.pack','productconfiguration.canbesold',
             'productconfiguration.anypromo'])
             .leftJoin("s.warehouse","w")
-            .orderBy('p.name')
-            //.skip(50 *(page -1))
-            //.take(page)
-            .getMany();
-            
-           return this.apiResponseService.SuccessResponse( `${result.length} product data found`,HttpStatus.OK, result);
+            .offset(skippedItems)
+            .limit(paginationDto.limit)
+            .getManyAndCount();
+          
+           return this.apiResponseService.SuccessResponse( `total count ${count} page: ${paginationDto.page} limit: ${paginationDto.limit}`,HttpStatus.OK, result);
        
 
       }

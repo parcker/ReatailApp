@@ -27,6 +27,13 @@ export class ProductConfigurationDto {
 
 
 }
+export class PaginationDto {
+    
+    @ApiModelProperty({ required: true })
+    page: number
+    @ApiModelProperty({ required: true })
+    limit: number
+}
 export class CreatProductDto {
 
 

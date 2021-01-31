@@ -2,7 +2,7 @@ import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, Request, G
 import { ProductService } from './product.service';
 import { AuthGuard } from '@nestjs/passport';
 
-import { CreatProductDto, ProductStatusDto, UpdateProductDto, ProductConfigurationDto } from '../../../app-Dto/merchant/product.dto';
+import { CreatProductDto, ProductStatusDto, UpdateProductDto, ProductConfigurationDto, PaginationDto } from '../../../app-Dto/merchant/product.dto';
 import { SeedProductDto } from '../../../app-Dto/merchant/seedstock.dto';
 import {ApiUseTags } from '@nestjs/swagger';
 import { UserTypes } from '../../../auth/auth.guard';
@@ -123,9 +123,12 @@ export class ProductController {
     }
     @Get('/getProductForSale')
     @UseGuards(AuthGuard('jwt'))
-    async getProductForSale(@Query('page')page: number, @Request() req, @Res() res): Promise<any> {
+    async getProductForSale(@Query() paginationDto: PaginationDto, @Request() req, @Res() res): Promise<any> {
 
-        const response = await this.productService.getProductForSale(page,req.user.businesslocationId,req.user.business);
+        paginationDto.page = Number(paginationDto.page);
+        paginationDto.limit = Number(paginationDto.limit);
+
+        const response = await this.productService.getProductForSale(paginationDto,req.user.businesslocationId);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
