@@ -438,10 +438,10 @@ export class ProductService {
             .leftJoin("p.storeproduct","s")
             .leftJoin("p.priceconfiguration", "priceconfiguration")
             .leftJoin("p.productconfiguration", "productconfiguration")
+            .leftJoin("s.warehouse","w")
             .select(['p.name','p.itemcode','p.id', 's.instockqty','w.name','priceconfiguration.wholesalesellingprice',
             'priceconfiguration.retailsellingprice','productconfiguration.pack','productconfiguration.canbesold',
             'productconfiguration.anypromo'])
-            .leftJoin("s.warehouse","w")
             .offset(skippedItems)
             .limit(paginationDto.limit)
             .getManyAndCount();
@@ -457,24 +457,26 @@ export class ProductService {
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
-   async getProductForPurchase(business: Business) : Promise<any>{
+   async getProductForPurchase(paginationDto: PaginationDto,business: Business) : Promise<any>{
 
 
       try{
 
-           const data =  await this.productRepository.createQueryBuilder("product")
-           .leftJoinAndSelect("product.productconfiguration","product_configuration")
-           .leftJoinAndSelect("product.priceconfiguration","price_configuration")
-           .leftJoinAndSelect("product.business","business")
+            const skippedItems = (paginationDto.page - 1) * paginationDto.limit;
+
+            const [result,count]=  await this.productRepository.createQueryBuilder("product")
+           .leftJoin("product.productconfiguration","product_configuration")
+           .leftJoin("product.priceconfiguration","price_configuration")
+           .leftJoin("product.business","business")
            .where("business.Id = :Id", { Id:business.id})
            .andWhere("product.isDisabled = :isDisabled",{isDisabled:false})
            .andWhere("price_configuration.Active = :active", { active:true})
-           .cache(60000)
-           .printSql()
-           .getMany();
-           return this.apiResponseService.SuccessResponse(
-            `${data.length} product data found`,
-            HttpStatus.OK, data);
+           .select(['p.name','p.itemcode','p.id','priceconfiguration.wholesalecostprice','priceconfiguration.unitcostprice',
+           'productconfiguration.pack','productconfiguration.canbepurchased'])
+           .offset(skippedItems)
+            .limit(paginationDto.limit)
+           .getManyAndCount();
+           return this.apiResponseService.SuccessResponse( `total count ${count} page: ${paginationDto.page} limit: ${paginationDto.limit}`,HttpStatus.OK, result);
        
 
       }

@@ -137,9 +137,12 @@ export class ProductController {
     }
     @Get('/getProductForPurchase')
     @UseGuards(AuthGuard('jwt'))
-    async getProductForPurchase(@Request() req, @Res() res): Promise<any> {
+    async getProductForPurchase(@Query() paginationDto: PaginationDto,@Request() req, @Res() res): Promise<any> {
 
-        const response = await this.productService.getProductForPurchase(req.user.business);
+        paginationDto.page = Number(paginationDto.page);
+        paginationDto.limit = Number(paginationDto.limit);
+
+        const response = await this.productService.getProductForPurchase(paginationDto,req.user.business);
         if (response.status === false) {
             return res.status(response.code).json(response);
         }
