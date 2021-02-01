@@ -466,13 +466,13 @@ export class ProductService {
 
             const [result,count]=  await this.productRepository.createQueryBuilder("product")
            .leftJoin("product.productconfiguration","product_configuration")
-           .leftJoin("product.priceconfiguration","price_configuration")
+           .leftJoin("product.priceconfiguration","price_configuration") 
            .leftJoin("product.business","business")
            .where("business.Id = :Id", { Id:business.id})
            .andWhere("product.isDisabled = :isDisabled",{isDisabled:false})
            .andWhere("price_configuration.Active = :active", { active:true})
-           .select(['p.name','p.itemcode','p.id','priceconfiguration.wholesalecostprice','priceconfiguration.unitcostprice',
-           'productconfiguration.pack','productconfiguration.canbepurchased'])
+           .select(['product.name','product.itemcode','product.id','price_configuration.wholesalecostprice','price_configuration.unitcostprice',
+           'product_configuration.pack','product_configuration.canbepurchased'])
            .offset(skippedItems)
             .limit(paginationDto.limit)
            .getManyAndCount();

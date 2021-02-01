@@ -94,7 +94,7 @@ export class PurchaseorderService {
             let response = await this.purchaseOrderRepository.save(purchaseorder);
             if (response) {
 
-               const itemResponse = this.postpurchaseitem(model, createdby, purchaseorder);
+               await this.postpurchaseitem(model, createdby, purchaseorder);
 
                return this.apiResponseService.SuccessResponse(
                   `Purshase order has been created and activated`,
@@ -149,7 +149,7 @@ export class PurchaseorderService {
 
          }
 
-         const response = await this.purchaseitemRepository.save(purchaseOrder.orderitem);
+         await this.purchaseitemRepository.save(purchaseOrder.orderitem);
          purchaseOrder.totalcostprice = totalcost;
          await this.purchaseOrderRepository.save(purchaseOrder);
          return this.apiResponseService.SuccessResponse(
