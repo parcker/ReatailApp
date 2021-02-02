@@ -12,7 +12,14 @@ export abstract class BaseEntityClass {
     
     @Column({ length: "300" ,nullable: true})
     createdby?: string;
+
     @Column({ length: "300" ,nullable: true })
     updatedby?: string;
+
+    @Column({ length: "300" ,nullable: true })
+    deletedby?: string;
+
+    @Column({ length: "300" ,nullable: true })
+    approvedby?: string;
    
 }

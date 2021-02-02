@@ -35,6 +35,16 @@ export enum OrderStatus {
     Approved=2,
     
 }
+export enum TransferItemStatus {
+    Pending = 1,
+    Approved=2,
+    
+}
+export enum TransferStatus {
+    New = 1,
+    Waiting=2,
+    Completed=3
+}
 export enum SalesLevel {
     SaleOrder = 1,
     SaleInvoice=2,
@@ -92,5 +102,12 @@ export enum PurchaseSearchType
     SupplierSearch = 2,
     DateRangeSearch = 3,
     logedInUser=4
+    
+}
+export enum TransferType
+{
+    Transfer=0,
+    Request = 1,
+  
     
 }

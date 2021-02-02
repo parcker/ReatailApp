@@ -1,5 +1,5 @@
 import { Injectable, HttpStatus, Logger, HttpException } from '@nestjs/common';
-import { In, Repository } from 'typeorm';
+import { In, MoreThan, Repository } from 'typeorm';
 import { Product } from '../../../entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category, SubCategory } from '../../../entities/category.entity';
@@ -415,6 +415,7 @@ export class ProductService {
       }
    }
    
+
   
    async getProductForSale(paginationDto: PaginationDto,businesslocationId:string) : Promise<any>{
 
@@ -439,7 +440,7 @@ export class ProductService {
             .leftJoin("p.priceconfiguration", "priceconfiguration")
             .leftJoin("p.productconfiguration", "productconfiguration")
             .leftJoin("s.warehouse","w")
-            .select(['p.name','p.itemcode','p.id', 's.instockqty','w.name','priceconfiguration.wholesalesellingprice',
+            .select(['p.name','p.itemcode','p.id', 's.instockqty','w.name','w.id','priceconfiguration.wholesalesellingprice',
             'priceconfiguration.retailsellingprice','productconfiguration.pack','productconfiguration.canbesold',
             'productconfiguration.anypromo'])
             .offset(skippedItems)
@@ -487,6 +488,48 @@ export class ProductService {
          return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
    }
+   async getProductForTransferRequest(paginationDto: PaginationDto,business: Business) : Promise<any>{
+
+
+      try{
+
+            const skippedItems = (paginationDto.page - 1) * paginationDto.limit;
+            const warehouse= await this.warehouseRepository.createQueryBuilder("w")
+            .leftJoin("w.businesslocation","bl")
+            .where("bl.business.id =:businessId",{businessId:business.id})
+            .select(['w.id'])
+            .getMany();
+
+            console.log('All warehouse for ',warehouse,business.id);
+            if(!warehouse)
+            {
+ 
+               return this.apiResponseService.SuccessResponse(
+                  `0 product data found`,
+                  HttpStatus.OK, '');
+            }
+            const [result,count]=  await this.productRepository.createQueryBuilder("p")
+            .where("w.id IN (:...ids)",{ids:warehouse.map(c=>c.id)})
+            .andWhere("s.instockqty > 0")
+            .leftJoin("p.storeproduct","s")
+            .leftJoin("s.warehouse","w")
+            .select(['p.name','p.itemcode','p.id', 's.instockqty','w.name','w.id'])
+            .offset(skippedItems)
+            .limit(paginationDto.limit)
+            .getManyAndCount();
+
+            return this.apiResponseService.SuccessResponse( `total count ${count} page: ${paginationDto.page} limit: ${paginationDto.limit}`,HttpStatus.OK, result);
+       
+
+      }
+      catch (error) {
+
+         console.error('getProductForTransferRequest Error:',error.message);
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+
    async SeedProducttoStock(productId:string,warehouseId:string,quantity:number,businesslocation:BusinessLocation,business:Business):Promise<any>{
 
       try{

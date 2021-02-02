@@ -1,7 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany, Index} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, Index} from 'typeorm';
 import { BaseEntityClass } from './base.entity';
-import { Product } from './product.entity';
-import { Business, BusinessLocation } from './business.entity';
+import { TransferStatus, TransferType } from '../enums/settings.enum';
 
 @Entity()
 export class StockTransfer extends BaseEntityClass {
@@ -11,15 +10,12 @@ export class StockTransfer extends BaseEntityClass {
     
     @Index()
     @Column()
-    transfertype:number;
+    transfertype:TransferType;
 
-    // @Index()
-    // @ManyToOne(type => BusinessLocation, businesslocationFrom => businesslocationFrom.storeproduct)
-    // @JoinColumn()
-    // businesslocationFrom: BusinessLocation;
+    @Column({default:""})
+    note:string;
 
-    // @Index()
-    // @ManyToOne(type => BusinessLocation, businesslocationTo => businesslocationTo.storeproduct)
-    // @JoinColumn()
-    // businesslocationTo: BusinessLocation;
+    @Column({default:TransferStatus.New})
+    public status:TransferStatus
+
 }

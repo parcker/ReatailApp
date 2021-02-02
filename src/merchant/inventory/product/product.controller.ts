@@ -149,4 +149,18 @@ export class ProductController {
         return res.status(HttpStatus.OK).json(response);
 
     }
+    @Get('/getProductForTransferRequest')
+    @UseGuards(AuthGuard('jwt'))
+    async getProductForTransferRequest(@Query() paginationDto: PaginationDto,@Request() req, @Res() res): Promise<any> {
+
+        paginationDto.page = Number(paginationDto.page);
+        paginationDto.limit = Number(paginationDto.limit);
+        const response = await this.productService.getProductForTransferRequest(paginationDto,req.user.business);
+        if (response.status === false) 
+        {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+
+    }
 }
