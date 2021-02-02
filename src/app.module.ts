@@ -41,6 +41,8 @@ import { WholesaleController } from './merchant/inventory/wholesale/wholesale.co
 import { WholesaleModule } from './merchant/inventory/wholesale/wholesale.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/auth.guard';
+import { StocktransferModule } from './merchant/inventory/stocktransfer/stocktransfer.module';
+import { StocktransferController } from './merchant/inventory/stocktransfer/stocktransfer.controller';
 
 
 
@@ -86,11 +88,11 @@ import { RolesGuard } from './auth/auth.guard';
         MerchantuseraccountModule,
         SettingsModule,
         WarehouseModule,
-        WholesaleModule
-      
+        WholesaleModule,
+        StocktransferModule
        
     ],
-    controllers: [AppController,CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,PurchaseorderController,WarehouseController,WholesaleController],
+    controllers: [AppController,CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,PurchaseorderController,WarehouseController,WholesaleController,StocktransferController],
     providers: [{provide: APP_GUARD, useClass: RolesGuard }]
 })
 

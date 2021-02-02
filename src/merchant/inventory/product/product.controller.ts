@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, UsePipes, ValidationPipe, Body, Request, Get, HttpException, HttpStatus, Patch, Param, Res, Delete, Query } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Request, Get, HttpStatus, Patch, Param, Res, Delete, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -7,13 +7,6 @@ import { SeedProductDto } from '../../../app-Dto/merchant/seedstock.dto';
 import {ApiUseTags } from '@nestjs/swagger';
 import { UserTypes } from '../../../auth/auth.guard';
 import { UserType } from '../../../enums/settings.enum';
-import {
-    paginate,
-    Pagination,
-    IPaginationOptions,
-  } from 'nestjs-typeorm-paginate';
-import { Product } from '../../../entities/product.entity';
-import { ApiResponseService } from '../../../shared/response/apiResponse.service';
 
 @ApiUseTags('product')
 @Controller('/api/product')

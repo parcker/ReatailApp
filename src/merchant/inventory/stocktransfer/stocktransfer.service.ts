@@ -14,8 +14,8 @@ export class StocktransferService {
     @InjectRepository(StockTransferItems) private readonly _stockTransferItemRepository: Repository<StockTransferItems>,
   
     private readonly payloadService: PayloadvalidationService,
-    private readonly apiResponseService: ApiResponseService,
-    private readonly settingService: SettingsService
+    private readonly apiResponseService: ApiResponseService
+   
  ) {
 
  }

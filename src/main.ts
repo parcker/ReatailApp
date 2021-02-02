@@ -27,8 +27,8 @@ async function bootstrap() {
     app.useGlobalFilters(new EntitiesExceptionFilter());
 
     const options = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('Merchant example')
+    .setDescription('The Merchant API description')
     .setVersion('1.0')
     .addTag('categorys')
     .addTag('product')
@@ -40,6 +40,7 @@ async function bootstrap() {
     .addTag('settings')
     .addTag('merchantuseraccount')
     .addTag('account')
+    .addTag('stocktransfer')
     .build();
      const document = SwaggerModule.createDocument(app, options);
      SwaggerModule.setup('api', app, document);

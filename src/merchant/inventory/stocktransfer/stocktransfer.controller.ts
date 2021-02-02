@@ -1,9 +1,11 @@
 import { Body, Controller, Post, UseGuards,Request, Res, HttpStatus } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiUseTags } from '@nestjs/swagger';
 import { TransferRequestDto } from '../../../app-Dto/merchant/transferRequest.dto';
 import { StocktransferService } from './stocktransfer.service';
 
-@Controller('stocktransfer')
+@ApiUseTags('stocktransfer')
+@Controller('/api/stocktransfer')
 export class StocktransferController {
 
 
