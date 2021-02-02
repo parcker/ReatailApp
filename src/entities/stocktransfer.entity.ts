@@ -1,6 +1,7 @@
-import {Entity, PrimaryGeneratedColumn, Column, Index} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, Index, OneToMany} from 'typeorm';
 import { BaseEntityClass } from './base.entity';
 import { TransferStatus, TransferType } from '../enums/settings.enum';
+import { StockTransferItems } from './stocktransferitems.entity';
 
 @Entity()
 export class StockTransfer extends BaseEntityClass {
@@ -17,5 +18,8 @@ export class StockTransfer extends BaseEntityClass {
 
     @Column({default:TransferStatus.New})
     public status:TransferStatus
+
+    @OneToMany(type => StockTransferItems, stockitems => stockitems.stockTransferdetail)
+    stockitems: StockTransferItems[];
 
 }

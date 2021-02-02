@@ -19,7 +19,7 @@ import { ApiResponseService } from '../../../shared/response/apiResponse.service
 @Controller('/api/product')
 export class ProductController {
 
-    constructor(private readonly productService: ProductService,private readonly apiResponseService: ApiResponseService) { }
+    constructor(private readonly productService: ProductService) { }
 
     @Post('/create')
     @UseGuards(AuthGuard('jwt'))

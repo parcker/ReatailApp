@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, Index, ManyToOne} from 'typeorm'
 import { BaseEntityClass } from './base.entity';
 import { TransferItemStatus, TransferType } from '../enums/settings.enum';
 import { Product } from './product.entity';
+import { StockTransfer } from './stocktransfer.entity';
 
 @Entity()
 export class StockTransferItems extends BaseEntityClass {
@@ -25,5 +26,9 @@ export class StockTransferItems extends BaseEntityClass {
     
     @Column({default:TransferItemStatus.Pending})
     public itemStatus:TransferItemStatus
+
+     
+    @ManyToOne(type => StockTransfer, stockTransferdetail => stockTransferdetail.stockitems,{cascade:true})
+    stockTransferdetail: StockTransfer;
 
 }

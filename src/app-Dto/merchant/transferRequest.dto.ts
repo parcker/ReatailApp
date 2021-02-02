@@ -11,7 +11,8 @@ export class TransferRequestItemsDto{
     @ApiModelProperty({ required: true })
     warehouseId: string;
 
-
+    @ApiModelProperty({ required: true })
+    landingwarehouseId: string;
 
 }
 
