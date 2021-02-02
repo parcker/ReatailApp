@@ -6,7 +6,6 @@ import { StockTransfer } from '../../../entities/stocktransfer.entity';
 import { StockTransferItems } from '../../../entities/stocktransferitems.entity';
 import { PayloadvalidationService } from '../../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
-import { SettingsService } from '../../settings/settings.service';
 
 @Injectable()
 export class StocktransferService {
