@@ -60,7 +60,7 @@ export class StocktransferService {
                item.towarehouseId=element.destination;
                item.fromwarehouseId=element.origin;
             }
-           
+           item.stockTransferdetail=transfer;
             item.product=result.find(c=>c.id===element.poductId);
             item.isDisabled = false;
             item.createdby = createdby;

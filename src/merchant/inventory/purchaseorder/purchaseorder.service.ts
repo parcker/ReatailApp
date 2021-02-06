@@ -131,7 +131,7 @@ export class PurchaseorderService {
             itemp.product = product;
             itemp.ctnqty = item.ctnquantity;
             itemp.unitqty = item.unitquantity;
-
+           
             if (!product.productconfiguration) {
                itemp.parkinginfo = product.productconfiguration.pack;
             }
