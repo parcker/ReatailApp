@@ -14,7 +14,8 @@ import { CreatWarehouseDto, UpdateWarehouseDto } from '../../app-Dto/merchant/wa
 import { TaxDto } from '../../app-Dto/merchant/tax.dto';
 import { SalesItemDto, SaleOrderDto } from '../../app-Dto/merchant/saleorder.dto';
 import { SearchParametersDto } from '../../app-Dto/merchant/searchparameters.dto';
-import { PurchaseSearchType } from '../../enums/settings.enum';
+import { PurchaseSearchType, TransferType } from '../../enums/settings.enum';
+import { TransferRequestDto, TransferRequestItemsDto } from '../../app-Dto/merchant/transferRequest.dto';
 
 @Injectable()
 export class PayloadvalidationService {
@@ -360,6 +361,51 @@ export class PayloadvalidationService {
     };
     async validatePostGrnAsync(model: GrnSummaryDto): Promise<ValidationResult> {
         return await new Validator(model).ValidateAsync(this.validatePostGrnRules);
+
+    };
+
+
+    validatePostTransferRequestItemsRules =  (validator: IValidator<TransferRequestItemsDto>) : ValidationResult => {  
+        return validator
+                .IsGuid(m => m.poductId, "Invalid productId id ", "TransferRequestItemsDto.productid.Invalid")
+                .NotNull(m => m.quantity, "Invalid quantity ", "TransferRequestItemsDto.quantity.Invalid")
+                .IsNumberGreaterThanOrEqual(m => m.quantity,0,"Invalid quantity","quantity should be above zero")
+             .ToResult();
+    };
+
+    validateTransferRequestOnlyRules =  (validator: IValidator<TransferRequestItemsDto>) : ValidationResult => {  
+        return validator
+                .IsGuid(m => m.destination, "Invalid destination ", "TransferRequestItemsDto.destination.Invalid")
+                .NotEmpty(m => m.destination, "Invalid destination ", "TransferRequestItemsDto.destination.Invalid")
+                .NotNull(m => m.destination, "destination Should not be null", "TransferRequestItemsDto.destination.Null")
+               
+             .ToResult();
+    };
+    validateTransferOnlyRules =  (validator: IValidator<TransferRequestItemsDto>) : ValidationResult => {  
+        return validator
+                .NotEmpty(m => m.destination, "Invalid destination ", "TransferRequestItemsDto.destination.Invalid")
+                .NotEmpty(m => m.origin, "Invalid origin ", "TransferRequestItemsDto.origin.Invalid")
+                .IsGuid(m => m.destination, "Invalid destination warehouse Id", "TransferRequestItemsDto.destination.Invalid")
+                .IsGuid(m => m.origin, "Invalid origin warehouse Id", "TransferRequestItemsDto.origin.Invalid")
+                .NotNull(m => m.destination, "destination Should not be null", "TransferRequestItemsDto.destination.Null")
+                .NotNull(m => m.origin, "origin Should not be null", "TransferRequestItemsDto.origin.Null")
+             .ToResult();
+    };
+    validatePostTransferRequestRules = (validator: IValidator<TransferRequestDto>): ValidationResult => {
+
+           
+            
+            return validator
+               
+                 .NotNull(m => m.note, "Should not be null", "GrnSummaryDto.purchaseorderid.Null")
+                 .If(m => m.items!=null &&  m.items.length>0, validator => validator.ForEach(m => m.items, this.validatePostTransferRequestItemsRules).ToResult())
+                 .If(m => m.type===TransferType.Request, validator => validator.ForEach(m => m.items, this.validateTransferRequestOnlyRules).ToResult())
+                 .If(m => m.type===TransferType.Transfer, validator => validator.ForEach(m => m.items, this.validateTransferOnlyRules).ToResult())
+                .ToResult();
+    
+    };
+    async validateTransferRequestAsync(model: TransferRequestDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validatePostTransferRequestRules);
 
     };
 

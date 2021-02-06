@@ -11,8 +11,9 @@ import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { initDocumentation } from './documentation';
 import { EntitiesExceptionFilter } from './http-exception.filter';
-import { ValidationPipe } from '@nestjs/common';
+
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from './pipes/validation.pipe';
 
 //@nestjs/common
 
@@ -46,7 +47,7 @@ async function bootstrap() {
      SwaggerModule.setup('api', app, document);
   
  
-    //app.useGlobalPipes(new ValidationPipe());
+     //app.useGlobalPipes(new ValidationPipe());
     await app.listen(parseInt(process.env.PORT) || 8003);
     
 }

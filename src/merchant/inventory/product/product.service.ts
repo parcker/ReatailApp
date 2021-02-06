@@ -415,8 +415,6 @@ export class ProductService {
       }
    }
    
-
-  
    async getProductForSale(paginationDto: PaginationDto,businesslocationId:string) : Promise<any>{
 
       try{
@@ -430,9 +428,9 @@ export class ProductService {
            if(!warehouse)
            {
 
-            return this.apiResponseService.SuccessResponse(
-               `0 product data found`,
-               HttpStatus.OK, '');
+               return this.apiResponseService.SuccessResponse(
+                  `0 product data found`,
+                  HttpStatus.OK, '');
             }
             const [result,count]=  await this.productRepository.createQueryBuilder("p")
             .where("w.id IN (:...ids)",{ids:warehouse.map(c=>c.id)})

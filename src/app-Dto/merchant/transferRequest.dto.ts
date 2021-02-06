@@ -1,24 +1,34 @@
 import { ApiModelProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { TransferType } from "../../enums/settings.enum";
+import {IsDefined, IsNotEmpty, Min, ValidateNested} from "class-validator"
 
-export class TransferRequestItemsDto{
+export class WarehouseLocationDto{
+
+    @ApiModelProperty({ required: false })
+   
+    origin: string;
+    @ApiModelProperty({ required: false })
+   
+    destination:string
+ 
+}
+
+export class TransferRequestItemsDto extends WarehouseLocationDto{
 
     @ApiModelProperty({ required: true })
     poductId: string;
     @ApiModelProperty({ required: true })
+    @Min(1)
     quantity:Number
-    @ApiModelProperty({ required: true })
-    warehouseId: string;
-
-    @ApiModelProperty({ required: true })
-    landingwarehouseId: string;
-
+ 
 }
+
 
 export class TransferRequestDto{
 
     @ApiModelProperty({ required: true })
+   
     note: string;
     @ApiModelProperty({ required: true })
     type:TransferType

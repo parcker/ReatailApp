@@ -16,13 +16,21 @@ export class StockTransferItems extends BaseEntityClass {
 
     @Index()
     @Column()
-    public warehouseId: string;
+    transfertype:TransferType;
+
+    @Index()
+    @Column({default:""})
+    public fromwarehouseId: string;
+
+    @Index()
+    @Column({default:""})
+    public towarehouseId: string;
 
     @Column({default:0})
-    public qty: number;
+    public qty: Number;
 
     @Column({default:0})
-    public approvedqty: number;
+    public approvedqty: Number;
     
     @Column({default:TransferItemStatus.Pending})
     public itemStatus:TransferItemStatus

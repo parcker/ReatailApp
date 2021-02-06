@@ -6,10 +6,11 @@ import { PayloadvalidationModule } from '../../../shared/payloadvalidation/paylo
 import { ApiResponseModule } from '../../../shared/response/apiResponse.module';
 import { StockTransfer } from '../../../entities/stocktransfer.entity';
 import { StockTransferItems } from '../../../entities/stocktransferitems.entity';
+import { Product } from '../../../entities/product.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StockTransfer,StockTransferItems]),
+    TypeOrmModule.forFeature([StockTransfer,StockTransferItems,Product]),
     PayloadvalidationModule,ApiResponseModule
   ],
   providers: [StocktransferService],

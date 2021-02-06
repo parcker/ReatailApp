@@ -1,6 +1,7 @@
-import { Body, Controller, Post, UseGuards,Request, Res, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards,Request, Res, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags } from '@nestjs/swagger';
+import { validate } from 'class-validator';
 import { TransferRequestDto } from '../../../app-Dto/merchant/transferRequest.dto';
 import { StocktransferService } from './stocktransfer.service';
 
@@ -14,11 +15,9 @@ export class StocktransferController {
 
      @Post('/create')
      @UseGuards(AuthGuard('jwt'))
- 
+    // @UsePipes(new ValidationPipe({ transform: true }))
      async create(@Body() transferDto: TransferRequestDto, @Request() req, @Res() res) {
- 
-       
-         const response = await this._stockTransferService.postTransfer(transferDto);
+         const response = await this._stockTransferService.postTransfer(transferDto,req.user.id);
          if (response.status === false) {
              return res.status(response.code).json(response);
          }
