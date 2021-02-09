@@ -1,10 +1,13 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PaginationDto } from '../../../app-Dto/merchant/product.dto';
 import { TransferRequestDto } from '../../../app-Dto/merchant/transferRequest.dto';
+import { Business } from '../../../entities/business.entity';
 import { Product } from '../../../entities/product.entity';
 import { StockTransfer } from '../../../entities/stocktransfer.entity';
 import { StockTransferItems } from '../../../entities/stocktransferitems.entity';
+import { Warehouse } from '../../../entities/warehouse.entity';
 import { TransferType } from '../../../enums/settings.enum';
 import { PayloadvalidationService } from '../../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
@@ -14,6 +17,7 @@ export class StocktransferService {
     constructor(@InjectRepository(StockTransfer) private readonly _stockTransferOrderRepository: Repository<StockTransfer>,
     @InjectRepository(StockTransferItems) private readonly _stockTransferItemRepository: Repository<StockTransferItems>,
     @InjectRepository(Product) private readonly _productRepository: Repository<Product>,
+    @InjectRepository(Warehouse) private readonly _warehouseRepository: Repository<Warehouse>,
   
     private readonly payloadService: PayloadvalidationService,
     private readonly apiResponseService: ApiResponseService
@@ -88,5 +92,98 @@ export class StocktransferService {
         Logger.error(error);
         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
      }
- }
+   }
+   async getTransfers(businessId:Business):Promise<any>{
+      try
+      {
+         const [count,result]=await this._stockTransferItemRepository.createQueryBuilder('st')
+         .where("")
+         .getMany();
+
+      }
+      catch (error) {
+
+         console.error('getTransferRequests Error:',error.message);
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+   async getRequestsforApproval(paginationDto: PaginationDto,transtype:Number,business:Business):Promise<any>{
+      try
+      {
+
+         const skippedItems = (paginationDto.page - 1) * paginationDto.limit;
+
+         const warehouse= await this._warehouseRepository.createQueryBuilder("w")
+         .leftJoin("w.businesslocation","bl")
+         .where("bl.business.id =:businessId",{businessId:business.id})
+         .select(['w.id'])
+         .getMany();
+         if(!warehouse)
+         {
+
+            return this.apiResponseService.SuccessResponse(
+               `0 product data found`,
+               HttpStatus.OK, '');
+         }
+
+         const [count,result]=await this._stockTransferOrderRepository.createQueryBuilder('st')
+         .leftJoin("st.stockitems","items")
+         .where("st.transfertype =:transfertype",{transfertype:transtype})///Request
+         .andWhere("items.fromwarehouseId IN (:...ids)",{ids:warehouse.map(c=>c.id)})
+         .andWhere("items.transfertype =:transfertype",{transfertype:transtype})
+         .select(['st','st.stockitems'])
+         .offset(skippedItems)
+         .limit(paginationDto.limit)
+         .getMany();
+
+         return this.apiResponseService.SuccessResponse( `total count ${count} page: ${paginationDto.page} limit: ${paginationDto.limit}`,HttpStatus.OK, result);
+
+      }
+      catch (error) {
+
+         console.error('getTransferRequests Error:',error.message);
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
+   async getTransfersforApproval(paginationDto: PaginationDto,transtype:Number,business:Business):Promise<any>{
+      try
+      {
+
+         const skippedItems = (paginationDto.page - 1) * paginationDto.limit;
+
+         const warehouse= await this._warehouseRepository.createQueryBuilder("w")
+         .leftJoin("w.businesslocation","bl")
+         .where("bl.business.id =:businessId",{businessId:business.id})
+         .select(['w.id'])
+         .getMany();
+         if(!warehouse)
+         {
+
+            return this.apiResponseService.SuccessResponse(
+               `0 product data found`,
+               HttpStatus.OK, '');
+         }
+
+         const [count,result]=await this._stockTransferOrderRepository.createQueryBuilder('st')
+         .leftJoin("st.stockitems","items")
+         .where("st.transfertype =:transfertype",{transfertype:transtype})///Request
+         .andWhere("items.towarehouseId IN (:...ids)",{ids:warehouse.map(c=>c.id)})
+         .andWhere("items.transfertype =:transfertype",{transfertype:transtype})
+         .select(['st','st.stockitems'])
+         .offset(skippedItems)
+         .limit(paginationDto.limit)
+         .getMany();
+
+         return this.apiResponseService.SuccessResponse( `total count ${count} page: ${paginationDto.page} limit: ${paginationDto.limit}`,HttpStatus.OK, result);
+
+      }
+      catch (error) {
+
+         console.error('getTransferRequests Error:',error.message);
+         Logger.error(error);
+         return new HttpException({ message: 'Process error while executing operation:', code: 500, status: false }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+   }
 }

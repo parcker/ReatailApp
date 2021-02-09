@@ -498,7 +498,7 @@ export class ProductService {
             .select(['w.id'])
             .getMany();
 
-            console.log('All warehouse for ',warehouse,business.id);
+           
             if(!warehouse)
             {
  
