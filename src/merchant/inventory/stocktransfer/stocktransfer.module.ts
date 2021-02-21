@@ -7,11 +7,13 @@ import { ApiResponseModule } from '../../../shared/response/apiResponse.module';
 import { StockTransfer } from '../../../entities/stocktransfer.entity';
 import { StockTransferItems } from '../../../entities/stocktransferitems.entity';
 import { Product } from '../../../entities/product.entity';
+import { StockmanagementModule } from '../stock/stockmanagement.module';
+import { Warehouse } from '../../../entities/warehouse.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StockTransfer,StockTransferItems,Product]),
-    PayloadvalidationModule,ApiResponseModule
+    TypeOrmModule.forFeature([StockTransfer,StockTransferItems,Product,Warehouse]),
+    PayloadvalidationModule,ApiResponseModule,StockmanagementModule
   ],
   providers: [StocktransferService],
   controllers: [StocktransferController],

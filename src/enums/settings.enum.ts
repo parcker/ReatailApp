@@ -111,3 +111,19 @@ export enum TransferType
   
     
 }
+export enum StockUpdateType
+{
+    Transfer=0,
+    Request = 1,
+    Purchase=2,
+    Sales=3,
+
+  
+    
+}
+export enum StockDirection
+{
+    In=0,
+    Out = 1,
+    BothWay=2
+}

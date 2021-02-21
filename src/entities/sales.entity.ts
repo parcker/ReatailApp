@@ -19,7 +19,7 @@ export class Sales extends BaseEntityClass {
     customer: Customer;
 
     @Index()
-    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.stockcard)
+    @ManyToOne(type => BusinessLocation, businesslocation => businesslocation.sales)
     @JoinColumn()
     businesslocation: BusinessLocation;
     

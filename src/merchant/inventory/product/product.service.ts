@@ -559,7 +559,7 @@ export class ProductService {
                   const stockmovemnt=new StockCard();
                   stockmovemnt.Direction=1;//In
                   stockmovemnt.StockMovementDescription='Sock-IN';
-                  stockmovemnt.businesslocation=businesslocation;
+                 
                   stockmovemnt.Quantity=quantity;
                   stockmovemnt.product=product;
                   const stockcardResp=await this.stockcardRepository.save(stockmovemnt);
@@ -587,7 +587,7 @@ export class ProductService {
                   const stockmovemnt=new StockCard();
                   stockmovemnt.Direction=1;//In
                   stockmovemnt.StockMovementDescription='Sock-IN';
-                  stockmovemnt.businesslocation=businesslocation;
+                  //stockmovemnt.businesslocation=businesslocation;
                   stockmovemnt.Quantity=quantity;
                   stockmovemnt.createdby='System'
                   stockmovemnt.updatedby='';

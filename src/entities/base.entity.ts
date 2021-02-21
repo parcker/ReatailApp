@@ -21,5 +21,7 @@ export abstract class BaseEntityClass {
 
     @Column({ length: "300" ,nullable: true })
     approvedby?: string;
+
+   
    
 }

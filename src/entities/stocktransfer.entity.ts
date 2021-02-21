@@ -19,6 +19,9 @@ export class StockTransfer extends BaseEntityClass {
     @Column({default:TransferStatus.New})
     public status:TransferStatus
 
+    @Column({default:""})
+    public statusdescription:string
+
     @OneToMany(type => StockTransferItems, stockitems => stockitems.stockTransferdetail)
     stockitems: StockTransferItems[];
 

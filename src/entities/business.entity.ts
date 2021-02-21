@@ -15,6 +15,7 @@ import { PaymentTerm } from './paymentterm.entity';
 import { Warehouse } from './warehouse.entity';
 import { Tax } from './tax.entity';
 import { Product } from './product.entity';
+import { Sales } from './sales.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
@@ -79,8 +80,8 @@ export class BusinessLocation extends BaseEntityClass {
     @OneToMany(type => PurchaseOrder, purchaseorder => purchaseorder.raisedlocation)
     purchaseorder: PurchaseOrder[];
 
-    @OneToMany(type => StockCard, stockcard => stockcard.businesslocation)
-    stockcard: StockCard[];
+    @OneToMany(type => Sales, sales => sales.businesslocation)
+    sales: Sales[];
    
 
     @OneToMany(type => Warehouse, warehouse => warehouse.businesslocation)

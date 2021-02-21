@@ -6,10 +6,8 @@ import {IsDefined, IsNotEmpty, Min, ValidateNested} from "class-validator"
 export class WarehouseLocationDto{
 
     @ApiModelProperty({ required: false })
-   
     origin: string;
     @ApiModelProperty({ required: false })
-   
     destination:string
  
 }
@@ -20,7 +18,7 @@ export class TransferRequestItemsDto extends WarehouseLocationDto{
     poductId: string;
     @ApiModelProperty({ required: true })
     @Min(1)
-    quantity:Number
+    quantity:number
  
 }
 
@@ -36,4 +34,24 @@ export class TransferRequestDto{
     @Type(() => TransferRequestItemsDto)
     items:TransferRequestItemsDto[]
 }
+
+export class TransferRequestApproveItemsDto{
+
+    @ApiModelProperty({ required: true })
+    poductId: string;
+    @ApiModelProperty({ required: true })
+    @Min(1)
+    quantity:number
+ 
+}
+
+export class TransferRequestApprovalDto{
+
+    @ApiModelProperty({ required: true })
+    stocktransferid: string;
+    @ApiModelProperty({ type: [TransferRequestApproveItemsDto] })
+    @Type(() => TransferRequestApproveItemsDto)
+    items:TransferRequestApproveItemsDto[]
+}
+
 

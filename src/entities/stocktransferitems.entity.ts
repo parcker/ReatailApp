@@ -27,10 +27,10 @@ export class StockTransferItems extends BaseEntityClass {
     public towarehouseId: string;
 
     @Column({default:0})
-    public qty: Number;
+    public qty: number;
 
     @Column({default:0})
-    public approvedqty: Number;
+    public approvedqty: number;
     
     @Column({default:TransferItemStatus.Pending})
     public itemStatus:TransferItemStatus
