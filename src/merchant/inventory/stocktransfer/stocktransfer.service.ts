@@ -120,7 +120,7 @@ export class StocktransferService {
                HttpStatus.OK, '');
          }
 
-         const [count,result]=await this._stockTransferOrderRepository.createQueryBuilder('st')
+         const [result,count]=await this._stockTransferOrderRepository.createQueryBuilder('st')
          .leftJoin("st.stockitems","items")
          .where("st.transfertype =:transfertype",{transfertype:transtype})///Request
          .andWhere("items.fromwarehouseId IN (:...ids)",{ids:warehouse.map(c=>c.id)})
@@ -129,7 +129,7 @@ export class StocktransferService {
          .select(['st','st.stockitems'])
          .offset(skippedItems)
          .limit(paginationDto.limit)
-         .getMany();
+         .getManyAndCount();
 
          return this.apiResponseService.SuccessResponse( `total count ${count} page: ${paginationDto.page} limit: ${paginationDto.limit}`,HttpStatus.OK, result);
 
@@ -160,17 +160,17 @@ export class StocktransferService {
                HttpStatus.OK, '');
          }
 
-         const [count,result]=await this._stockTransferOrderRepository.createQueryBuilder('st')
+         const [result,count]=await this._stockTransferOrderRepository.createQueryBuilder('st')
          .leftJoin("st.stockitems","items")
          .where("st.transfertype =:transfertype",{transfertype:transtype})///Request
          .andWhere("items.towarehouseId IN (:...ids)",{ids:warehouse.map(c=>c.id)})
          .andWhere("items.transfertype =:transfertype",{transfertype:transtype})
          .andWhere("st.status =:status",{status:transferStatus})
-         .select(['st','st.stockitems'])
+         .select(['st','items'])
          .offset(skippedItems)
          .limit(paginationDto.limit)
-         .getMany();
-
+         .getManyAndCount();
+      
          return this.apiResponseService.SuccessResponse( `total count ${count} page: ${paginationDto.page} limit: ${paginationDto.limit}`,HttpStatus.OK, result);
 
       }
