@@ -126,7 +126,7 @@ export class StocktransferService {
          .andWhere("items.fromwarehouseId IN (:...ids)",{ids:warehouse.map(c=>c.id)})
          .andWhere("items.transfertype =:transfertype",{transfertype:transtype})//Request
          .andWhere("st.status =:status",{status:transferStatus})
-         .select(['st','st.stockitems'])
+         .select(['st','items'])
          .offset(skippedItems)
          .limit(paginationDto.limit)
          .getManyAndCount();
