@@ -135,10 +135,17 @@ export class WarehouseService {
              
             if(businessLocation!==null )
             {
-                 let response= await this.warehouseRepository.find({ where: 
-                    { businesslocation:businessLocation,isDisabled:status},order: { name: 'ASC' }});
+                const response= await this.warehouseRepository.createQueryBuilder("w")
+                .leftJoin("w.businesslocation","bl")
+                .where("bl.id =:id",{id:businessLocation.id})
+                .andWhere("bl.business.id =:businessId",{businessId:business.id})
+                .andWhere("bl.isDisabled =:isDisabled",{isDisabled:status})
+                .select(['w'])
+                .orderBy('w.name')
+                .getMany();
+
                 return this.apiResponseService.SuccessResponse(
-                   `${response.length} Warehouse data`,
+                   `${response.length} Warehouse1 data`,
                    HttpStatus.OK, response);
             }
             else
@@ -154,9 +161,10 @@ export class WarehouseService {
                     .getMany();
 
                     return this.apiResponseService.SuccessResponse(
-                        `Warehouse data`,
+                        `Warehouse2 data`,
                         HttpStatus.OK, data);
-                }else{
+                }
+                else{
 
                     
                     return this.apiResponseService.SuccessResponse(
