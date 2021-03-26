@@ -32,6 +32,19 @@ export class WarehouseController {
         return res.status(HttpStatus.OK).json(response);
 
     }
+
+    @Get('/getwarehousebybusiness/:status')
+    @UseGuards(AuthGuard('jwt'))
+    async getwarehousebybusiness(@Param('status') status:boolean,@Request() req, @Res() res) {
+
+        const response = await this.warehouseService.getWarehouseByBusiness(req.user.business,status);
+        if (response.status === false) {
+            return res.status(response.code).json(response);
+        }
+        return res.status(HttpStatus.OK).json(response);
+
+    }
+
     @Get('/getwarehousebybusinesslocationId/:businesslocationId')
     @UseGuards(AuthGuard('jwt'))
     async getwarehousebybusinesslocationId(@Param('businesslocationId') businesslocationId:string,@Res() res) {

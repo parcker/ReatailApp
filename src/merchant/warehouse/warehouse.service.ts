@@ -186,6 +186,33 @@ export class WarehouseService {
                      HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }
+     async getWarehouseByBusiness(business:Business,status:boolean): Promise<any>{
+        
+        try
+         { 
+            const response= await this.warehouseRepository.createQueryBuilder("w")
+            .leftJoin("w.businesslocation","bl")
+             .where("bl.business.id =:businessId",{businessId:business.id})
+            .andWhere("bl.isDisabled =:isDisabled",{isDisabled:status})
+            .select(['w'])
+            .orderBy('w.name')
+            .getMany();
+
+            return this.apiResponseService.SuccessResponse(
+               `${response.length} Warehouse1 data`,
+               HttpStatus.OK, response);
+         }
+         catch (error) {
+
+           console.error('getWarehouseByBusinesslocationId',error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
      async getWarehouseByBusinesslocationId(businessLocationId:string): Promise<any>{
         
         try
