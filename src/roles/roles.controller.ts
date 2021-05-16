@@ -1,7 +1,7 @@
 import { Controller, Post,Body, Get, Request, UseGuards, UsePipes, ValidationPipe, HttpException, HttpStatus, Res } from '@nestjs/common';
-import { CreateRoleDto, RoleDto, AssignRoleDto } from '../../app-Dto/usermgr/role/role.dto';
+import { CreateRoleDto, RoleDto, AssignRoleDto } from '../app-Dto/usermgr/role/role.dto';
 import { RolesService } from './roles.service';
-import { ResponseObj } from '../../shared/generic.response';
+import { ResponseObj } from '../shared/generic.response';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('/api/roles')

@@ -16,6 +16,9 @@ import { SalesItemDto, SaleOrderDto } from '../../app-Dto/merchant/saleorder.dto
 import { SearchParametersDto } from '../../app-Dto/merchant/searchparameters.dto';
 import { PurchaseSearchType, TransferType } from '../../enums/settings.enum';
 import { TransferRequestDto, TransferRequestItemsDto } from '../../app-Dto/merchant/transferRequest.dto';
+import { MarchantRoleDto, UpdateMarchantRoleDto } from '../../app-Dto/merchant/merchantrole.dto';
+import { AddMarchantUserRoleDto, UpdateMarchantUserRoleDto } from '../../app-Dto/merchant/merchantuserrole.dto';
+import { MarchantModuleDto, UpdateMarchantModuleDto } from '../../app-Dto/merchant/merchantpermission.dto';
 
 @Injectable()
 export class PayloadvalidationService {
@@ -406,6 +409,88 @@ export class PayloadvalidationService {
     };
     async validateTransferRequestAsync(model: TransferRequestDto): Promise<ValidationResult> {
         return await new Validator(model).ValidateAsync(this.validatePostTransferRequestRules);
+
+    };
+
+    ///Merchant Role Validations
+    async validateCreateMerchantUserRoleAsync(model: MarchantRoleDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateCreateWarehouseRules);
+
+    };
+    validateCreateMerchantUserRoleRules = (validator: IValidator<MarchantRoleDto>): ValidationResult => {
+        return validator
+            .NotEmpty(m => m.name, "Should not be empty", "MarchantRoleDto.name.Empty")
+            .NotNull(m => m.name, "Should not be null", "name.Null")
+            .ToResult();
+
+    };
+
+    async validateUpdateMerchantUserRoleAsync(model: UpdateMarchantRoleDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateUpdateMerchantUserRoleRules);
+
+    };
+    validateUpdateMerchantUserRoleRules = (validator: IValidator<UpdateMarchantRoleDto>): ValidationResult => {
+        return validator
+            .NotEmpty(m => m.name, "Should not be empty", "MarchantRoleDto.name.Empty")
+            .NotNull(m => m.name, "Should not be null", "name.Null")
+            .IsGuid(m => m.id, "Should not be invalid", "UpdateMarchantRoleDto.id.Invalid")
+            .ToResult();
+
+    };
+    //// Assign Merchant User To Role 
+
+    async validateAssignMerchantUserRoleAsync(model: AddMarchantUserRoleDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateAssignMerchantUserRoleRules);
+
+    };
+    validateAssignMerchantUserRoleRules = (validator: IValidator<AddMarchantUserRoleDto>): ValidationResult => {
+        return validator
+           
+            .IsGuid(m => m.userid, "Should not be invalid", "AddMarchantUserRoleDto.userid.Invalid")
+            .IsGuid(m => m.roleId, "Should not be invalid", "AddMarchantUserRoleDto.roleId.Invalid")
+            .ToResult();
+
+    };
+    async validateUpdateAssignMerchantUserRoleAsync(model: UpdateMarchantUserRoleDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateUpdateAssignMerchantUserRoleRules);
+
+    };
+    validateUpdateAssignMerchantUserRoleRules = (validator: IValidator<UpdateMarchantUserRoleDto>): ValidationResult => {
+        return validator
+           
+            .IsGuid(m => m.userid, "Should not be invalid", "AddMarchantUserRoleDto.userid.Invalid")
+            .IsGuid(m => m.roleId, "Should not be invalid", "AddMarchantUserRoleDto.roleId.Invalid")
+            .IsGuid(m => m.id, "Should not be invalid", "AddMarchantUserRoleDto.roleId.Invalid")
+            .ToResult();
+
+    };
+
+
+    /// Merchant Application Module 
+
+    async validateMerchantApplicationModuleAsync(model: MarchantModuleDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateMerchantApplicationModuleRules);
+
+    };
+    validateMerchantApplicationModuleRules = (validator: IValidator<MarchantModuleDto>): ValidationResult => {
+        return validator
+           
+            .IsNull(m => m.name, "Should not be invalid", "MarchantModuleDto.name.IsEmpty")
+            .IsGuid(m => m.businessId, "Should not be invalid", "MarchantModuleDto.businessId.Invalid")
+            .ToResult();
+
+    };
+    async validateUpdateMerchantApplicationModuleAsync(model: UpdateMarchantModuleDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateUpdateMerchantApplicationModuleRules);
+
+    };
+    validateUpdateMerchantApplicationModuleRules = (validator: IValidator<UpdateMarchantModuleDto>): ValidationResult => {
+        return validator
+           
+            .IsGuid(m => m.Id, "Should not be invalid", "UpdateMarchantModuleDto.userid.Invalid")
+            .IsNull(m => m.name, "Should not be invalid", "UpdateMarchantModuleDto.name.IsEmpty")
+   
+            .ToResult();
 
     };
 

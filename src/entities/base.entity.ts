@@ -1,4 +1,4 @@
-import { UpdateDateColumn, CreateDateColumn, Column } from 'typeorm';
+import { UpdateDateColumn, CreateDateColumn, Column, BeforeInsert } from 'typeorm';
 
 export abstract class BaseEntityClass {
 
@@ -22,6 +22,11 @@ export abstract class BaseEntityClass {
     @Column({ length: "300" ,nullable: true })
     approvedby?: string;
 
+    @BeforeInsert()
+    private async additionalEtitySetup() {
+        this.isDisabled = false
+       
+    }
    
    
 }

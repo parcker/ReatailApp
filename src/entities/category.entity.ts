@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany, BeforeInsert} from 'typeorm';
 
 import { BaseEntityClass } from './base.entity';
 import { BusinessLocation, Business } from './business.entity';
@@ -20,6 +20,13 @@ export class Category extends BaseEntityClass {
 
     @OneToMany(() => Product, product => product.category)
     product: Product[];
+
+
+    @BeforeInsert()
+    private async additional() {
+        this.isDisabled = false
+       
+    }
 }
 
 @Entity()

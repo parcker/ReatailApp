@@ -2,13 +2,13 @@ import { Injectable, HttpException, HttpStatus, Logger} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { Role, RoleUser } from '../../entities/role.entity';
-import { RoleDto, CreateRoleDto } from '../../app-Dto/usermgr/role/role.dto';
-import { ResponseObj } from '../../shared/generic.response';
-import { User } from '../../entities/user.entity';
-import { Business } from '../../entities/business.entity';
-import { PayloadvalidationService } from '../../shared/payloadvalidation/payloadvalidation.service';
-import { ApiResponseService } from '../../shared/response/apiResponse.service';
+import { Role, RoleUser } from '../entities/role.entity';
+import { RoleDto, CreateRoleDto } from '../app-Dto/usermgr/role/role.dto';
+import { ResponseObj } from '../shared/generic.response';
+import { User } from '../entities/user.entity';
+import { Business } from '../entities/business.entity';
+import { PayloadvalidationService } from '../shared/payloadvalidation/payloadvalidation.service';
+import { ApiResponseService } from '../shared/response/apiResponse.service';
 
 
 @Injectable()

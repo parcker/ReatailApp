@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 
-import { RolesModule } from './merchant/roles/roles.module';
+import { RolesModule } from './roles/roles.module';
 import { CompanyModule } from './adminboard/company/company.module';
 import { AccountModule } from './account/account.module';
 
@@ -22,7 +22,7 @@ import { PartnersModule } from './merchant/partners/partners.module';
 import * as path from 'path';
 import { ProductController } from './merchant/inventory/product/product.controller';
 import { ProductModule } from './merchant/inventory/product/product.module';
-import { RolesController } from './merchant/roles/roles.controller';
+import { RolesController } from './roles/roles.controller';
 import { FeaturesController } from './adminboard/settings/features/features.controller';
 import { CompanyController } from './adminboard/company/company.controller';
 
