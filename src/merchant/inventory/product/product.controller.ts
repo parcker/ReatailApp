@@ -16,7 +16,7 @@ export class ProductController {
 
     @Post('/create')
     @UseGuards(AuthGuard('jwt'))
-
+   // @UserTypes('ProductMgr','CanCreate')
     async create(@Body() creatProductDto: CreatProductDto, @Request() req, @Res() res) {
 
       
@@ -93,6 +93,7 @@ export class ProductController {
     }
     @Get('/getmyproducts')
     @UserTypes(UserType.merchantuser)
+   // @UserTypes('ProductMgr','Get-Product',)
     @UseGuards(AuthGuard('jwt'))
     async getmyproducts(@Query('page') page: number,@Request() req, @Res() res): Promise<any> {
 

@@ -16,6 +16,7 @@ import { Warehouse } from './warehouse.entity';
 import { Tax } from './tax.entity';
 import { Product } from './product.entity';
 import { Sales } from './sales.entity';
+import { MerchantRole } from './merchantpermission.entity';
 
 @Entity()
 export class Business extends BaseEntityClass {
@@ -50,7 +51,6 @@ export class Business extends BaseEntityClass {
     @OneToMany(type => FiscalYear, fiscalyear => fiscalyear.business)
     fiscalyear: FiscalYear[];
 
-    
     @OneToMany(type => PaymentMode, paymentmodes => paymentmodes.business)
     paymentmodes: PaymentMode[];
 
@@ -62,6 +62,9 @@ export class Business extends BaseEntityClass {
 
     @OneToMany(type => Tax, tax => tax.business)
     tax: Tax[];
+
+    @OneToMany(type => MerchantRole, merchantrole => merchantrole.business)
+    merchantroles: MerchantRole[];
 
 }
 @Entity()

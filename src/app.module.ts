@@ -43,6 +43,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/auth.guard';
 import { StocktransferModule } from './merchant/inventory/stocktransfer/stocktransfer.module';
 import { StocktransferController } from './merchant/inventory/stocktransfer/stocktransfer.controller';
+import { PermissionModule } from './merchant/merchantpermission/permission/permission.module';
+import { PermissionController } from './merchant/merchantpermission/permission/permission.controller';
 
 
 
@@ -89,10 +91,13 @@ import { StocktransferController } from './merchant/inventory/stocktransfer/stoc
         SettingsModule,
         WarehouseModule,
         WholesaleModule,
-        StocktransferModule
+        StocktransferModule,
+        PermissionModule
        
     ],
-    controllers: [AppController,CategorysController, CompanyController,CustomerController,SupplierController, ProductController,RolesController,FeaturesController,PurchaseorderController,WarehouseController,WholesaleController,StocktransferController],
+    controllers: [AppController,CategorysController, CompanyController,
+      CustomerController,SupplierController, ProductController,RolesController,FeaturesController,PurchaseorderController,WarehouseController,
+      WholesaleController,StocktransferController,PermissionController],
     providers: [{provide: APP_GUARD, useClass: RolesGuard }]
 })
 

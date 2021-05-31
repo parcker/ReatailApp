@@ -1,8 +1,8 @@
-import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany, BeforeInsert} from 'typeorm';
+import { Options } from '@nestjs/common';
+import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToOne, JoinTable} from 'typeorm';
 
 import { BaseEntityClass } from './base.entity';
-import { BusinessLocation, Business } from './business.entity';
-import { Role } from './role.entity';
+import { Business } from './business.entity';
 import { User } from './user.entity';
 
 
@@ -12,11 +12,16 @@ export class MerchantRole extends BaseEntityClass {
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
+
     @Column()
     name:string;
-    
-    @JoinColumn()
+
+  
+    @ManyToOne(() => Business,business => business.merchantroles,{nullable: false})
+    @JoinColumn({name:'businessId'})
     business: Business;
+  
+
     
 }
 
@@ -25,19 +30,18 @@ export class MerchantRoleUser extends BaseEntityClass {
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
-    @Column()
-    name:string;
     
+    @ManyToOne(type => Business)
     @JoinColumn()
     business: Business;
 
+    @ManyToOne(type => User)
     @JoinColumn()
     merchantuser: User;
 
+    @ManyToOne(type => MerchantRole)
     @JoinColumn()
     merchantrole: MerchantRole;
-
-   
 
     
 }
@@ -49,7 +53,7 @@ export class MerchantModule extends BaseEntityClass {
     id: string;
     @Column()
     name:string;
-    
+    @ManyToOne(type => Business)
     @JoinColumn()
     business: Business;
     
@@ -60,15 +64,19 @@ export class MerchantPermission extends BaseEntityClass {
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
-    @Column()
-    name:string;
+   
+    @ManyToOne(type => MerchantModule)
     @JoinColumn()
     module: MerchantModule;
 
+    @ManyToOne(type => MerchantRole)
     @JoinColumn()
-    role: Role;
+    role: MerchantRole;
+
+    @ManyToOne(type => Business)
     @JoinColumn()
     business: Business;
+    
     @Column()
     CanDelete:boolean;
     @Column()

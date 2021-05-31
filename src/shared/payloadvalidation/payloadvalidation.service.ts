@@ -18,7 +18,7 @@ import { PurchaseSearchType, TransferType } from '../../enums/settings.enum';
 import { TransferRequestDto, TransferRequestItemsDto } from '../../app-Dto/merchant/transferRequest.dto';
 import { MarchantRoleDto, UpdateMarchantRoleDto } from '../../app-Dto/merchant/merchantrole.dto';
 import { AddMarchantUserRoleDto, UpdateMarchantUserRoleDto } from '../../app-Dto/merchant/merchantuserrole.dto';
-import { MarchantModuleDto, UpdateMarchantModuleDto } from '../../app-Dto/merchant/merchantpermission.dto';
+import { MarchantModuleDto, MerchantRolePermissionDto, MerchantRolePermissionItemDto, UpdateMarchantModuleDto } from '../../app-Dto/merchant/merchantpermission.dto';
 
 @Injectable()
 export class PayloadvalidationService {
@@ -414,7 +414,7 @@ export class PayloadvalidationService {
 
     ///Merchant Role Validations
     async validateCreateMerchantUserRoleAsync(model: MarchantRoleDto): Promise<ValidationResult> {
-        return await new Validator(model).ValidateAsync(this.validateCreateWarehouseRules);
+        return await new Validator(model).ValidateAsync(this.validateCreateMerchantUserRoleRules);
 
     };
     validateCreateMerchantUserRoleRules = (validator: IValidator<MarchantRoleDto>): ValidationResult => {
@@ -490,6 +490,34 @@ export class PayloadvalidationService {
             .IsGuid(m => m.Id, "Should not be invalid", "UpdateMarchantModuleDto.userid.Invalid")
             .IsNull(m => m.name, "Should not be invalid", "UpdateMarchantModuleDto.name.IsEmpty")
    
+            .ToResult();
+
+    };
+
+    ///Merchant Permission Role Validation
+
+    async validateMerchantPermissionRoleAsync(model: MerchantRolePermissionDto): Promise<ValidationResult> {
+        return await new Validator(model).ValidateAsync(this.validateMerchantPermissionRoleRules);
+
+    };
+    validateMerchantPermissionRoleItemRules = (validator: IValidator<MerchantRolePermissionItemDto>): ValidationResult => {
+        return validator
+           
+            .IsGuid(m => m.roleId, "Should not be invalid", "MerchantRolePermissionItemDto.businessId.Invalid")
+            .IsGuid(m => m.moduleId, "Should not be invalid", "MerchantRolePermissionItemDto.businessId.Invalid")
+            .ToResult();
+
+    };
+
+   
+    validateMerchantPermissionRoleRules = (validator: IValidator<MerchantRolePermissionDto>): ValidationResult => {
+        return validator
+           
+            .If(m => m.model != null && m.model.length > 0, 
+                validator => validator
+                              .ForEach(m => m.model, this.validateMerchantPermissionRoleItemRules)
+                      .ToResult())
+
             .ToResult();
 
     };

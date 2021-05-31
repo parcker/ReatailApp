@@ -42,6 +42,7 @@ async function bootstrap() {
     .addTag('merchantuseraccount')
     .addTag('account')
     .addTag('stocktransfer')
+    .addTag('merchantpermission')
     .build();
      const document = SwaggerModule.createDocument(app, options);
      SwaggerModule.setup('api', app, document);

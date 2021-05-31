@@ -11,6 +11,7 @@ export class Category extends BaseEntityClass {
     @Column()
    
     name:string;
+
     @ManyToOne(() => Business, business => business.category)
     @JoinColumn()
     business: Business;
@@ -22,11 +23,6 @@ export class Category extends BaseEntityClass {
     product: Product[];
 
 
-    @BeforeInsert()
-    private async additional() {
-        this.isDisabled = false
-       
-    }
 }
 
 @Entity()

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { MarchantModuleDto } from '../../../app-Dto/merchant/merchantpermission.dto';
+import { MarchantModuleDto, MerchantRolePermissionDto } from '../../../app-Dto/merchant/merchantpermission.dto';
 import { MarchantRoleDto, UpdateMarchantRoleDto } from '../../../app-Dto/merchant/merchantrole.dto';
 import { AddMarchantUserRoleDto, UpdateMarchantUserRoleDto } from '../../../app-Dto/merchant/merchantuserrole.dto';
 import { Business } from '../../../entities/business.entity';
@@ -11,7 +11,7 @@ import { ResponseObj } from '../../../shared/generic.response';
 import { PayloadvalidationService } from '../../../shared/payloadvalidation/payloadvalidation.service';
 import { ApiResponseService } from '../../../shared/response/apiResponse.service';
 @Injectable()
-export class MercchantUserPermissionService {
+export class MerchantUserPermissionService {
 
     constructor(
     @InjectRepository(Business) private readonly businessRepository: Repository<Business>,
@@ -44,17 +44,22 @@ export class MercchantUserPermissionService {
                     HttpStatus.BAD_REQUEST, '');
 
             }
-            let merchantrole=new MerchantRole();
+
+            console.log('duplicate merchant result ',checkduplicate);
+
+            const merchantrole=new MerchantRole();
             merchantrole.name=model.name;
             merchantrole.business=business;
             merchantrole.createdby=createdby;
-            const dbresponse = await this.merchantroleRepository.save(model);
+           
+
+            const dbresponse = await this.merchantroleRepository.save(merchantrole);
             if(dbresponse){
                 return this.apiResponseService.SuccessResponse(
                     `${dbresponse.name} merchant role has been created and activated`,
-                    HttpStatus.OK, dbresponse);
+                    HttpStatus.OK,null);
             }
-            console.log('creatMerchantUserRole Error Message', dbresponse, Date.now());
+           
             return new
             HttpException({
                 message: 'Process error while executing operation:',
@@ -97,7 +102,7 @@ export class MercchantUserPermissionService {
               if(dbresponse){
                   return this.apiResponseService.SuccessResponse(
                       `${dbresponse.name} merchant role has been created and activated`,
-                      HttpStatus.OK, dbresponse);
+                      HttpStatus.OK, null);
               }
               console.log('creatMerchantUserRole Error Message', dbresponse, Date.now())
               return new
@@ -192,19 +197,29 @@ export class MercchantUserPermissionService {
             let validationResult = await this.payloadService.validateAssignMerchantUserRoleAsync(model);
             if(validationResult.IsValid){
             
-                let getroleModel= await this.merchantroleRepository.findOne({where:{id:model.roleId}});
+                console.log('Merchant role',model);
+                let getroleModel= await this.merchantroleRepository.findOne({where:{id:model.roleId}});//
+                
                 if(!getroleModel){
                     return this.apiResponseService.FailedBadRequestResponse(
                         ` merchant role  information not found ${model.roleId}`,
                         HttpStatus.BAD_REQUEST, '');
                 }
+              
                 let getuserModel= await this.userRepository.findOne({where:{id:model.userid}});
                 if(!getuserModel){
                     return this.apiResponseService.FailedBadRequestResponse(
-                        ` merchant user  information not found ${model.userid}`,
+                        ` merchant user  information not found `,
                         HttpStatus.BAD_REQUEST, '');
                 }
-                let checkforRoleDuplicate=await this.merchantRoleUserRepository.findOne({where:{merchantrole:{id:model.roleId},merchantuser:{id:model.userid},isDisabled:false}})
+                
+                console.log('getuserModel',getuserModel);
+                let checkforRoleDuplicate=await this.merchantRoleUserRepository.findOne(
+                    {where:
+                        {
+                            merchantrole:{id:model.roleId},
+                            merchantuser:{id:model.userid},
+                            isDisabled:false}})
                 if(checkforRoleDuplicate){
 
                     return this.apiResponseService.FailedBadRequestResponse(
@@ -212,7 +227,7 @@ export class MercchantUserPermissionService {
                         HttpStatus.BAD_REQUEST, '');
                 }
                 
-                let assignRoleToUserModel=new MerchantRoleUser();
+                const assignRoleToUserModel=new MerchantRoleUser();
                 assignRoleToUserModel.merchantuser=getuserModel;
                 assignRoleToUserModel.merchantrole=getroleModel;
                 assignRoleToUserModel.createdby=actionby;
@@ -221,7 +236,7 @@ export class MercchantUserPermissionService {
                 if(response){
 
                     return this.apiResponseService.SuccessResponse(
-                        `${getuserModel.firstName} has been added to role ${getroleModel.name}`,
+                        `{getuserModel.firstName} has been added to role ${getroleModel.name}`,
                         HttpStatus.OK, response);
                 }
                 return new
@@ -336,7 +351,7 @@ export class MercchantUserPermissionService {
     async getMerchantUserInRole(business: Business): Promise<any> {
         try{
   
-             let merchantroles = await this.merchantRoleUserRepository.find({ where: {business:business,isDisabled:false } });
+             let merchantroles = await this.merchantRoleUserRepository.find({ where: {business:business,isDisabled:false },relations:["merchantuser","merchantrole"] });
               if(merchantroles){
                   return this.apiResponseService.SuccessResponse(
                       `${merchantroles.length} merchant user roles  information found`,
@@ -366,7 +381,7 @@ export class MercchantUserPermissionService {
 
             let validationResult = await this.payloadService.validateMerchantApplicationModuleAsync(model);
             if(validationResult.IsValid){
-                
+
                 let duplicatecheck=await this.merchantModuleRepository.findOne({where:{name:model.name.trim(),isDisabled:false,business:{id
                     :businessId}}})
                     if(duplicatecheck){
@@ -410,7 +425,133 @@ export class MercchantUserPermissionService {
             HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    async getMerchantApplicationModule(businessId:string):Promise<any>{
+        
+        try{
+            let merchantapplicationModule=await this.merchantModuleRepository.find({where:{business:{id:businessId}},relations:[]});
+            if(merchantapplicationModule){
+                return this.apiResponseService.SuccessResponse(
+                    `${merchantapplicationModule.length} merchant application Module information found`,
+                    HttpStatus.OK, merchantapplicationModule);
+            }
+        }
+        catch (error) {
+            console.log('addMerchantApplicationModule Error Message', error, Date.now())
+            Logger.error(error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    async deleteMerchantApplicationModule(businessId:string,id:string):Promise<any>{
+
+        try{
+            
+        }
+        catch (error) {
+            console.log('deleteMerchantApplicationModule Error Message', error, Date.now())
+            Logger.error(error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+   
+    ///AssignPermission To Role
+
+    async assignMerchantPremissionToMerchantRole(model:MerchantRolePermissionDto,business: Business,createdby:string):Promise<any>{
+
+        try{
+                let validationResult = await this.payloadService.validateMerchantPermissionRoleAsync(model);
+                if(validationResult.IsValid){
+
+                    let merchantperssionSetuplist:MerchantPermission[];
+                    for (let index = 0; index < model.model.length; index++) {
+                        const element = model.model[index];
+                        let roleInformation=await this.merchantroleRepository.findOne({where:{id:element.roleId}});
+                        if(roleInformation){
+                           continue;
+                        }
+
+                        let moduleInformation=await this.merchantModuleRepository.findOne({where:{id:element.moduleId}});
+                        if(roleInformation){
+                           continue;
+                        }
+
+                        let merchantperssionSetup=new MerchantPermission();
+                        merchantperssionSetup.role=roleInformation;
+                        merchantperssionSetup.module=moduleInformation;
+                        merchantperssionSetup.CanView=element.CanView;
+                        merchantperssionSetup.CanApprove=element.CanApprove;
+                        merchantperssionSetup.CanCreate=element.CanCreate;
+                        merchantperssionSetup.CanDelete=element.CanDelete;
+                        merchantperssionSetup.CanDownLoad=element.CanDownLoad;
+                        merchantperssionSetup.CanReject=element.CanReject;
+                        merchantperssionSetup.CanUpdate=element.CanUpdate;
+                        merchantperssionSetup.CanUpload=element.CanUpload;
+
+                        merchantperssionSetup.createdby=createdby;
+                        merchantperssionSetup.business=business;
+                        merchantperssionSetuplist.push(merchantperssionSetup)
+
+
+                    }
+                    let dbresponse=await this.merchantpermissionRepository.save(merchantperssionSetuplist);
+                    if(dbresponse){
+                        return this.apiResponseService.SuccessResponse(
+                            `${dbresponse.length} merchant ammplication permission(s) has been created and activated`,
+                            HttpStatus.OK, dbresponse);
+                    }
+                    
+                }
+                return await this.payloadService.badRequestErrorMessage(validationResult);
+
+                
+
+        }
+        catch (error) {
+            console.log('assignMerchantPremissionToMerchantRole Error Message', error, Date.now())
+            Logger.error(error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async getMerchantPremissionToMerchantRole(roleId:string,business: Business):Promise<any>{
+
+        try{
+            let merchantapplicationPermission=await this.merchantpermissionRepository.find({where:{business:{id:business.id},role:{id:roleId}},relations:[]});
+            if(merchantapplicationPermission){
+                return this.apiResponseService.SuccessResponse(
+                    `${merchantapplicationPermission.length} merchant application permission information found`,
+                    HttpStatus.OK, merchantapplicationPermission);
+            }
+
+        }
+        catch (error) {
+            console.log('getMerchantPremissionToMerchantRole Error Message', error, Date.now())
+            Logger.error(error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
 }
 

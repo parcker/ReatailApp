@@ -77,7 +77,8 @@ export class AuthService {
                     username:foundUser[0].username,
                     views:[],
                     apis:[],
-                    usertype:token.usertype
+                    usertype:token.usertype,
+                    perission:[]
                 };
                 return this.apiResponseService.SuccessResponse(
                     `Login was successful`,
