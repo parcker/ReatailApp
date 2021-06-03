@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { MarchantModuleDto, MerchantRolePermissionDto } from '../../../app-Dto/merchant/merchantpermission.dto';
+import { MarchantModuleDto, MerchantRolePermissionDto, UpdateMerchantRolePermissionDto } from '../../../app-Dto/merchant/merchantpermission.dto';
 import { MarchantRoleDto, UpdateMarchantRoleDto } from '../../../app-Dto/merchant/merchantrole.dto';
 import { AddMarchantUserRoleDto, UpdateMarchantUserRoleDto } from '../../../app-Dto/merchant/merchantuserrole.dto';
 import { Business } from '../../../entities/business.entity';
@@ -170,7 +170,7 @@ export class MerchantUserPermissionService {
             }
 
             merchantUserRole.isDisabled = true;
-            merchantUserRole.updatedby = actionby
+            merchantUserRole.deletedby = actionby
             const dbresponse = await this.merchantroleRepository.save(merchantUserRole);
             return this.apiResponseService.SuccessResponse(
                 `${dbresponse.name} has been  disabled`,
@@ -331,7 +331,7 @@ export class MerchantUserPermissionService {
                     HttpStatus.BAD_REQUEST, '');
             }
             getUserInRole.isDisabled=true;
-            getUserInRole.updatedby=actionby
+            getUserInRole.deletedby=actionby
             let response =await this.merchantRoleUserRepository.save(getUserInRole);
             return this.apiResponseService.SuccessResponse(
                 `${getUserInRole.merchantuser.firstName} has been disabled on role ${getUserInRole.merchantrole.name}`,
@@ -374,7 +374,7 @@ export class MerchantUserPermissionService {
     }
 
 
-    ///SetUp Merchant Application Permission
+    ///SetUp Merchant Application Module
 
     async addMerchantApplicationModule(model:MarchantModuleDto, actionBy:string,businessId:string):Promise<any>{
         try{
@@ -482,7 +482,7 @@ export class MerchantUserPermissionService {
                         }
 
                         let moduleInformation=await this.merchantModuleRepository.findOne({where:{id:element.moduleId}});
-                        if(roleInformation){
+                        if(moduleInformation){
                            continue;
                         }
 
@@ -500,7 +500,7 @@ export class MerchantUserPermissionService {
 
                         merchantperssionSetup.createdby=createdby;
                         merchantperssionSetup.business=business;
-                        merchantperssionSetuplist.push(merchantperssionSetup)
+                        merchantperssionSetuplist.push(merchantperssionSetup);
 
 
                     }
@@ -551,6 +551,64 @@ export class MerchantUserPermissionService {
             HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    async updateMerchantPremissionToMerchantRole(model :UpdateMerchantRolePermissionDto,business:Business,updatedby:string):Promise<any>{
+        try{
+
+            let validationResult = await this.payloadService.validateMerchantPermissionRoleAsync(model);
+            if(validationResult.IsValid){
+
+                let updatedmerchantperssionlist:MerchantPermission[];
+                for (let index = 0; index < model.model.length; index++) {
+
+                    let element = model.model[index];
+                    let item= await this.merchantpermissionRepository.findOne({where:{id:element.id,business:{id:business.id}}});
+                    if(!item){continue;}
+
+                    let roleInformation=await this.merchantroleRepository.findOne({where:{id:element.roleId}});
+                    if(roleInformation){
+                        continue;
+                    }
+
+                    let moduleInformation=await this.merchantModuleRepository.findOne({where:{id:element.moduleId}});
+                    if(moduleInformation){
+                        continue;
+                    }
+                    item.role=roleInformation;
+                    item.module=moduleInformation;
+                    item.CanView=element.CanView;
+                    item.CanApprove=element.CanApprove;
+                    item.CanCreate=element.CanCreate;
+                    item.CanDelete=element.CanDelete;
+                    item.CanDownLoad=element.CanDownLoad;
+                    item.CanReject=element.CanReject;
+                    item.CanUpdate=element.CanUpdate;
+                    item.CanUpload=element.CanUpload;
+                    item.updatedby=updatedby;
+                    updatedmerchantperssionlist.push(item);
+
+                }
+                let dbresponse=await this.merchantpermissionRepository.save(updatedmerchantperssionlist);
+                if(dbresponse){
+                    return this.apiResponseService.SuccessResponse(
+                        `${dbresponse.length} merchant ammplication permission(s) has been updated`,
+                        HttpStatus.OK, dbresponse);
+                }
+
+            }
+            return await this.payloadService.badRequestErrorMessage(validationResult);
+        }
+        catch (error) {
+            console.log('updateMerchantPremissionToMerchantRole Error Message', error, Date.now())
+            Logger.error(error);
+            return new
+                HttpException({
+                    message: 'Process error while executing operation:',
+                    code: 500, status: false
+                },
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

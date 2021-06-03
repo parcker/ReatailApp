@@ -44,6 +44,31 @@ export class MerchantRolePermissionItemDto{
     CanDownLoad:boolean;
 }
 
+export class UpdateMerchantRolePermissionItemDto{
+
+    @ApiModelProperty({ required: true, example: '2900-ddsds-3333-dsdsdsds-d' })
+    id: string;
+    @ApiModelProperty({ required: true, example: '2900-ddsds-3333-dsdsdsds-d' })
+    moduleId: string;
+    @ApiModelProperty({ required: true, example: '2900-ddsds-3333-dsdsdsds-d' })
+    roleId: string;
+    @ApiModelProperty()
+    CanDelete:boolean;
+    @ApiModelProperty()
+    CanCreate:boolean;
+    @ApiModelProperty()
+    CanUpdate:boolean;
+    @ApiModelProperty()
+    CanView:boolean;
+    @ApiModelProperty()
+    CanApprove:boolean;
+    @ApiModelProperty()
+    CanReject:boolean;
+    @ApiModelProperty()
+    CanUpload:boolean;
+    @ApiModelProperty()
+    CanDownLoad:boolean;
+}
 
 export class MerchantRolePermissionDto{
 
@@ -51,3 +76,11 @@ export class MerchantRolePermissionDto{
     @Type(() => MerchantRolePermissionItemDto)
     model:MerchantRolePermissionItemDto[]
 }
+
+export class UpdateMerchantRolePermissionDto{
+
+    @ApiModelProperty({ type: [UpdateMerchantRolePermissionItemDto] })
+    @Type(() => UpdateMerchantRolePermissionItemDto)
+    model:UpdateMerchantRolePermissionItemDto[]
+}
+

@@ -1,6 +1,7 @@
 import { Body, Controller, Post, UseGuards ,Request, HttpStatus, Res, Patch, Get, Delete, Param} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags } from '@nestjs/swagger';
+import { MerchantRolePermissionDto, UpdateMerchantRolePermissionDto } from '../../../app-Dto/merchant/merchantpermission.dto';
 import { MarchantRoleDto, UpdateMarchantRoleDto } from '../../../app-Dto/merchant/merchantrole.dto';
 import { AddMarchantUserRoleDto } from '../../../app-Dto/merchant/merchantuserrole.dto';
 import { MerchantUserPermissionService } from './permission.service';
@@ -82,5 +83,34 @@ export class PermissionController {
        const response = await this.merchantUserPermissionService.getMerchantUserInRole(req.user.business);
        return res.status(response.code).json(response);
    }
+
+   //// Assign Role to permission
+   @Post('/assign-merchant-roleTo-permission')
+   @UseGuards(AuthGuard('jwt'))
+
+   async creatMerchantUserRoleToPermission(@Body() body: MerchantRolePermissionDto,@Request() req,@Res() res){
+      
+       const response = await this.merchantUserPermissionService.assignMerchantPremissionToMerchantRole(body,req.user.email,req.user.business);
+       return res.status(response.code).json(response);
+   }
+
+   @Get(':roleId/merchant-userTorole')
+   @UseGuards(AuthGuard('jwt'))
+   
+   async getMerchantUserRoleToPermission(@Param('id')roleId,@Request() req, @Res() res){
+       
+       const response = await this.merchantUserPermissionService.getMerchantPremissionToMerchantRole(roleId,req.user.business);
+       return res.status(response.code).json(response);
+   }
+
+   @Patch('/update-merchant-roleTo-permission')
+   @UseGuards(AuthGuard('jwt'))
+
+   async updateMerchantUserRoleToPermission(@Body() body: UpdateMerchantRolePermissionDto,@Request() req,@Res() res){
+      
+       const response = await this.merchantUserPermissionService.updateMerchantPremissionToMerchantRole(body,req.user.email,req.user.business);
+       return res.status(response.code).json(response);
+   }
+
       
 }
